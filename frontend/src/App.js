@@ -1,23 +1,22 @@
-import logo from './logo.svg';
+import styled from 'styled-components';
+import React from "react";
 import './App.css';
+import Home from './components/Home/Home';
+import data from './data.js';
+
+const Header = styled.div`
+  text-align: center;
+  padding: 1.2em;
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header>
+        <h1>Team F</h1>
+        <h2><i>YikYak meets Spotify</i></h2>
+      </Header>
+      <Home posts={data}/>
     </div>
   );
 }
