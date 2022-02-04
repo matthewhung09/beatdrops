@@ -4,6 +4,7 @@ const data = [
         'artist': 'Sammy Rae & The Friends',
         'timePosted': 19,
         'likes': 5,
+        'liked': false,
         'url': 'google.com'
     },
     {
@@ -11,6 +12,7 @@ const data = [
         'artist': 'Sammy Rae & The Friends',
         'timePosted': 100,
         'likes': 5,
+        'liked': false,
         'url': 'google.com'
     },
     {
@@ -18,6 +20,7 @@ const data = [
         'artist': 'Sammy Rae & The Friends',
         'timePosted': 100,
         'likes': 5,
+        'liked': false,
         'url': 'google.com'
     }
 ]

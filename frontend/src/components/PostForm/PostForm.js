@@ -3,7 +3,7 @@ import './PostForm.css';
 
 function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick}) {
     return (
-        <div>
+        <div className="form-container">
             <input 
                 placeholder="Song title"
                 value={newSong} 
@@ -14,7 +14,7 @@ function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick}) {
                 value={newArtist} 
                 onChange={onChangeArtist}
             />
-            <button onClick={onClick} className='btn'>Add</button>
+            <button onClick={onClick} className='btn'>Submit</button>
             <br/>
         </div>
     );

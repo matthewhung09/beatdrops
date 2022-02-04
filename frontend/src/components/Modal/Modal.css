@@ -1,0 +1,10 @@
+.close,
+.button {
+  background-color: black;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(25, 87, 128);
+}

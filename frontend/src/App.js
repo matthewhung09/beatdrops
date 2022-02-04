@@ -3,11 +3,12 @@ import React from "react";
 import './App.css';
 import Home from './components/Home/Home';
 import data from './data.js';
-import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './popup.css';
+import Popup from 'reactjs-popup';
 import PostForm from './components/PostForm/PostForm';
 import axios from 'axios';
+import { IoIosAddCircle } from "react-icons/io";
 
 const Header = styled.div`
   text-align: center;
@@ -60,18 +61,39 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='app-container'>
+      {/* ------- Header ------- */}
       <Header>
         <h1>Team F</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
-      <PostForm
-        newSong={newSong}
-        newArtist={newArtist}
-        onClick={onClick}
-        onChangeSong={onChangeSong}
-        onChangeArtist={onChangeArtist}
-      />
+
+      {/* ------- New post popup ------- */}
+      <Popup
+        trigger={<button className="create-btn"> Create a new post <IoIosAddCircle></IoIosAddCircle></button>}
+        modal
+        nested
+      >
+        {close => (
+          <div className="modal">
+            <button className="close" onClick={close}>
+              &times;
+            </button>
+            <div className="header"> Post a song </div>
+            <div className="content">
+                <PostForm
+                  newSong={newSong}
+                  newArtist={newArtist}
+                  onClick={onClick}
+                  onChangeSong={onChangeSong}
+                  onChangeArtist={onChangeArtist}
+                />
+            </div>
+          </div>
+        )}
+      </Popup>
+
+      {/* ------- All posts ------- */}
       <Home posts={postList}/>
     </div>
   );
