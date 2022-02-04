@@ -7,6 +7,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './popup.css';
 import PostForm from './components/PostForm/PostForm';
+import axios from 'axios';
 
 const Header = styled.div`
   text-align: center;
@@ -27,17 +28,35 @@ function App() {
   }
 
   function onClick() {
-    let newPostList = postList.concat(
-      {
-        'song': newSong, 
-        'artist': newArtist,
-        'timePosted': 100,
-        'likes': 5,
-        'url': 'google.com'
+    makePostCall().then(result => {
+      if (result && result.status === 201) {
+        let newPostList = postList.concat(
+          {
+            'song': newSong, 
+            'artist': newArtist,
+            'timePosted': 100,
+            'likes': 5,
+            'url': result.data
+          }
+        );
+        addNewPost(newPostList);
+        console.log(postList);
       }
-    );
-    addNewPost(newPostList);
-    console.log(postList);
+    }); 
+  }
+
+  async function makePostCall() {
+    try {
+      const response = await axios.post('http://localhost:5000/create', {
+        'song': newSong,
+        'artist': newArtist
+      });
+      return response;
+    }
+    catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
   return (

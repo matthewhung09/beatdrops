@@ -19,7 +19,9 @@ function Post({song, artist, timePosted, likes, url}) {
       </div>
       <div className='action'>
         <button className='likes'><BiLike></BiLike>{likes}</button>
-        <button className='spotify'><BsSpotify></BsSpotify>Play on Spotify</button>
+        <form action={url}>
+          <button className='spotify' type="submit"><BsSpotify></BsSpotify>Play on Spotify</button>
+        </form>
       </div>
     </div> 
   )
