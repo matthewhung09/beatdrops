@@ -13,9 +13,18 @@ function getDbConnection() {
     return dbConnection;
   }
 
-  async function getPosts(){
+  async function getPosts(title, artist){
     const userModel = getDbConnection().model("Post", PostSchema);
-    let result = await userModel.find();
+    let result;
+    if(title === undefined && artist === undefined){
+        result = await userModel.find();
+    }
+    else if(title && !artist){
+        result = findPostByTitle(title);
+    }
+    else if(!title && artist){
+        result = findPostByArtist(artist)
+    }
     return result;  
 }
 
@@ -29,6 +38,16 @@ async function addPost(post){
         console.log(error);
         return false;
     }   
+}
+
+async function findPostByTitle(title){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find({'title':title});
+}
+
+async function findPostByArtist(artist){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find({'artist':artist});
 }
 
 exports.getPosts = getPosts;
