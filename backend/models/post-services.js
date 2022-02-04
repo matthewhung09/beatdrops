@@ -40,6 +40,16 @@ async function addPost(post){
     }   
 }
 
+async function findPostById(id){
+    const postModel = getDbConnection().model("Post", PostSchema);    
+    try{
+        return await userModel.findById(id);
+    }catch(error) {
+        console.log(error);
+        return undefined;
+    }
+}
+
 async function findPostByTitle(title){
     const postModel = getDbConnection().model("Post", PostSchema);
     return await postModel.find({'title':title});
