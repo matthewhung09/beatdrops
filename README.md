@@ -5,7 +5,7 @@ In the backend folder, run `npm run dev`.
 
 ## Start frontend
 
-In the frontend folder, run npm start.
+In the frontend folder, run `npm start`.
 
 ## To Create a New Branch:
 `git branch feature-yourname`\
