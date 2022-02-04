@@ -11,11 +11,6 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  posted_On: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
   likes: {type: Number},
 }, {collection : 'posts_list'});
 

@@ -2,11 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "spotify_test.js",
+  "main": "driver.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon spotify_test.js",
-    "start": "node spotify_test.js"
+    "dev": "nodemon driver.js",
+    "start": "node driver.js"
   },
   "author": "",
   "license": "ISC",
