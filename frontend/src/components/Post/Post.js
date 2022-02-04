@@ -2,6 +2,7 @@ import { BiLike } from "react-icons/bi";
 import { BsSpotify } from "react-icons/bs";
 import album1 from '../../images/denim-jacket.png';
 import './Post.css';
+import 'reactjs-popup/dist/index.css';
 
 function Post({song, artist, timePosted, likes, url}) {
   return (
@@ -18,7 +19,7 @@ function Post({song, artist, timePosted, likes, url}) {
       </div>
       <div className='action'>
         <button className='likes'><BiLike></BiLike>{likes}</button>
-        <button className='spotify'><BsSpotify></BsSpotify>View on Spotify</button>
+        <button className='spotify'><BsSpotify></BsSpotify>Play on Spotify</button>
       </div>
     </div> 
   )

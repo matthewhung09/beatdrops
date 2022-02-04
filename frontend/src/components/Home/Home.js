@@ -5,7 +5,7 @@ function Home(props) {
   return (
     <div className='home'>
         {props.posts.map((post) => 
-            <Post
+            <Post 
                 song={post.song}
                 artist={post.artist}
                 timePosted={post.timePosted}

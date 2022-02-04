@@ -9,14 +9,14 @@ const data = [
     {
         'song': 'Denim Jacket',
         'artist': 'Sammy Rae & The Friends',
-        'timePosted': 0,
+        'timePosted': 100,
         'likes': 5,
         'url': 'google.com'
     },
     {
         'song': 'Denim Jacket',
         'artist': 'Sammy Rae & The Friends',
-        'timePosted': 1,
+        'timePosted': 100,
         'likes': 5,
         'url': 'google.com'
     }
