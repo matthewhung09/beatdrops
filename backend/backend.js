@@ -5,6 +5,7 @@ const path = require('path');
 const axios = require('axios');
 const qs = require('qs');
 const cors = require('cors');
+const postServices = require('./models/post-services');
 const app = express();
 const port = 5000;
 
@@ -31,8 +32,8 @@ app.use(express.json());
 // }
 
 app.listen(port, () => {
-    console.log('Listening on 5000');
-});
+    console.log(`listening at http://localhost:${port}`);
+  });
 
 app.get('/', (req, res) => {
     res.send('Hello, World');
@@ -98,4 +99,27 @@ async function getAccessToken() {
     catch(error) {
         console.log(error);
     }
-}  
+}
+  
+app.get('/posts', async (req, res) => {
+    const title = req.query['title'];
+    const artist = req.query['artist'];
+    try {
+        const result = await postServices.getPosts(title, artist);
+        res.send({post_list: result});         
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('An error ocurred in the server.');
+    }
+});
+
+app.post('/posts', async (req, res) => {
+    const new_Post = req.body;
+    const savedPost = await postServices.addPost(new_Post);
+    if (savedPost)
+        res.status(201).send(savedPost);
+    else
+        res.status(500).end();
+});
+
+
