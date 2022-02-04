@@ -14,20 +14,17 @@ function getDbConnection() {
   }
 
   async function getPosts(){
-    const userModel = getDbConnection().model("Post", UserSchema);
+    const userModel = getDbConnection().model("Post", PostSchema);
     let result = await userModel.find();
     return result;  
 }
 
 async function addPost(post){
-    // userModel is a Model, a subclass of mongoose.Model
-    const userModel = getDbConnection().model("Post", UserSchema);
+    const postModel = getDbConnection().model("Post", PostSchema);
     try{
-        // You can use a Model to create new documents using 'new' and 
-        // passing the JSON content of the Document:
-        const userToAdd = new userModel(post);
-        const savedUser = await userToAdd.save()
-        return savedUser;
+        const postToAdd = new postModel(post);
+        const savedPost = await postToAdd.save()
+        return savedPost;
     }catch(error) {
         console.log(error);
         return false;

@@ -12,6 +12,6 @@ const PostSchema = new mongoose.Schema({
     trim: true,
   },
   likes: {type: Number},
-}, {collection : 'posts_list'});
+}, {collection : 'posts_list', timestamps: true});
 
 module.exports = PostSchema;
