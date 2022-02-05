@@ -6,25 +6,24 @@ import './Post.css';
 import 'reactjs-popup/dist/index.css';
 
 function Post({song, artist, timePosted, likes, liked, url}) {
-  const [isLiked, setLiked] = React.useState(liked);
-  const [numLikes, setNumLikes] = React.useState(likes);
+  	const [isLiked, setLiked] = React.useState(liked);
+  	const [numLikes, setNumLikes] = React.useState(likes);
 
-  function updateLikes() {
-    JSON.parse(isLiked) === false 
-      ? setNumLikes(numLikes+1)
-      : setNumLikes(numLikes-1);
-    setLiked(!isLiked)
-  }
+	function updateLikes() {
+		JSON.parse(isLiked) === false ? (
+			setNumLikes(numLikes+1)
+		) : (
+			setNumLikes(numLikes-1)
+		)
+		setLiked(!isLiked)
+	}
 
-  // let likeStyle = {
-  //   border: '1px solid black'
-  // };
-  // if(this.state.numLikes > liked) {
-  //   likeStyle = {
-  //     border:'1px solid blue',
-  //     backgroundColor: '#dcf2ffcb',
-  //   }
-  // }  
+	let likeStyle;
+	isLiked === false ? (
+		likeStyle = { border:'1px solid black', color: 'black', backgroundColor: 'transparent' }
+	) : (
+		likeStyle = { border:'1px solid #0065B8', color: '#0065B8', backgroundColor: '#DCEFFE' }
+	);
 
   return (
     <div className='card'>
@@ -39,9 +38,9 @@ function Post({song, artist, timePosted, likes, liked, url}) {
         </div>
       </div>
       <div className='action'>
-        <button className='likes' onClick={updateLikes}> 
-          <BiLike></BiLike>{numLikes}
-        </button>
+		<button className='likes' onClick={updateLikes} style={likeStyle}> 
+			<BiLike></BiLike>{numLikes}
+		</button>
         <button onClick={() => {window.open(url, "_blank")}} className='spotify' type="submit">
           <BsSpotify></BsSpotify>View on Spotify
         </button>
