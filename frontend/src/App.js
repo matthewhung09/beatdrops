@@ -31,15 +31,15 @@ function App() {
   function onClick() {
     makePostCall().then(result => {
       if (result && result.status === 201) {
-        let newPostList = postList.concat(
-          {
-            'song': newSong, 
-            'artist': newArtist,
-            'timePosted': 100,
-            'likes': 5,
-            'url': result.data
-          }
-        );
+        let newPost = {
+          'song': newSong, 
+          'artist': newArtist,
+          'timePosted': 100,
+          'likes': 5,
+          'liked': false,
+          'url': result.data
+        };
+        let newPostList = [newPost].concat(postList);
         addNewPost(newPostList);
         console.log(postList);
       }
