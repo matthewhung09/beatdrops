@@ -50,7 +50,7 @@ function App() {
     try {
       const response = await axios.post('http://localhost:5000/create', {
         'song': newSong,
-        'artist': newArtist
+        'artist': newArtist,
       });
       return response;
     }

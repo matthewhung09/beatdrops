@@ -76,7 +76,17 @@ app.post('/create', async (req, res) => {
         // console.log(response.data.tracks.items[0].name); 
         // console.log(response.data.tracks.items[0].artists[0].name);
 
-        return res.status(201).send(song_url);
+        const new_post = {
+            'title': song_title,
+            'artist': artist,
+            'likes': 0,
+            'url': song_url
+        }
+        const savedPost = await postServices.addPost(new_post);
+        if (savedPost)
+            res.status(201).send(savedPost);
+        else
+            res.status(500).end();
     }
     catch(error) {
         console.log(error);
