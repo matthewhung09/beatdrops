@@ -18,7 +18,25 @@ const Header = styled.div`
 function App() {
   const [newSong, setNewSong] = React.useState('');
   const [newArtist, setNewArtist] = React.useState('');
-  const [postList, addNewPost] = React.useState(data);
+  const [postList, setPosts] = React.useState([]);
+
+  React.useEffect(() => {
+    getAllPosts().then( result => {
+       if (result)
+          setPosts(result);
+     });
+  }, [] );
+
+  async function getAllPosts() {
+    try {
+      const response = await axios.get('http://localhost:5000/posts');
+      console.log(response.data.post_list);
+      return response.data.post_list;
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   function onChangeSong(e) {
     setNewSong(e.target.value);
@@ -31,17 +49,8 @@ function App() {
   function onClick() {
     makePostCall().then(result => {
       if (result && result.status === 201) {
-        let newPostList = postList.concat(
-          {
-            'song': newSong, 
-            'artist': newArtist,
-            'timePosted': 100,
-            'likes': 5,
-            'url': result.data
-          }
-        );
-        addNewPost(newPostList);
-        console.log(postList);
+        setPosts([...postList, result.data]);
+        // console.log(postList);
       }
     }); 
   }

@@ -6,7 +6,7 @@ function Home({posts}) {
     <div className='home'>
         {posts.map((post) => 
             <Post 
-                song={post.song}
+                song={post.title}
                 artist={post.artist}
                 timePosted={post.timePosted}
                 likes={post.likes}

@@ -46,18 +46,22 @@ app.get('/', (req, res) => {
 
 app.post('/create', async (req, res) => {
     // console.log(req.body);
-    const song_title = req.body.song;
-    const artist = req.body.artist;
+    const new_post = await getPostData(req.body.song, req.body.artist)
+    const savedPost = await postServices.addPost(new_post);
 
-    // console.log(song_title);
-    // console.log(artist);
+    if (savedPost) 
+        res.status(201).send(savedPost);
+    else
+        res.status(500).end();
+});
 
+async function getPostData(song, artist) {
     const data = {
         'type': 'track',
         'limit': '10'
     }
     // Format querystring - should probably find a better way to do this
-    const first_part = 'q=track:' + song_title.replaceAll(' ', '%20') + '%20artist:' + artist.replaceAll(' ', '%20');
+    const first_part = 'q=track:' + song.replaceAll(' ', '%20') + '%20artist:' + artist.replaceAll(' ', '%20');
     const second_part = new URLSearchParams(data).toString();
     const queryparam = first_part + '&' + second_part;
 
@@ -73,26 +77,25 @@ app.post('/create', async (req, res) => {
         const song_url = response.data.tracks.items[0].external_urls.spotify;
         
         // Get actual song name and artist in case of mispellings/typos
-        // console.log(response.data.tracks.items[0].name); 
-        // console.log(response.data.tracks.items[0].artists[0].name);
+        const song_name = response.data.tracks.items[0].name; 
+        const song_artist = response.data.tracks.items[0].artists[0].name;
+
+        console.log(response.data.tracks.items[0].album.images); // [0] for 640x640, [1] for 300x300, [2] for 64x64
 
         const new_post = {
-            'title': song_title,
-            'artist': artist,
+            'title': song_name,
+            'artist': song_artist,
             'likes': 0,
             'url': song_url
-        }
-        const savedPost = await postServices.addPost(new_post);
-        if (savedPost)
-            res.status(201).send(savedPost);
-        else
-            res.status(500).end();
+        };
+        console.log(new_post);
+        return new_post;
     }
     catch(error) {
         console.log(error);
     }
 
-});
+}
 
 async function getAccessToken() {
     try {
@@ -123,13 +126,5 @@ app.get('/posts', async (req, res) => {
     }
 });
 
-app.post('/posts', async (req, res) => {
-    const new_Post = req.body;
-    const savedPost = await postServices.addPost(new_Post);
-    if (savedPost)
-        res.status(201).send(savedPost);
-    else
-        res.status(500).end();
-});
 
 
