@@ -64,7 +64,7 @@ function App() {
     <div className='app-container'>
       {/* ------- Header ------- */}
       <Header>
-        <h1>Team F</h1>
+        <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
 

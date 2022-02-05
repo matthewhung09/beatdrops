@@ -4,6 +4,7 @@
 
 .button {
   background-color: black;
+  cursor: pointer;
 }
 
 .modal > .close {
@@ -32,8 +33,10 @@
 .create-btn {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  padding-left: 1.2em;
   background-color: black;
+  cursor: pointer;
+  align-items: center;
 }
 
 .create-btn > * {
