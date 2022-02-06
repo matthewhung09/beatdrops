@@ -3,7 +3,6 @@ import { React, useState, useEffect } from "react";
 import { IoIosAddCircle } from 'react-icons/io';
 import 'reactjs-popup/dist/index.css';
 import './App.css';
-import './popup.css';
 import Popup from 'reactjs-popup';
 import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';

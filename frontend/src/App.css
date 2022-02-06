@@ -18,9 +18,43 @@
 
 /* ---- modal ---- */
 
-.close,
-.button {
-  background-color: black;
+.modal {
+  font-size: 12px;
+}
+
+.modal > .header {
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+  font-weight: 500;
+}
+
+.modal > .content {
+  width: 100%;
+  padding: 10px 5px;
+}
+
+.modal > .actions {
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+
+.modal > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: 4px;
+  top: 4px;
+  font-size: 20px;
+  width: 1.4em;
+  background: black;
+  color: white;
+  border: 0.1em solid #fff;
 }
 
 .create-btn {
@@ -42,37 +76,15 @@
   padding-left: 1em;
 }
 
-/* .create-btn > * {
-  margin: 0 2em;
-} */
-
 .circle {
   font-size: 1.2em;
 }
 
-.modal > .close {
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 2px 5px;
-  line-height: 20px;
-  right: 4px !important;
-  top: 4px !important;
-  font-size: 20px !important;
-  width: 1.4em !important;
-  background: black !important;
-  color: white !important;
-  /* border-radius: 3em !important; */
-  border: 0.1em solid #fff !important;
-}
-
 .popup-content {
-  border-radius: 0.3em !important;
-}
-
-.modal > .header {
-  font-weight: 500;
-  margin-bottom: 0.1em;
+  border-radius: 0.3em;
+  border: none;
+  padding: 1em;
+  max-width: 30em;
 }
 
 .button {
