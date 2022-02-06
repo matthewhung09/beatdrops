@@ -1,11 +1,11 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import { BiLike } from "react-icons/bi";
 import { BsSpotify } from "react-icons/bs";
 import album1 from '../../images/denim-jacket.png';
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 
-function Post({selected, song, artist, timePosted, likes, liked, url}) {
+function Post({song, artist, timePosted, likes, liked, url}) {
   	const [isLiked, setLiked] = useState(liked);
   	const [numLikes, setNumLikes] = useState(likes);
 
@@ -18,19 +18,11 @@ function Post({selected, song, artist, timePosted, likes, liked, url}) {
 		setLiked(!isLiked)
 	}
 
-	// useEffect(() => {
-	// 	JSON.parse(isLiked) === true ? (
-	// 		setNumLikes(numLikes+1)
-	// 	) : (
-	// 		setNumLikes(numLikes-1)
-	// 	)
-	// }, [likes, isLiked])
-
 	return (
 		<div className='card'>
 		<div className='left-wrapper'>
 			<div className='image'>
-			<img src={album1} alt='album1'/>
+			<img style={{height: '100px', width: '100px'}} src={album1} alt='album1'/>
 			</div>
 			<div className='description'>
 			<h2>{song}</h2>

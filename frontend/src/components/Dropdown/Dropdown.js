@@ -7,23 +7,19 @@ function Dropdown({ selected, setSelected }) {
     const options = ['Likes', 'Recent'];
     return (
         <div className="dropdown">
-            <div className="dropdown-btn" 
-                onClick={(e) => setIsActive(!isActive)}
+            <div 
+                className="dropdown-btn" 
+                onClick={() => setIsActive(!isActive)}
             >
-                {selected}
-                <BsFilterCircleFill/>
-                {/* <span className="fas fa-caret-down"></span> */}
+                {selected} <BsFilterCircleFill/>
             </div>
             {isActive && (
                 <div className="dropdown-content">
                     {options.map((option) => (
-                        <div 
-                            onClick={(e) => {
-                                setSelected(option)
-                                setIsActive(false)
-                            }} 
-                            className="dropdown-item"
-                        >
+                        <div className="dropdown-item" onClick={() => {
+                            setSelected(option)
+                            setIsActive(false)
+                        }}>
                             {option}
                         </div>
                     ))}
