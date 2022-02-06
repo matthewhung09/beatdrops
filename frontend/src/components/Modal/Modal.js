@@ -7,7 +7,7 @@ import './Modal.css';
 function Modal({newSong, newArtist, onClick, onChangeSong, onChangeArtist}) {
   return (
     <Popup
-      trigger={<button className="create-btn"> Create a new post <IoIosAddCircle/></button>}
+      trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
       modal
       nested
     >

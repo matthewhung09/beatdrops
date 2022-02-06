@@ -11,7 +11,7 @@ const data = [
         'song': 'Denim Jacket',
         'artist': 'Sammy Rae & The Friends',
         'timePosted': 100,
-        'likes': 22,
+        'likes': 2,
         'liked': false,
         'url': 'google.com'
     },
@@ -27,7 +27,7 @@ const data = [
         'song': 'Denim Jacket',
         'artist': 'Sammy Rae & The Friends',
         'timePosted': 60,
-        'likes': 53,
+        'likes': 5,
         'liked': false,
         'url': 'google.com'
     },

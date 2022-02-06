@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import '../Dropdown/Dropdown.css';
-import { BsFillCaretDownFill } from "react-icons/bs"; 
+import { BsFilterCircleFill } from "react-icons/bs"; 
 
 function Dropdown({ selected, setSelected }) {
     const [isActive, setIsActive] = useState(false);
@@ -11,7 +11,7 @@ function Dropdown({ selected, setSelected }) {
                 onClick={(e) => setIsActive(!isActive)}
             >
                 {selected}
-                <BsFillCaretDownFill></BsFillCaretDownFill>
+                <BsFilterCircleFill/>
                 {/* <span className="fas fa-caret-down"></span> */}
             </div>
             {isActive && (
