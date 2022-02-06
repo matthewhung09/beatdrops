@@ -8,3 +8,17 @@
   margin-top: 2em;
   /* background-color: antiquewhite; */
 }
+
+.home-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aliceblue; */
+  margin-bottom: 2em;
+  margin-top: 0em;
+}
+
+.home-actions > * {
+  margin: 0 0.5em;
+}

@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .button {
@@ -22,21 +25,23 @@
   border: 0.2em solid #ffffff !important;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
-}
-
 .create-btn {
   display: flex;
   flex-direction: row;
-  padding-left: 1.2em;
-  background-color: black;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  font-weight: bold;
+  color: #333;
   cursor: pointer;
   align-items: center;
+  border-radius: 0;
+  font-size: small;
+  font-weight: bold;
+  width: 13em;
+  padding: 0.8em 0.2em 0.8em 0.8em;
+  /* padding-bottom: 1em;
+  padding-left: 1.2em; */
 }
 
 .create-btn > * {

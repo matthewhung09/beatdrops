@@ -1,24 +1,22 @@
 import styled from 'styled-components';
-import React from "react";
+import { React, useState } from "react";
 import './App.css';
-import Home from './components/Home/Home';
-import data from './data.js';
 import 'reactjs-popup/dist/index.css';
 import './popup.css';
-import Popup from 'reactjs-popup';
-import PostForm from './components/PostForm/PostForm';
+import Home from './components/Home/Home';
+import data from './data.js';
 import axios from 'axios';
-import { IoIosAddCircle } from "react-icons/io";
 
 const Header = styled.div`
   text-align: center;
-  padding: 1.2em;
+  margin-top: 2em;
+  line-height: 1.5em;
 `;
 
 function App() {
-  const [newSong, setNewSong] = React.useState('');
-  const [newArtist, setNewArtist] = React.useState('');
-  const [postList, addNewPost] = React.useState(data);
+  const [newSong, setNewSong] = useState('');
+  const [newArtist, setNewArtist] = useState('');
+  const [postList, addNewPost] = useState(data);
 
   function onChangeSong(e) {
     setNewSong(e.target.value);
@@ -61,40 +59,20 @@ function App() {
   }
 
   return (
-    <div className='app-container'>
-      {/* ------- Header ------- */}
+    <div className='App'>
       <Header>
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
-
-      {/* ------- New post popup ------- */}
-      <Popup
-        trigger={<button className="create-btn"> Create a new post <IoIosAddCircle></IoIosAddCircle></button>}
-        modal
-        nested
-      >
-        {close => (
-          <div className="modal">
-            <button className="close" onClick={close}>
-              &times;
-            </button>
-            <div className="header"> Post a song </div>
-            <div className="content">
-                <PostForm
-                  newSong={newSong}
-                  newArtist={newArtist}
-                  onClick={onClick}
-                  onChangeSong={onChangeSong}
-                  onChangeArtist={onChangeArtist}
-                />
-            </div>
-          </div>
-        )}
-      </Popup>
-
-      {/* ------- All posts ------- */}
-      <Home posts={postList}/>
+      <Home posts={
+          newSong, 
+          newArtist, 
+          onClick, 
+          onChangeSong, 
+          onChangeArtist, 
+          postList
+        }
+      />
     </div>
   );
 }
