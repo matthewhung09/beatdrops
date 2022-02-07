@@ -122,4 +122,13 @@ app.post('/posts', async (req, res) => {
         res.status(500).end();
 });
 
+app.patch('/like/:id', async (req, res) => {
+    const id = req.params['id'];
+    const result = await postServices.likePost(id);
+    if (result)
+        res.status(201).end();
+    else {
+        res.status(404).send('Resource not found.');
+    }
+});
 
