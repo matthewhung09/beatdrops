@@ -2,9 +2,9 @@
   margin-right: 2em;
 }
 
-img {
+/* img {
   border-radius: 50%;
-}
+} */
 
 h2 {
   font-size: medium;
@@ -44,6 +44,7 @@ button {
 
 .spotify {
   background-color: black;
+  padding-right: 1.3em;
 }
 
 .likes > *,
