@@ -40,10 +40,20 @@ async function addPost(post){
     }   
 }
 
+async function likePost(id){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    try{
+        return await postModel.findByIdAndUpdate(id, { $inc: { likes: 1 }});
+    }catch(error) {
+        console.log(error);
+        return false;
+    }
+}
+
 async function findPostById(id){
     const postModel = getDbConnection().model("Post", PostSchema);    
     try{
-        return await userModel.findById(id);
+        return await postModel.findById(id);
     }catch(error) {
         console.log(error);
         return undefined;
@@ -62,3 +72,4 @@ async function findPostByArtist(artist){
 
 exports.getPosts = getPosts;
 exports.addPost = addPost;
+exports.likePost = likePost;
