@@ -5,7 +5,7 @@ import album1 from '../../images/denim-jacket.png';
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 
-function Post({song, artist, timePosted, likes, liked, url}) {
+function Post({song, artist, timePosted, likes, liked, url, album}) {
   const [isLiked, setLiked] = React.useState(liked);
   const [numLikes, setNumLikes] = React.useState(likes);
 
@@ -30,7 +30,7 @@ function Post({song, artist, timePosted, likes, liked, url}) {
     <div className='card'>
       <div className='left-wrapper'>
         <div className='image'>
-          <img src={album1} alt='album1'/>
+          <img src={album} alt='album1'/>
         </div>
         <div className='description'>
           <h2>{song}</h2>

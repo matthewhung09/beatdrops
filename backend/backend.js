@@ -81,12 +81,14 @@ async function getPostData(song, artist) {
         const song_artist = response.data.tracks.items[0].artists[0].name;
 
         console.log(response.data.tracks.items[0].album.images); // [0] for 640x640, [1] for 300x300, [2] for 64x64
-
+        const album_cover = response.data.tracks.items[0].album.images[2].url;
+        console.log(album_cover);
         const new_post = {
             'title': song_name,
             'artist': song_artist,
             'likes': 0,
-            'url': song_url
+            'url': song_url,
+            'album': album_cover 
         };
         console.log(new_post);
         return new_post;

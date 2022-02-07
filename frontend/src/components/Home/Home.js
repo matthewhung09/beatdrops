@@ -12,6 +12,7 @@ function Home({posts}) {
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}
+                album={post.album}
             />
         )}
     </div>

@@ -16,6 +16,11 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+  },
+  album: {
+    type: String,
+    required: true,
+    trime: true,
   }
 }, {collection : 'posts_list', timestamps: true});
 
