@@ -14,10 +14,10 @@ function getDbConnection() {
   }
 
   async function getPosts(title, artist){
-    const userModel = getDbConnection().model("Post", PostSchema);
+    const postModel = getDbConnection().model("Post", PostSchema);
     let result;
     if(title === undefined && artist === undefined){
-        result = await userModel.find();
+        result = await postModel.find();
     }
     else if(title && !artist){
         result = findPostByTitle(title);
@@ -26,6 +26,16 @@ function getDbConnection() {
         result = findPostByArtist(artist)
     }
     return result;  
+}
+
+async function getMostPopular(){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find().sort({likes: -1});
+}
+
+async function getMostRecent(){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find().sort({createdAt: -1});
 }
 
 async function addPost(post){
@@ -44,6 +54,16 @@ async function likePost(id){
     const postModel = getDbConnection().model("Post", PostSchema);
     try{
         return await postModel.findByIdAndUpdate(id, { $inc: { likes: 1 }});
+    }catch(error) {
+        console.log(error);
+        return false;
+    }
+}
+
+async function unlikePost(id){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    try{
+        return await postModel.findByIdAndUpdate(id, { $inc: { likes: -1 }});
     }catch(error) {
         console.log(error);
         return false;
@@ -73,3 +93,7 @@ async function findPostByArtist(artist){
 exports.getPosts = getPosts;
 exports.addPost = addPost;
 exports.likePost = likePost;
+exports.unlikePost = unlikePost;
+exports.findPostById = findPostById;
+exports.getMostPopular = getMostPopular;
+exports.getMostRecent = getMostRecent;

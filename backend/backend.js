@@ -113,6 +113,26 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+app.get('/like', async (req, res) => {
+    try {
+        const result = await postServices.getMostPopular();
+        res.send({post_list: result});         
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('An error ocurred in the server.');
+    }
+});
+
+app.get('/date', async (req, res) => {
+    try {
+        const result = await postServices.getMostRecent();
+        res.send({post_list: result});         
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('An error ocurred in the server.');
+    }
+});
+
 app.post('/posts', async (req, res) => {
     const new_Post = req.body;
     const savedPost = await postServices.addPost(new_Post);
@@ -125,6 +145,16 @@ app.post('/posts', async (req, res) => {
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
     const result = await postServices.likePost(id);
+    if (result)
+        res.status(201).end();
+    else {
+        res.status(404).send('Resource not found.');
+    }
+});
+
+app.patch('/unlike/:id', async (req, res) => {
+    const id = req.params['id'];
+    const result = await postServices.unlikePost(id);
     if (result)
         res.status(201).end();
     else {
