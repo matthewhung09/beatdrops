@@ -30,12 +30,12 @@ function getDbConnection() {
 
 async function getMostPopular(){
     const postModel = getDbConnection().model("Post", PostSchema);
-    return await postModel.find().sort({likes: -1});
+    return await postModel.find().sort({likes: -1}).select("title artist likes -_id");
 }
 
 async function getMostRecentToday(){
     const postModel = getDbConnection().model("Post", PostSchema);
-    return await postModel.find({createdAT: {$gte: new Date()}}).sort({createdAt: -1});
+    return await postModel.find({createdAT: {$gte: new Date()}}).sort({createdAt: -1}).select("title artist likes -_id");
 }
 
 async function addPost(post){
