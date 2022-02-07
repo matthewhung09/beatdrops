@@ -18,19 +18,6 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toStrin
 app.use(cors());
 app.use(express.json());
 
-// const posts = {
-//     post_list:
-//     [
-//         {
-//             'song': 'Denim Jacket',
-//             'artist': 'Sammy Rae & The Friends',
-//             'timePosted': 19,
-//             'likes': 5,
-//             'url': 'google.com'
-//         },
-//     ]
-// }
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -48,7 +35,7 @@ app.post('/create', async (req, res) => {
     // console.log(req.body);
     const new_post = await getPostData(req.body.song, req.body.artist)
     const savedPost = await postServices.addPost(new_post);
-
+    
     if (savedPost) 
         res.status(201).send(savedPost);
     else
@@ -79,10 +66,8 @@ async function getPostData(song, artist) {
         // Get actual song name and artist in case of mispellings/typos
         const song_name = response.data.tracks.items[0].name; 
         const song_artist = response.data.tracks.items[0].artists[0].name;
-
-        console.log(response.data.tracks.items[0].album.images); // [0] for 640x640, [1] for 300x300, [2] for 64x64
         const album_cover = response.data.tracks.items[0].album.images[2].url;
-        console.log(album_cover);
+
         const new_post = {
             'title': song_name,
             'artist': song_artist,
@@ -108,7 +93,6 @@ async function getAccessToken() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-        // console.log(response.data.access_token);
         return response.data.access_token;
     }
     catch(error) {

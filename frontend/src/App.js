@@ -118,27 +118,17 @@ function App() {
         </div>
         <div className='posts'>
           {filtered.map((post) => 
-            // ----- for testing -----
-            // <div>
-            //   {post.likes} 
-            //   <Post 
-            //       song={post.song}
-            //       artist={post.artist}
-            //       timePosted={post.timePosted}
-            //       likes={post.likes}
-            //       liked={post.liked}
-            //       url={post.url}
-            //   />
-            // </div>
-            <Post 
-                song={post.title}
-                artist={post.artist}
-                timePosted={post.timePosted}
-                likes={post.likes}
-                liked={post.liked}
-                url={post.url}
-                album={post.album}
-            />
+            <div>
+              <Post 
+                  song={post.title}
+                  artist={post.artist}
+                  timePosted={(post.createdAt)}
+                  likes={post.likes}
+                  liked={post.liked}
+                  url={post.url}
+                  album={post.album}
+              />
+            </div>
           )}
         </div>
       </div>
