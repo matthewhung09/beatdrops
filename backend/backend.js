@@ -125,7 +125,7 @@ app.get('/like', async (req, res) => {
 
 app.get('/date', async (req, res) => {
     try {
-        const result = await postServices.getMostRecent();
+        const result = await postServices.getMostRecentToday();
         res.send({post_list: result});         
     } catch (error) {
         console.log(error);

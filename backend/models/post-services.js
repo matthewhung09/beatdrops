@@ -33,9 +33,9 @@ async function getMostPopular(){
     return await postModel.find().sort({likes: -1});
 }
 
-async function getMostRecent(){
+async function getMostRecentToday(){
     const postModel = getDbConnection().model("Post", PostSchema);
-    return await postModel.find().sort({createdAt: -1});
+    return await postModel.find({createdAT: {$gte: new Date()}}).sort({createdAt: -1});
 }
 
 async function addPost(post){
@@ -96,4 +96,4 @@ exports.likePost = likePost;
 exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
 exports.getMostPopular = getMostPopular;
-exports.getMostRecent = getMostRecent;
+exports.getMostRecentToday = getMostRecentToday;
