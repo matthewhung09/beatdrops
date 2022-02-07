@@ -1,24 +1,46 @@
 import styled from 'styled-components';
-import React from "react";
-import './App.css';
-import Home from './components/Home/Home';
-import data from './data.js';
+import { React, useState, useEffect } from "react";
+import { IoIosAddCircle } from 'react-icons/io';
 import 'reactjs-popup/dist/index.css';
-import './popup.css';
+import './App.css';
 import Popup from 'reactjs-popup';
+import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';
+import Dropdown from './components/Dropdown/Dropdown';
+import data from './data.js';
 import axios from 'axios';
-import { IoIosAddCircle } from "react-icons/io";
 
 const Header = styled.div`
   text-align: center;
-  padding: 1.2em;
+  margin-top: 2em;
+  line-height: 1.5em;
 `;
 
 function App() {
-  const [newSong, setNewSong] = React.useState('');
-  const [newArtist, setNewArtist] = React.useState('');
-  const [postList, addNewPost] = React.useState(data);
+  const [newSong, setNewSong] = useState('');
+  const [newArtist, setNewArtist] = useState('');
+  const [postList, setPosts] = useState([]);
+  // filter
+  const [selected, setSelected] = useState('Default');
+  const [filtered, setFilter] = useState(postList);
+
+  useEffect(() => {
+    getAllPosts().then( result => {
+       if (result)
+          setPosts(result);
+     });
+  }, [] );
+
+  async function getAllPosts() {
+    try {
+      const response = await axios.get('http://localhost:5000/posts');
+      console.log(response.data.post_list);
+      return response.data.post_list;
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   function onChangeSong(e) {
     setNewSong(e.target.value);
@@ -28,20 +50,24 @@ function App() {
     setNewArtist(e.target.value);
   }
 
+  useEffect(() => {
+    if (selected === 'Likes') {
+      setFilter([...postList].sort((a, b) => a.likes - b.likes));
+    }
+    else if (selected === 'Recent') {
+      setFilter([...postList].sort((a, b) => a.timePosted - b.timePosted));
+    }
+    else {
+      setFilter(postList);
+    }
+    console.log('in useEffect');
+  }, [selected, postList]);
+
   function onClick() {
     makePostCall().then(result => {
       if (result && result.status === 201) {
-        let newPostList = postList.concat(
-          {
-            'song': newSong, 
-            'artist': newArtist,
-            'timePosted': 100,
-            'likes': 5,
-            'url': result.data
-          }
-        );
-        addNewPost(newPostList);
-        console.log(postList);
+        setPosts([...postList, result.data]);
+        // console.log(postList);
       }
     }); 
   }
@@ -50,7 +76,7 @@ function App() {
     try {
       const response = await axios.post('http://localhost:5000/create', {
         'song': newSong,
-        'artist': newArtist
+        'artist': newArtist,
       });
       return response;
     }
@@ -61,40 +87,61 @@ function App() {
   }
 
   return (
-    <div className='app-container'>
-      {/* ------- Header ------- */}
+    <div className='App'>
       <Header>
-        <h1>Team F</h1>
+        <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
-
-      {/* ------- New post popup ------- */}
-      <Popup
-        trigger={<button className="create-btn"> Create a new post <IoIosAddCircle></IoIosAddCircle></button>}
-        modal
-        nested
-      >
-        {close => (
-          <div className="modal">
-            <button className="close" onClick={close}>
-              &times;
-            </button>
-            <div className="header"> Post a song </div>
-            <div className="content">
-                <PostForm
-                  newSong={newSong}
-                  newArtist={newArtist}
-                  onClick={onClick}
-                  onChangeSong={onChangeSong}
-                  onChangeArtist={onChangeArtist}
-                />
-            </div>
-          </div>
-        )}
-      </Popup>
-
-      {/* ------- All posts ------- */}
-      <Home posts={postList}/>
+      <div className='home'>
+        <div className='home-actions'>
+          <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
+          <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
+          >
+            {close => (
+              <div className="modal">
+                <button className="close" onClick={close}>
+                  &times;
+                </button>
+                <div className="header"> Post a song </div>
+                <div className="content">
+                    <PostForm
+                      newSong={newSong}
+                      newArtist={newArtist}
+                      onClick={onClick}
+                      onChangeSong={onChangeSong}
+                      onChangeArtist={onChangeArtist}
+                    />
+                </div>
+              </div>
+            )}
+          </Popup>
+        </div>
+        <div className='posts'>
+          {filtered.map((post) => 
+            // ----- for testing -----
+            // <div>
+            //   {post.likes} 
+            //   <Post 
+            //       song={post.song}
+            //       artist={post.artist}
+            //       timePosted={post.timePosted}
+            //       likes={post.likes}
+            //       liked={post.liked}
+            //       url={post.url}
+            //   />
+            // </div>
+            <Post 
+                song={post.title}
+                artist={post.artist}
+                timePosted={post.timePosted}
+                likes={post.likes}
+                liked={post.liked}
+                url={post.url}
+                album={post.album}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -11,9 +11,17 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  likes: {type: Number, required: true,},
-  //location: {type: String},
-  //spotifyUrl: {type: String, required: true,},
+  likes: {type: Number},
+  url: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  album: {
+    type: String,
+    required: true,
+    trime: true,
+  }
 }, {collection : 'posts_list', timestamps: true});
 
 module.exports = PostSchema;
