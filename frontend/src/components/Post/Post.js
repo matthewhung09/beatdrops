@@ -14,7 +14,10 @@ function Post({song, artist, timePosted, likes, liked, url, updateLikes}) {
 				<div className='description'>
 					<h2>{song}</h2>
 					<h3>{artist}</h3>
-					<p>Posted {timePosted} hours ago</p>
+					{timePosted < 1 ? <p>Posted less than an hour ago</p>
+						: timePosted === 1 ? <p>Posted an hour ago</p>
+					 	: <p>Posted {timePosted} hours ago</p>
+					}
 				</div>
 			</div>
 			<div className='action'>
