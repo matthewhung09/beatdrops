@@ -6,8 +6,7 @@ const data = [
         'likes': 4,
         'liked': false,
         'url': 'google.com',
-        'id': 'alkdf',
-        'index': 0
+        'id': 'alkdf'
     },
     {
         'song': 'Denim Jacket',
@@ -16,8 +15,7 @@ const data = [
         'likes': 4,
         'liked': false,
         'url': 'google.com',
-        'id': 'alkdfasiedf',
-        'index': 0
+        'id': 'alkdfasiedf'
     },
     {
         'song': 'Denim Jacket',
@@ -26,8 +24,7 @@ const data = [
         'likes': 2,
         'liked': false,
         'url': 'google.com',
-        'id': 'asdfalkdf',
-        'index': 0
+        'id': 'asdfalkdf'
     },
     {
         'song': 'Denim Jacket',
@@ -36,8 +33,7 @@ const data = [
         'likes': 5,
         'liked': false,
         'url': 'google.com',
-        'id': 'aasdlkdsdff',
-        'index': 0
+        'id': 'aasdlkdsdff'
     },
     {
         'song': 'Denim Jacket',
@@ -46,8 +42,7 @@ const data = [
         'likes': 1,
         'liked': false,
         'url': 'google.com',
-        'id': 'alkdfasdfop',
-        'index': 0
+        'id': 'alkdfasdfop'
     }
 ]
 
