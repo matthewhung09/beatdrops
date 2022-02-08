@@ -20,6 +20,7 @@ body {
   font-size: small;
   width: 13em;
   padding-left: 0.9em;
+  border-radius: 0.2em;
 }
 
 .dropdown .dropdown-content {
@@ -33,12 +34,18 @@ body {
   color: #333;
   width: 13.7em;
   font-size: small;
+  border-radius: 0.2em;
 }
 
 .dropdown .dropdown-content .dropdown-item {
   padding: 10px;
   cursor: pointer;
   transition: all 0.2s;
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.dropdown .dropdown-content .dropdown-item:last-child {
+  border-bottom: none;
 }
 
 .dropdown .dropdown-content .dropdown-item:hover {
