@@ -1,6 +1,6 @@
 import { BiLike } from "react-icons/bi";
 import { BsSpotify } from "react-icons/bs";
-import album1 from '../../images/denim-jacket.png';
+// import album1 from '../../images/denim-jacket.png';
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 

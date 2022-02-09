@@ -18,19 +18,6 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toStrin
 app.use(cors());
 app.use(express.json());
 
-// const posts = {
-//     post_list:
-//     [
-//         {
-//             'song': 'Denim Jacket',
-//             'artist': 'Sammy Rae & The Friends',
-//             'timePosted': 19,
-//             'likes': 5,
-//             'url': 'google.com'
-//         },
-//     ]
-// }
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -46,18 +33,22 @@ app.get('/', (req, res) => {
 
 app.post('/create', async (req, res) => {
     // console.log(req.body);
-    const song_title = req.body.song;
-    const artist = req.body.artist;
+    const new_post = await getPostData(req.body.song, req.body.artist)
+    const savedPost = await postServices.addPost(new_post);
+    
+    if (savedPost) 
+        res.status(201).send(savedPost);
+    else
+        res.status(500).end();
+});
 
-    // console.log(song_title);
-    // console.log(artist);
-
+async function getPostData(song, artist) {
     const data = {
         'type': 'track',
         'limit': '10'
     }
     // Format querystring - should probably find a better way to do this
-    const first_part = 'q=track:' + song_title.replaceAll(' ', '%20') + '%20artist:' + artist.replaceAll(' ', '%20');
+    const first_part = 'q=track:' + song.replaceAll(' ', '%20') + '%20artist:' + artist.replaceAll(' ', '%20');
     const second_part = new URLSearchParams(data).toString();
     const queryparam = first_part + '&' + second_part;
 
@@ -73,16 +64,25 @@ app.post('/create', async (req, res) => {
         const song_url = response.data.tracks.items[0].external_urls.spotify;
         
         // Get actual song name and artist in case of mispellings/typos
-        // console.log(response.data.tracks.items[0].name); 
-        // console.log(response.data.tracks.items[0].artists[0].name);
+        const song_name = response.data.tracks.items[0].name; 
+        const song_artist = response.data.tracks.items[0].artists[0].name;
+        const album_cover = response.data.tracks.items[0].album.images[2].url;
 
-        return res.status(201).send(song_url);
+        const new_post = {
+            'title': song_name,
+            'artist': song_artist,
+            'likes': 0,
+            'url': song_url,
+            'album': album_cover 
+        };
+        console.log(new_post);
+        return new_post;
     }
     catch(error) {
         console.log(error);
     }
 
-});
+}
 
 async function getAccessToken() {
     try {
@@ -93,7 +93,6 @@ async function getAccessToken() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-        // console.log(response.data.access_token);
         return response.data.access_token;
     }
     catch(error) {
@@ -113,6 +112,26 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+app.get('/like', async (req, res) => {
+    try {
+        const result = await postServices.getMostPopular();
+        res.send({post_list: result});         
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('An error ocurred in the server.');
+    }
+});
+
+app.get('/date', async (req, res) => {
+    try {
+        const result = await postServices.getMostRecentToday();
+        res.send({post_list: result});         
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('An error ocurred in the server.');
+    }
+});
+
 app.post('/posts', async (req, res) => {
     const new_Post = req.body;
     const savedPost = await postServices.addPost(new_Post);
@@ -122,4 +141,23 @@ app.post('/posts', async (req, res) => {
         res.status(500).end();
 });
 
+app.patch('/like/:id', async (req, res) => {
+    const id = req.params['id'];
+    const result = await postServices.likePost(id);
+    if (result)
+        res.status(201).end();
+    else {
+        res.status(404).send('Resource not found.');
+    }
+});
+
+app.patch('/unlike/:id', async (req, res) => {
+    const id = req.params['id'];
+    const result = await postServices.unlikePost(id);
+    if (result)
+        res.status(201).end();
+    else {
+        res.status(404).send('Resource not found.');
+    }
+});
 

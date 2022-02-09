@@ -17,13 +17,30 @@ const Header = styled.div`
 `;
 
 function App() {
-  // ------ post creation ------ 
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
-  const [postList, addNewPost] = useState(data);
-  // ------ filter ------ 
+  const [postList, setPosts] = useState([]);
+  // filter
   const [selected, setSelected] = useState('Default');
   const [filtered, setFilter] = useState(postList);
+
+  useEffect(() => {
+    getAllPosts().then( result => {
+       if (result)
+          setPosts(result);
+     });
+  }, [] );
+
+  async function getAllPosts() {
+    try {
+      const response = await axios.get('http://localhost:5000/posts');
+      console.log(response.data.post_list);
+      return response.data.post_list;
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   function onChangeSong(e) {
     setNewSong(e.target.value);
@@ -49,17 +66,8 @@ function App() {
   function onClick() {
     makePostCall().then(result => {
       if (result && result.status === 201) {
-        let newPost = {
-          'song': newSong, 
-          'artist': newArtist,
-          'timePosted': 100,
-          'likes': 5,
-          'liked': false,
-          'url': result.data
-        };
-        let newPostList = [newPost].concat(postList);
-        addNewPost(newPostList);
-        console.log(postList);
+        setPosts([...postList, result.data]);
+        // console.log(postList);
       }
     }); 
   }
@@ -68,7 +76,7 @@ function App() {
     try {
       const response = await axios.post('http://localhost:5000/create', {
         'song': newSong,
-        'artist': newArtist
+        'artist': newArtist,
       });
       return response;
     }
@@ -119,6 +127,7 @@ function App() {
           </Popup>
         </div>
         <div className='posts'>
+
           {filtered.map((post, index) => 
             // ----- for testing -----
             // <div>
@@ -135,7 +144,7 @@ function App() {
             <Post key={index}
                 song={post.song}
                 artist={post.artist}
-                timePosted={post.timePosted}
+                timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}

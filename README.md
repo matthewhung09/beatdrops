@@ -16,3 +16,9 @@ Only do this if we have already discussed, otherwise create a pull request.
 Make sure all your code is pushed to your branch\
 `git checkout main`\
 `git merge branch-name`
+
+## Contributors:
+Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
+
+## Storyboard:
+https://www.figma.com/file/rHUc0rkb2ESU2wNWrxs2Vy/Team-F---308?node-id=0%3A1

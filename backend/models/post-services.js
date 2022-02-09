@@ -14,10 +14,10 @@ function getDbConnection() {
   }
 
   async function getPosts(title, artist){
-    const userModel = getDbConnection().model("Post", PostSchema);
+    const postModel = getDbConnection().model("Post", PostSchema);
     let result;
     if(title === undefined && artist === undefined){
-        result = await userModel.find();
+        result = await postModel.find();
     }
     else if(title && !artist){
         result = findPostByTitle(title);
@@ -26,6 +26,16 @@ function getDbConnection() {
         result = findPostByArtist(artist)
     }
     return result;  
+}
+
+async function getMostPopular(){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find().sort({likes: -1}).select("title artist likes -_id");
+}
+
+async function getMostRecentToday(){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find({createdAT: {$gte: new Date()}}).sort({createdAt: -1}).select("title artist likes -_id");
 }
 
 async function addPost(post){
@@ -40,10 +50,30 @@ async function addPost(post){
     }   
 }
 
+async function likePost(id){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    try{
+        return await postModel.findByIdAndUpdate(id, { $inc: { likes: 1 }});
+    }catch(error) {
+        console.log(error);
+        return false;
+    }
+}
+
+async function unlikePost(id){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    try{
+        return await postModel.findByIdAndUpdate(id, { $inc: { likes: -1 }});
+    }catch(error) {
+        console.log(error);
+        return false;
+    }
+}
+
 async function findPostById(id){
     const postModel = getDbConnection().model("Post", PostSchema);    
     try{
-        return await userModel.findById(id);
+        return await postModel.findById(id);
     }catch(error) {
         console.log(error);
         return undefined;
@@ -62,3 +92,8 @@ async function findPostByArtist(artist){
 
 exports.getPosts = getPosts;
 exports.addPost = addPost;
+exports.likePost = likePost;
+exports.unlikePost = unlikePost;
+exports.findPostById = findPostById;
+exports.getMostPopular = getMostPopular;
+exports.getMostRecentToday = getMostRecentToday;
