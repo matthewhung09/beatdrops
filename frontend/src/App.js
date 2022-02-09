@@ -52,16 +52,16 @@ function App() {
 
   useEffect(() => {
     if (selected === 'Likes') {
-      setFilter([...postList].sort((a, b) => a.likes - b.likes));
+      setFilter([...filtered].sort((a, b) => b.likes - a.likes));
     }
     else if (selected === 'Recent') {
-      setFilter([...postList].sort((a, b) => a.timePosted - b.timePosted));
+      setFilter([...filtered].sort((a, b) => a.timePosted - b.timePosted));
     }
     else {
-      setFilter(postList);
+      setFilter(filtered);
     }
     console.log('in useEffect');
-  }, [selected, postList]);
+  }, [selected, filtered]);
 
   function onClick() {
     makePostCall().then(result => {
@@ -84,6 +84,16 @@ function App() {
       console.log(error);
       return false;
     }
+  }
+
+  function updateLikes(id) {
+    let newArr = filtered.map((elem) => {
+      if (elem.id === id) {
+        elem.liked = !elem.liked;
+      }
+      return elem;
+    });
+    setFilter(newArr);
   }
 
   return (
@@ -117,18 +127,29 @@ function App() {
           </Popup>
         </div>
         <div className='posts'>
-          {filtered.map((post) => 
-            <div>
-              <Post 
-                  song={post.title}
-                  artist={post.artist}
-                  timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
-                  likes={post.likes}
-                  liked={post.liked}
-                  url={post.url}
-                  album={post.album}
-              />
-            </div>
+
+          {filtered.map((post, index) => 
+            // ----- for testing -----
+            // <div>
+            //   {post.likes} 
+            //   <Post 
+            //       song={post.song}
+            //       artist={post.artist}
+            //       timePosted={post.timePosted}
+            //       likes={post.likes}
+            //       liked={post.liked}
+            //       url={post.url}
+            //   />
+            // </div>
+            <Post key={index}
+                song={post.song}
+                artist={post.artist}
+                timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                likes={post.likes}
+                liked={post.liked}
+                url={post.url}
+                updateLikes={() => updateLikes(post.id)}
+            />
           )}
         </div>
       </div>
