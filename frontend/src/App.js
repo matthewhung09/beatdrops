@@ -122,7 +122,7 @@ function App() {
               <Post 
                   song={post.title}
                   artist={post.artist}
-                  timePosted={(post.createdAt)}
+                  timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
                   likes={post.likes}
                   liked={post.liked}
                   url={post.url}
