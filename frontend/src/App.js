@@ -23,11 +23,14 @@ function App() {
   // filter
   const [selected, setSelected] = useState('Default');
   const [filtered, setFilter] = useState(postList);
-
+  
   useEffect(() => {
     getAllPosts().then( result => {
-       if (result)
+       if (result) {
+          console.log(result);
           setPosts(result);
+          console.log(postList);
+       }
      });
   }, [] );
 
@@ -51,22 +54,23 @@ function App() {
   }
 
   useEffect(() => {
+    console.log(postList);
     if (selected === 'Likes') {
-      setFilter([...filtered].sort((a, b) => b.likes - a.likes));
+      setFilter([...postList].sort((a, b) => b.likes - a.likes));
     }
     else if (selected === 'Recent') {
-      setFilter([...filtered].sort((a, b) => a.timePosted - b.timePosted));
+      setFilter([...postList].sort((a, b) => a.timePosted - b.timePosted));
     }
     else {
-      setFilter(filtered);
+      setFilter(postList);
     }
     console.log('in useEffect');
-  }, [selected, filtered]);
+  }, [selected, postList]);
 
   function onClick() {
     makePostCall().then(result => {
       if (result && result.status === 201) {
-        setPosts([...postList, result.data]);
+        setPosts([result.data, ...postList]);
         // console.log(postList);
       }
     }); 
@@ -127,7 +131,6 @@ function App() {
           </Popup>
         </div>
         <div className='posts'>
-
           {filtered.map((post, index) => 
             // ----- for testing -----
             // <div>
@@ -142,13 +145,14 @@ function App() {
             //   />
             // </div>
             <Post key={index}
-                song={post.song}
+                song={post.title}
                 artist={post.artist}
                 timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}
                 updateLikes={() => updateLikes(post.id)}
+                album={post.album}
             />
           )}
         </div>

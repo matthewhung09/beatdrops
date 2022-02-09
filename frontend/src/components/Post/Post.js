@@ -4,12 +4,12 @@ import { BsSpotify } from "react-icons/bs";
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 
-function Post({song, artist, timePosted, likes, liked, url, updateLikes}) {
+function Post({song, artist, timePosted, likes, liked, url, updateLikes, album}) {
 	return (
 		<div className='card'>
 			<div className='left-wrapper'>
 				<div className='image'>
-					<img style={{height: '100px', width: '100px'}} src={album1} alt='album1'/>
+					<img style={{height: '100px', width: '100px'}} src={album} alt='album'/>
 				</div>
 				<div className='description'>
 					<h2>{song}</h2>
