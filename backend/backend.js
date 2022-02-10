@@ -72,6 +72,7 @@ async function getPostData(song, artist) {
             'title': song_name,
             'artist': song_artist,
             'likes': 0,
+            'liked': false,
             'url': song_url,
             'album': album_cover 
         };
@@ -143,21 +144,26 @@ app.post('/posts', async (req, res) => {
 
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
-    const result = await postServices.likePost(id);
+    const liked_status = req.body.liked;
+
+    const result = await postServices.likePost(id, liked_status);
+
+    console.log(result);
     if (result)
-        res.status(201).end();
+        res.status(201).send(result);
     else {
         res.status(404).send('Resource not found.');
     }
 });
 
-app.patch('/unlike/:id', async (req, res) => {
-    const id = req.params['id'];
-    const result = await postServices.unlikePost(id);
-    if (result)
-        res.status(201).end();
-    else {
-        res.status(404).send('Resource not found.');
-    }
-});
+// app.patch('/unlike/:id', async (req, res) => {
+//     const id = req.params['id'];
+//     const result = await postServices.unlikePost(id);
+//     console.log(result);
+//     if (result)
+//         res.status(201).send(result);
+//     else {
+//         res.status(404).send('Resource not found.');
+//     }
+// });
 

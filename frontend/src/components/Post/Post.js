@@ -27,7 +27,7 @@ function Post({song, artist, timePosted, likes, liked, url, updateLikes, album})
 					</button>
 				) : (
 					<button className='likes' onClick={updateLikes} style={{border:'1px solid #0065B8', color: '#0065B8', backgroundColor: '#DCEFFE'}}> 
-						<BiLike/>{likes+1}
+						<BiLike/>{likes}
 					</button>
 				)}
 				<button onClick={() => {window.open(url, "_blank")}} className='spotify' type="submit">

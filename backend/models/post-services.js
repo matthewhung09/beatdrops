@@ -50,25 +50,46 @@ async function addPost(post){
     }   
 }
 
-async function likePost(id){
+async function likePost(id, liked_status){
     const postModel = getDbConnection().model("Post", PostSchema);
     try{
-        return await postModel.findByIdAndUpdate(id, { $inc: { likes: 1 }});
+        if (!liked_status) {
+            return await postModel.findByIdAndUpdate(id, { 
+                $inc: {likes: 1}, 
+                $set: {liked: true}, 
+            },
+                {new: true}
+            );
+        }
+        else {
+            return await postModel.findByIdAndUpdate(id, { 
+                $inc: {likes: -1}, 
+                $set: {liked: false}, 
+            },
+                {new: true}
+            );
+        }
+        
     }catch(error) {
         console.log(error);
         return false;
     }
 }
 
-async function unlikePost(id){
-    const postModel = getDbConnection().model("Post", PostSchema);
-    try{
-        return await postModel.findByIdAndUpdate(id, { $inc: { likes: -1 }});
-    }catch(error) {
-        console.log(error);
-        return false;
-    }
-}
+// async function unlikePost(id){
+//     const postModel = getDbConnection().model("Post", PostSchema);
+//     try{
+//         return await postModel.findByIdAndUpdate(id, { 
+//             $inc: { likes: -1 }, 
+//             $set: {liked: false}, 
+//         },
+//             {new: true}
+//         );
+//     }catch(error) {
+//         console.log(error);
+//         return false;
+//     }
+// }
 
 async function findPostById(id){
     const postModel = getDbConnection().model("Post", PostSchema);    
@@ -93,7 +114,7 @@ async function findPostByArtist(artist){
 exports.getPosts = getPosts;
 exports.addPost = addPost;
 exports.likePost = likePost;
-exports.unlikePost = unlikePost;
+// exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
 exports.getMostPopular = getMostPopular;
 exports.getMostRecentToday = getMostRecentToday;

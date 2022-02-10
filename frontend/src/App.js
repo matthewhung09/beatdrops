@@ -19,19 +19,18 @@ const Header = styled.div`
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
-  const [postList, setPosts] = useState([]);
+  const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
   // filter
   const [selected, setSelected] = useState('Default');
-  const [filtered, setFilter] = useState(postList);
+  const [filtered, setFilter] = useState(postList); // used for filtering when toggling dropdown
   
   useEffect(() => {
     getAllPosts().then( result => {
-       if (result) {
-          console.log(result);
-          setPosts(result);
-          console.log(postList);
-       }
-     });
+      if (result) {
+        setPosts(result);
+        console.log('in useEffect postList: ' + filtered); 
+      }
+    });
   }, [] );
 
   async function getAllPosts() {
@@ -53,13 +52,23 @@ function App() {
     setNewArtist(e.target.value);
   }
 
+  // useEffect(() => {
+  //   // console.log(postList);
+  //   // console.log(filtered);
+  //   if (selected === 'Default') {
+  //     setFilter(postList);
+  //   }
+  // }, []);
+
+
   useEffect(() => {
-    console.log(postList);
+    // console.log(postList);
+    // console.log(filtered);
     if (selected === 'Likes') {
       setFilter([...postList].sort((a, b) => b.likes - a.likes));
     }
     else if (selected === 'Recent') {
-      setFilter([...postList].sort((a, b) => a.timePosted - b.timePosted));
+      setFilter([...postList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     }
     else {
       setFilter(postList);
@@ -92,12 +101,32 @@ function App() {
 
   function updateLikes(id) {
     let newArr = filtered.map((elem) => {
-      if (elem.id === id) {
-        elem.liked = !elem.liked;
+      if (elem._id === id) {
+        makeLikeCall(id, elem.liked).then( result => {
+          if (result && result.status === 201) {
+            elem.liked = !elem.liked; //result.data.liked;
+            elem.likes = result.data.likes;
+            console.log(elem);
+          }
+        })
       }
       return elem;
     });
+    // console.log(newArr);
     setFilter(newArr);
+    // console.log(filtered);
+  }
+
+  async function makeLikeCall(id, liked) {
+    // console.log('inside makeLikeCall: ' + liked);
+    try {
+      const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});
+      return response;
+    }
+    catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
   return (
@@ -151,7 +180,7 @@ function App() {
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}
-                updateLikes={() => updateLikes(post.id)}
+                updateLikes={() => updateLikes(post._id)}
                 album={post.album}
             />
           )}
