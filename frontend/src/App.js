@@ -22,13 +22,13 @@ function App() {
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
   // filter
   const [selected, setSelected] = useState('Default');
-  const [filtered, setFilter] = useState(postList); // used for filtering when toggling dropdown
+  // const [postList, setPosts] = useState(postList); // used for filtering when toggling dropdown
   
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
         setPosts(result);
-        console.log('in useEffect postList: ' + filtered); 
+        console.log('in useEffect postList: ' + postList); 
       }
     });
   }, [] );
@@ -54,27 +54,27 @@ function App() {
 
   // useEffect(() => {
   //   // console.log(postList);
-  //   // console.log(filtered);
+  //   // console.log(postList);
   //   if (selected === 'Default') {
-  //     setFilter(postList);
+  //     setPosts(postList);
   //   }
   // }, []);
 
 
   useEffect(() => {
     // console.log(postList);
-    // console.log(filtered);
+    // console.log(postList);
     if (selected === 'Likes') {
-      setFilter([...postList].sort((a, b) => b.likes - a.likes));
+      setPosts([...postList].sort((a, b) => b.likes - a.likes));
     }
     else if (selected === 'Recent') {
-      setFilter([...postList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      setPosts([...postList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     }
     else {
-      setFilter(postList);
+      setPosts(postList);
     }
     console.log('in useEffect');
-  }, [selected, postList]);
+  }, [selected]);
 
   function onClick() {
     makePostCall().then(result => {
@@ -100,21 +100,44 @@ function App() {
   }
 
   function updateLikes(id) {
-    let newArr = filtered.map((elem) => {
-      if (elem._id === id) {
-        makeLikeCall(id, elem.liked).then( result => {
-          if (result && result.status === 201) {
-            elem.liked = !elem.liked; //result.data.liked;
-            elem.likes = result.data.likes;
-            console.log(elem);
-          }
-        })
+    let objIndex = postList.findIndex((obj) => obj._id === id);
+    let elem = postList[objIndex];
+    makeLikeCall(id, elem.liked).then( result => {
+      if (result && result.status === 201) {
+        elem.liked = !elem.liked; //result.data.liked;
+        elem.likes = result.data.likes;
+        let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex+1)];
+        console.log(newArr)
+        setPosts(newArr);
+        console.log("elem inside: ");
+        console.log(elem);
+        // setPosts(newArr);
+        // return;
       }
-      return elem;
-    });
-    // console.log(newArr);
-    setFilter(newArr);
-    // console.log(filtered);
+    })
+
+    // let newArr = postList.map((elem) => {
+    //   if (elem._id === id) {
+    //     makeLikeCall(id, elem.liked).then( result => {
+    //       if (result && result.status === 201) {
+    //         elem.liked = !elem.liked; //result.data.liked;
+    //         elem.likes = result.data.likes;
+    //         console.log("elem inside: ");
+    //         console.log(elem);
+    //         // setPosts(newArr);
+    //         // return;
+    //       }
+    //     })
+    //   }
+    //   console.log("elem outside: ");
+    //   console.log(elem);
+    //   return elem;
+    // });
+    // console.log("in update likes");
+    // // console.log(newArr);
+    // setPosts(newArr);
+    // console.log("postList: ");
+    // console.log(postList);
   }
 
   async function makeLikeCall(id, liked) {
@@ -160,7 +183,7 @@ function App() {
           </Popup>
         </div>
         <div className='posts'>
-          {filtered.map((post, index) => 
+          {postList.map((post, index) => 
             // ----- for testing -----
             // <div>
             //   {post.likes} 
@@ -180,7 +203,9 @@ function App() {
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}
-                updateLikes={() => updateLikes(post._id)}
+                updateLikes={(e) => {
+                  updateLikes(post._id)
+                }}
                 album={post.album}
             />
           )}
