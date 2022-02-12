@@ -28,16 +28,6 @@ function getDbConnection() {
     return result;  
 }
 
-async function getMostPopular(){
-    const postModel = getDbConnection().model("Post", PostSchema);
-    return await postModel.find().sort({likes: -1}).select("title artist likes -_id");
-}
-
-async function getMostRecentToday(){
-    const postModel = getDbConnection().model("Post", PostSchema);
-    return await postModel.find({createdAT: {$gte: new Date()}}).sort({createdAt: -1}).select("title artist likes -_id");
-}
-
 async function addPost(post){
     const postModel = getDbConnection().model("Post", PostSchema);
     try{
@@ -50,7 +40,7 @@ async function addPost(post){
     }   
 }
 
-async function likePost(id, liked_status){
+async function updateLikeStatus(id, liked_status){
     const postModel = getDbConnection().model("Post", PostSchema);
     try{
         if (!liked_status) {
@@ -113,8 +103,6 @@ async function findPostByArtist(artist){
 
 exports.getPosts = getPosts;
 exports.addPost = addPost;
-exports.likePost = likePost;
+exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
-exports.getMostPopular = getMostPopular;
-exports.getMostRecentToday = getMostRecentToday;

@@ -7,7 +7,6 @@ import Popup from 'reactjs-popup';
 import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
-import data from './data.js';
 import axios from 'axios';
 
 const Header = styled.div`
@@ -22,13 +21,11 @@ function App() {
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
   // filter
   const [selected, setSelected] = useState('Default');
-  // const [postList, setPosts] = useState(postList); // used for filtering when toggling dropdown
   
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
         setPosts(result);
-        console.log('in useEffect postList: ' + postList); 
       }
     });
   }, [] );
@@ -36,7 +33,6 @@ function App() {
   async function getAllPosts() {
     try {
       const response = await axios.get('http://localhost:5000/posts');
-      console.log(response.data.post_list);
       return response.data.post_list;
     }
     catch (error) {
@@ -52,18 +48,7 @@ function App() {
     setNewArtist(e.target.value);
   }
 
-  // useEffect(() => {
-  //   // console.log(postList);
-  //   // console.log(postList);
-  //   if (selected === 'Default') {
-  //     setPosts(postList);
-  //   }
-  // }, []);
-
-
   useEffect(() => {
-    // console.log(postList);
-    // console.log(postList);
     if (selected === 'Likes') {
       setPosts([...postList].sort((a, b) => b.likes - a.likes));
     }
@@ -73,14 +58,12 @@ function App() {
     else {
       setPosts(postList);
     }
-    console.log('in useEffect');
   }, [selected]);
 
-  function onClick() {
+  function onSubmitPostClick() { // Submit for making new post
     makePostCall().then(result => {
       if (result && result.status === 201) {
         setPosts([result.data, ...postList]);
-        // console.log(postList);
       }
     }); 
   }
@@ -104,44 +87,15 @@ function App() {
     let elem = postList[objIndex];
     makeLikeCall(id, elem.liked).then( result => {
       if (result && result.status === 201) {
-        elem.liked = !elem.liked; //result.data.liked;
+        elem.liked = !elem.liked; 
         elem.likes = result.data.likes;
         let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex+1)];
-        console.log(newArr)
         setPosts(newArr);
-        console.log("elem inside: ");
-        console.log(elem);
-        // setPosts(newArr);
-        // return;
       }
     })
-
-    // let newArr = postList.map((elem) => {
-    //   if (elem._id === id) {
-    //     makeLikeCall(id, elem.liked).then( result => {
-    //       if (result && result.status === 201) {
-    //         elem.liked = !elem.liked; //result.data.liked;
-    //         elem.likes = result.data.likes;
-    //         console.log("elem inside: ");
-    //         console.log(elem);
-    //         // setPosts(newArr);
-    //         // return;
-    //       }
-    //     })
-    //   }
-    //   console.log("elem outside: ");
-    //   console.log(elem);
-    //   return elem;
-    // });
-    // console.log("in update likes");
-    // // console.log(newArr);
-    // setPosts(newArr);
-    // console.log("postList: ");
-    // console.log(postList);
   }
 
   async function makeLikeCall(id, liked) {
-    // console.log('inside makeLikeCall: ' + liked);
     try {
       const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});
       return response;
@@ -173,7 +127,7 @@ function App() {
                     <PostForm
                       newSong={newSong}
                       newArtist={newArtist}
-                      onClick={onClick}
+                      onClick={onSubmitPostClick}
                       onChangeSong={onChangeSong}
                       onChangeArtist={onChangeArtist}
                     />
@@ -184,18 +138,6 @@ function App() {
         </div>
         <div className='posts'>
           {postList.map((post, index) => 
-            // ----- for testing -----
-            // <div>
-            //   {post.likes} 
-            //   <Post 
-            //       song={post.song}
-            //       artist={post.artist}
-            //       timePosted={post.timePosted}
-            //       likes={post.likes}
-            //       liked={post.liked}
-            //       url={post.url}
-            //   />
-            // </div>
             <Post key={index}
                 song={post.title}
                 artist={post.artist}
@@ -203,9 +145,7 @@ function App() {
                 likes={post.likes}
                 liked={post.liked}
                 url={post.url}
-                updateLikes={(e) => {
-                  updateLikes(post._id)
-                }}
+                updateLikes={() => updateLikes(post._id)}
                 album={post.album}
             />
           )}

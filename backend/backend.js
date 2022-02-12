@@ -26,13 +26,7 @@ app.get('/', (req, res) => {
     res.send('Hello, World');
 });
 
-// app.get('/login', () => {
-//     res.redirect('https://accounts.spotify.com/authorize?' +
-    
-// });
-
 app.post('/create', async (req, res) => {
-    // console.log(req.body);
     const new_post = await getPostData(req.body.song, req.body.artist)
     const savedPost = await postServices.addPost(new_post);
     
@@ -54,7 +48,6 @@ async function getPostData(song, artist) {
 
     const access_token = await(getAccessToken());
 
-    // console.log(queryparam);
     try {
         const response = await axios.get('https://api.spotify.com/v1/search?' + queryparam, {
             headers: {
@@ -113,40 +106,11 @@ app.get('/posts', async (req, res) => {
     }
 });
 
-app.get('/like', async (req, res) => {
-    try {
-        const result = await postServices.getMostPopular();
-        res.send({post_list: result});         
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('An error ocurred in the server.');
-    }
-});
-
-app.get('/date', async (req, res) => {
-    try {
-        const result = await postServices.getMostRecentToday();
-        res.send({post_list: result});         
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('An error ocurred in the server.');
-    }
-});
-
-app.post('/posts', async (req, res) => {
-    const new_Post = req.body;
-    const savedPost = await postServices.addPost(new_Post);
-    if (savedPost)
-        res.status(201).send(savedPost);
-    else
-        res.status(500).end();
-});
-
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
     const liked_status = req.body.liked;
 
-    const result = await postServices.likePost(id, liked_status);
+    const result = await postServices.updateLikeStatus(id, liked_status);
 
     console.log(result);
     if (result)
@@ -155,15 +119,4 @@ app.patch('/like/:id', async (req, res) => {
         res.status(404).send('Resource not found.');
     }
 });
-
-// app.patch('/unlike/:id', async (req, res) => {
-//     const id = req.params['id'];
-//     const result = await postServices.unlikePost(id);
-//     console.log(result);
-//     if (result)
-//         res.status(201).send(result);
-//     else {
-//         res.status(404).send('Resource not found.');
-//     }
-// });
 
