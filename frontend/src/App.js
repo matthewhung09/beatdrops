@@ -33,7 +33,8 @@ function App() {
   async function getAllPosts() {
     try {
       const response = await axios.get('http://localhost:5000/posts');
-      return response.data.post_list;
+      // console.log(response);
+      return response.data;
     }
     catch (error) {
       console.log(error);
@@ -71,7 +72,7 @@ function App() {
   async function makePostCall() {
     try {
       const response = await axios.post('http://localhost:5000/create', {
-        'song': newSong,
+        'title': newSong,
         'artist': newArtist,
       });
       return response;

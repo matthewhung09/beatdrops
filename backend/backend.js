@@ -8,6 +8,8 @@ const cors = require('cors');
 const postServices = require('./models/post-services');
 const app = express();
 const port = 5000;
+const Post = require('./models/post');
+const mongoose = require('mongoose');
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
@@ -18,6 +20,14 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toStrin
 app.use(cors());
 app.use(express.json());
 
+if (!process.env.CONNECTION_URL) {
+    console.warn('missing connection url')
+}
+mongoose
+    .connect(process.env.CONNECTION_URL)
+    .then(() => console.log('easdfsa'))
+    .catch((error) => console.log(error));
+
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -26,14 +36,22 @@ app.get('/', (req, res) => {
     res.send('Hello, World');
 });
 
+app.get('/posts', async (req, res) => {
+    try {
+        const posts = await Post.find({});
+        console.log(posts);
+        res.send(posts);         
+    } catch (error) {
+        res.status(500).send(error.message);
+        console.log('error');
+    }
+});
+
 app.post('/create', async (req, res) => {
-    const new_post = await getPostData(req.body.song, req.body.artist)
-    const savedPost = await postServices.addPost(new_post);
-    
-    if (savedPost) 
-        res.status(201).send(savedPost);
-    else
-        res.status(500).end();
+    const new_post = await getPostData(req.body.title, req.body.artist)
+    let post = new Post(new_post);
+    post = await post.save();
+    res.status(201).json(post); // same as res.send except sends in json format
 });
 
 async function getPostData(song, artist) {
@@ -93,22 +111,17 @@ async function getAccessToken() {
         console.log(error);
     }
 }
-  
-app.get('/posts', async (req, res) => {
-    const title = req.query['title'];
-    const artist = req.query['artist'];
-    try {
-        const result = await postServices.getPosts(title, artist);
-        res.send({post_list: result});         
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('An error ocurred in the server.');
-    }
-});
 
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
     const liked_status = req.body.liked;
+
+    const updatedPost = await Post.findByIdAndUpdate(id, { 
+            $inc: {likes: 1}, 
+            $set: {liked: true}, 
+        },
+            {new: true}
+        ); 
 
     const result = await postServices.updateLikeStatus(id, liked_status);
 

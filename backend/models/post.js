@@ -23,6 +23,7 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trime: true,
   }
-}, {collection : 'posts_list', timestamps: true});
+}, {collection : 'Posts', timestamps: true});
 
-module.exports = PostSchema;
+const Post = mongoose.model("Post", PostSchema);
+module.exports = Post;
