@@ -25,7 +25,7 @@ if (!process.env.CONNECTION_URL) {
 }
 mongoose
     .connect(process.env.CONNECTION_URL)
-    .then(() => console.log('easdfsa'))
+    .then(() => console.log('Connected to database'))
     .catch((error) => console.log(error));
 
 app.listen(port, () => {
@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
 app.get('/posts', async (req, res) => {
     try {
         const posts = await Post.find({});
-        console.log(posts);
         res.send(posts);         
     } catch (error) {
         res.status(500).send(error.message);
@@ -87,7 +86,7 @@ async function getPostData(song, artist) {
             'url': song_url,
             'album': album_cover 
         };
-        console.log(new_post);
+        // console.log(new_post);
         return new_post;
     }
     catch(error) {
@@ -115,19 +114,23 @@ async function getAccessToken() {
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
     const liked_status = req.body.liked;
+    let updatedPost;
 
-    const updatedPost = await Post.findByIdAndUpdate(id, { 
-            $inc: {likes: 1}, 
-            $set: {liked: true}, 
-        },
+    if (!liked_status) {
+        updatedPost = await Post.findByIdAndUpdate(id, 
+            {$inc: {likes: 1}, $set: {liked: true}},
             {new: true}
         ); 
+    }
+    else {
+        updatedPost = await Post.findByIdAndUpdate(id, 
+            {$inc: {likes: -1}, $set: {liked: false}},
+            {new: true}
+        ); 
+    }
 
-    const result = await postServices.updateLikeStatus(id, liked_status);
-
-    console.log(result);
-    if (result)
-        res.status(201).send(result);
+    if (updatedPost)
+        res.status(201).send(updatedPost);
     else {
         res.status(404).send('Resource not found.');
     }
