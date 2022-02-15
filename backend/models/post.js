@@ -21,8 +21,12 @@ const PostSchema = new mongoose.Schema({
   album: {
     type: String,
     required: true,
-    trime: true,
+    trim: true,
+  },
+  uri: {
+    type: String,
   }
+  
 }, {collection : 'Posts', timestamps: true});
 
 const Post = mongoose.model("Post", PostSchema);

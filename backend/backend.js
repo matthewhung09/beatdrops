@@ -10,6 +10,7 @@ const app = express();
 const port = 5000;
 const Post = require('./models/post');
 const mongoose = require('mongoose');
+const { access } = require('fs');
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
@@ -46,28 +47,28 @@ app.get('/posts', async (req, res) => {
     }
 });
 
-app.get('/auth/login', (req, res) => {
-    const scope = 'streaming user-read-email user-read-private';
-    // const state = generateRandomString(16);
-
-    const auth_query_paramters = new URLSearchParams({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: 'http://localhost:3000/auth/callback',
-        // state: state,
+app.post('/auth/login', async (req, res) => {
+    const code = req.body.code;
+    let response;
+    try {
+        const data = qs.stringify({'grant_type':'authorization_code', 'code': code, 'redirect_uri': 'http://localhost:3000'});
+        response = await axios.post('https://accounts.spotify.com/api/token', data, {
+            headers: {
+                'Authorization': `Basic ${auth_token}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+    console.log(response.data);
+    res.json({
+        accessToken: response.data.access_token,
+        refreshToken: response.data.refresh_token,
+        expiresIn: response.data.expires_in,
     });
-    console.log('https://accounts.spotify.com/authorize/?' + auth_query_paramters.toString());
-    res.redirect('https://accounts.spotify.com/authorize/?' + auth_query_paramters.toString());
-    // const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
-    // res.redirect(AUTH_URL);
-
 });
-
-app.get('/auth/callback'), async (req, res) => {
-    const token = await getAccessToken();
-    return token;
-}
 
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
@@ -100,6 +101,7 @@ async function getPostData(song, artist) {
         const song_name = response.data.tracks.items[0].name; 
         const song_artist = response.data.tracks.items[0].artists[0].name;
         const album_cover = response.data.tracks.items[0].album.images[2].url;
+        const song_uri = response.data.tracks.items[0].uri;
 
         const new_post = {
             'title': song_name,
@@ -107,7 +109,8 @@ async function getPostData(song, artist) {
             'likes': 0,
             'liked': false,
             'url': song_url,
-            'album': album_cover 
+            'album': album_cover,
+            'uri': song_uri
         };
         // console.log(new_post);
         return new_post;

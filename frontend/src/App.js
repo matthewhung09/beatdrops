@@ -9,6 +9,7 @@ import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
 import Login from './Login';
+import WebPlayer from './components/WebPlayer/WebPlayer';
 
 const Header = styled.div`
   text-align: center;
