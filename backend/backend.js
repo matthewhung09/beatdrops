@@ -46,6 +46,29 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+app.get('/auth/login', (req, res) => {
+    const scope = 'streaming user-read-email user-read-private';
+    // const state = generateRandomString(16);
+
+    const auth_query_paramters = new URLSearchParams({
+        response_type: "code",
+        client_id: client_id,
+        scope: scope,
+        redirect_uri: 'http://localhost:3000/auth/callback',
+        // state: state,
+    });
+    console.log('https://accounts.spotify.com/authorize/?' + auth_query_paramters.toString());
+    res.redirect('https://accounts.spotify.com/authorize/?' + auth_query_paramters.toString());
+    // const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
+    // res.redirect(AUTH_URL);
+
+});
+
+app.get('/auth/callback'), async (req, res) => {
+    const token = await getAccessToken();
+    return token;
+}
+
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
     let post = new Post(new_post);

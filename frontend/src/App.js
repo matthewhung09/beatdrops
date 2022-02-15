@@ -8,12 +8,15 @@ import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
+import Login from './Login';
 
 const Header = styled.div`
   text-align: center;
   margin-top: 2em;
   line-height: 1.5em;
 `;
+
+const code = new URLSearchParams(window.location.search).get('code');
 
 function App() {
   const [newSong, setNewSong] = useState('');
@@ -107,7 +110,7 @@ function App() {
     }
   }
 
-  return (
+  return code ? (
     <div className='App'>
       <Header>
         <h1>beatdrops</h1>
@@ -153,7 +156,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  ) : <Login />;
 }
 
 export default App;
