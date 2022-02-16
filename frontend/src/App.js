@@ -8,6 +8,7 @@ import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
+import SignUpForm from './components/SignUpForm/SignUpForm';
 
 const Header = styled.div`
   text-align: center;
@@ -19,6 +20,7 @@ function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
+
   // filter
   const [selected, setSelected] = useState('Default');
   
@@ -39,14 +41,6 @@ function App() {
     catch (error) {
       console.log(error);
     }
-  }
-
-  function onChangeSong(e) {
-    setNewSong(e.target.value);
-  }
-
-  function onChangeArtist(e) {
-    setNewArtist(e.target.value);
   }
 
   useEffect(() => {
@@ -109,6 +103,15 @@ function App() {
 
   return (
     <div className='App'>
+      <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}>
+        {close => (
+          <div className="modal">
+            <div className="header"> beatdrops </div>
+            <button className="close" onClick={close}>&times;</button>
+            <SignUpForm/>
+          </div>
+        )}
+      </Popup>
       <Header>
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
@@ -129,8 +132,8 @@ function App() {
                       newSong={newSong}
                       newArtist={newArtist}
                       onClick={onSubmitPostClick}
-                      onChangeSong={onChangeSong}
-                      onChangeArtist={onChangeArtist}
+                      onChangeSong={(e) => setNewSong(e.target.value)}
+                      onChangeArtist={(e) => setNewArtist(e.target.value)}
                     />
                 </div>
               </div>
