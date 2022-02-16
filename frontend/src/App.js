@@ -26,6 +26,13 @@ function App() {
   // filter
   const [selected, setSelected] = useState('Default');
   
+  const [playingTrack, setPlayingTrack] = useState('');
+
+  function chooseTrack(track) {
+    console.log(track);
+    setPlayingTrack(track);
+  }
+
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
@@ -110,13 +117,14 @@ function App() {
       return false;
     }
   }
-
+  //'spotify:track:39WFZVKifA8Fl2TZI2kp0S'
   return code ? (
     <div className='App'>
       <Header>
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
+      <WebPlayer code={code} trackUri={playingTrack} />
       <div className='home'>
         <div className='home-actions'>
           <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
@@ -152,6 +160,7 @@ function App() {
                 url={post.url}
                 updateLikes={() => updateLikes(post._id)}
                 album={post.album}
+                playTrack={() => chooseTrack(post.uri)}
             />
           )}
         </div>

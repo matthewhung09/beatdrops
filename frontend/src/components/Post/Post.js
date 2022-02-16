@@ -4,7 +4,7 @@ import { BsSpotify } from "react-icons/bs";
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 
-function Post({song, artist, timePosted, likes, liked, url, updateLikes, album}) {
+function Post({song, artist, timePosted, likes, liked, url, updateLikes, album, playTrack}) {
 	return (
 		<div className='card'>
 			<div className='left-wrapper'>
@@ -32,6 +32,9 @@ function Post({song, artist, timePosted, likes, liked, url, updateLikes, album})
 				)}
 				<button onClick={() => {window.open(url, "_blank")}} className='spotify' type="submit">
 					<BsSpotify/>View on Spotify
+				</button>
+				<button onClick={playTrack} style={{border:'1px solid #0065B8', color: '#0065B8', backgroundColor: '#DCEFFE'}} className='play' type="submit">
+					Play
 				</button>
 			</div>
 		</div> 

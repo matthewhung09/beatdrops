@@ -50,11 +50,13 @@ app.get('/posts', async (req, res) => {
 app.post('/auth/login', async (req, res) => {
     const code = req.body.code;
     let response;
+    const auth = Buffer.from(`${process.env.WEB_CLIENT_ID}:${process.env.WEB_CLIENT_SECRET}`, 'utf-8').toString('base64');
+
     try {
         const data = qs.stringify({'grant_type':'authorization_code', 'code': code, 'redirect_uri': 'http://localhost:3000'});
         response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
-                'Authorization': `Basic ${auth_token}`,
+                'Authorization': `Basic ${auth}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
