@@ -104,15 +104,7 @@ function App() {
   return (
     <div className='App'>
       {/* routed from login, routes to main page */}
-      <Popup modal nested trigger={<button className="create-btn"> Sign up</button>}>
-        {close => (
-          <div className="modal">
-            <div className="header"> <b>♬ beatdrops </b> </div>
-            <button className="close" onClick={close}>&times;</button>
-            <SignUpForm/>
-          </div>
-        )}
-      </Popup>
+      <SignUpForm/>
       <Header>
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
