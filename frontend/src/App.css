@@ -1,121 +1,38 @@
-/* ---- general ---- */
-
 .App {
   text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-/* .form-container input {
-  border: 0.2em rgb(56, 56, 56);
-} */
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ---- modal ---- */
-
-.modal {
-  font-size: 12px;
-}
-
-.modal > .header {
-  width: 100%;
-  font-size: 18px;
-  text-align: center;
-  padding: 5px;
-  font-weight: 500;
-}
-
-.modal > .content {
-  width: 100%;
-  padding: 10px 5px;
-}
-
-.modal > .actions {
-  width: 100%;
-  padding: 10px 5px;
-  margin: auto;
-  text-align: center;
-}
-
-.modal > .close {
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 2px 5px;
-  line-height: 20px;
-  right: 4px;
-  top: 4px;
-  font-size: 20px;
-  width: 1.4em;
-  background: black;
-  color: white;
-  border: 0.1em solid #fff;
-}
-
-.create-btn {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background: #fff;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-  align-items: center;
-  border-radius: 0;
-  font-size: small;
-  font-weight: bold;
-  width: 13em;
-  padding: 0.8em;
-  padding-left: 1em;
-  border-radius: 0.2em;
-}
-
-.circle {
-  font-size: 1.2em;
-}
-
-.popup-content {
-  border-radius: 0.3em;
-  border: none;
-  padding: 1em;
-  max-width: 30em;
-}
-
-.button {
-  background-color: black;
-  cursor: pointer;
-}
-
-/* ---- home ---- */
-
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  max-width: 60em;
-  min-width: 36em;
-  margin-top: 2em;
-  /* background-color: antiquewhite; */
-}
-
-.home-actions {
-  display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* background-color: aliceblue; */
-  margin-bottom: 2em;
-  margin-top: 0em;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
-.home-actions > * {
-  margin: 0 0.5em;
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

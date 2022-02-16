@@ -1,0 +1,55 @@
+//Hooks used:
+    
+    import {useRef, useState, useEffect} from 'react';
+
+//Reference in our form: 
+
+//Set focus on input when component loads
+
+    
+    const userRef = useRef();
+
+
+//Set focus on errors if error occurs
+
+ 
+    const errRef = useRef();
+
+
+//Three States:
+
+//corresponse to username input
+    const [user, setUser] = useState('');
+
+//corresponse to password input
+    const [pwd, setPwd] = useState('');
+
+//corresponse to an error in authentication
+    const [errMsg, setErrMsg] = useState('');
+
+//success message - (will change to a page that directs user to 
+//the main application)
+    const [success, setSuccess] = useState(false);
+
+
+//set focus on first input when component loads
+//focus on user input
+   useEffect(() => {
+
+        userRef.current.focus();
+
+    }, [])
+
+
+//empty out any error message that we get,
+//if the user changes the user state or the password state
+//if the user changes their username or password
+//in the component when trying to login, error message
+//will go away, as user is making their login adjustments
+    useEffect(() => {
+
+        setErrMsg('');
+
+    }, [user, pwd])
+
+
