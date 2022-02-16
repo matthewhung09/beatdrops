@@ -107,7 +107,7 @@ function App() {
       <Popup modal nested trigger={<button className="create-btn"> Sign up</button>}>
         {close => (
           <div className="modal">
-            <div className="header"> <b>♬ beatdrops</b> </div>
+            <div className="header"> <b>♬ beatdrops </b> </div>
             <button className="close" onClick={close}>&times;</button>
             <SignUpForm/>
           </div>

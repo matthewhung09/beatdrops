@@ -12,15 +12,17 @@ const PopupWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  width: 85%;
 `;
 
 const PopupTitle = styled.h1`
   font-style: normal;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 30px;
   color: black;
-  max-width: 90%;
-  margin-top: 25px;
+  text-align: center;
+  max-width: 85%;
+  margin-top: 12px;
   margin-bottom: 10px;
 `;
 
@@ -83,7 +85,7 @@ function SignUpForm() {
     return (
       <StylesProvider injectFirst>
         <PopupWrapper>
-          <PopupTitle> Sign up for a free account.</PopupTitle>
+          <PopupTitle> Sign up for a free beatdrops account.</PopupTitle>
           <form style={{width: "100%"}} onSubmit={handleSubmit(onSubmit)}>
               {rEntries.map((entry) => (
               <div>
@@ -127,7 +129,7 @@ function SignUpForm() {
                   Continue
                 </StyledButton>
                 {/* need to add route to login page */}
-                <p>Already have an account? LOGIN</p>
+                <p style={{marginTop: 45, marginBottom: -22}}>Already have an account? LOGIN</p>
               </Box>
           </form>
         </PopupWrapper>
