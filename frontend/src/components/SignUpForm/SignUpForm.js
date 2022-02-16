@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
+import { TextField, Button, StylesProvider } from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -16,17 +16,20 @@ const PopupWrapper = styled.div`
 
 const PopupTitle = styled.h1`
   font-style: normal;
-  font-weight: 400;
-  font-size: 23px;
+  font-weight: bold;
+  font-size: 25px;
   color: black;
   max-width: 90%;
+  margin-top: 25px;
+  margin-bottom: 10px;
 `;
 
-const Button = styled.button`
+const StyledButton = styled(Button)`
   background-color: black;
-  padding: 16px;
+  padding: 15px;
+  border-radius: 100px;
   text-transform: uppercase;
-  margin-top: 25px;
+  margin-top: 10px;
   letter-spacing: 2px;
   font-size: 14px;
   font-weight: 600;
@@ -34,6 +37,8 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
 `;
+
+
 
 function SignUpForm() {
     // style
@@ -64,7 +69,7 @@ function SignUpForm() {
   
     // log values when data is submitted
     const onSubmit = (values) => {
-    //   console.log(values);
+      console.log(values);
       reset();
     };
   
@@ -76,42 +81,57 @@ function SignUpForm() {
     ];
 
     return (
-      <PopupWrapper>
-        <PopupTitle> Sign up for a free <b>beatdrops</b> account.</PopupTitle>
-        <form style={{width: "100%"}} onSubmit={handleSubmit(onSubmit)}>
-            {rEntries.map((entry) => (
-            <div>
-                <Controller
-                key={entry.name}
-                name={entry.name}
-                defaultValue=""
-                control={control}
-                render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                }) => (
-                    <Box m={2}>
-                    <TextField 
-                        style={{marginBottom: 5}}
-                        fullWidth
-                        label={entry.label}
-                        variant={variant}
-                        value={value}
-                        onChange={onChange}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                    />
-                    </Box>
-                )}
-                />
-            </div>
-            ))}
-            <Box m={2}>
-                <Button type="submit" onClick={onSubmit}>Continue</Button>
+      <StylesProvider injectFirst>
+        <PopupWrapper>
+          <PopupTitle> Sign up for a free account.</PopupTitle>
+          <form style={{width: "100%"}} onSubmit={handleSubmit(onSubmit)}>
+              {rEntries.map((entry) => (
+              <div>
+                  <Controller
+                    key={entry.name}
+                    name={entry.name}
+                    defaultValue=""
+                    control={control}
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <Box m={2}>
+                          <TextField 
+                              key={entry.name + "a;sldkf"}
+                              fullWidth
+                              label={entry.label}
+                              variant={variant}
+                              value={value}
+                              onChange={onChange}
+                              error={!!error}
+                              helperText={error ? error.message : null}
+                          />
+                        </Box>
+                    )}
+                  />
+              </div>
+              ))}
+              <Box m={2}
+                display="flex" 
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <StyledButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Continue
+                </StyledButton>
+                {/* need to add route to login page */}
                 <p>Already have an account? LOGIN</p>
-            </Box>
-        </form>
-      </PopupWrapper>
+              </Box>
+          </form>
+        </PopupWrapper>
+      </StylesProvider>
     );
 }
 

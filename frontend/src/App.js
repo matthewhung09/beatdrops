@@ -103,10 +103,11 @@ function App() {
 
   return (
     <div className='App'>
-      <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}>
+      {/* routed from login, routes to main page */}
+      <Popup modal nested trigger={<button className="create-btn"> Sign up</button>}>
         {close => (
           <div className="modal">
-            <div className="header"> beatdrops </div>
+            <div className="header"> <b>♬ beatdrops</b> </div>
             <button className="close" onClick={close}>&times;</button>
             <SignUpForm/>
           </div>
