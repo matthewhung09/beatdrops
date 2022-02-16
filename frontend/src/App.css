@@ -31,7 +31,7 @@
   text-align: center;
   padding: 5px;
   font-weight: 500;
-  color: rgba(56, 73, 168, 0.966);
+  /* color: rgba(56, 73, 168, 0.966); */
 }
 
 .modal > .content {
