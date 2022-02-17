@@ -38,7 +38,7 @@ button {
   margin-top: 0.5em 0 0 0.5em;
   font-weight: 500;
   width: 100%;
-  transform: scale(0.9);
+  transform: scale(0.88);
 }
 
 .location {
@@ -54,6 +54,7 @@ button {
   margin-top: 0;
   opacity: 90%;
   font-size: smaller;
+  transform: scale(0.97);
 }
 
 .likes > * {
@@ -86,8 +87,9 @@ button {
   /* background-color: #0d0d0e; */
   /* color: #1a191b; */
   /* padding: 0.2em 0.5em; */
-  padding: 0.4em 1em;
+  /* padding: 0.4em 1em; */
   padding-top: 1.4em;
+  padding-bottom: 0.35em;
   max-width: 43em;
   /* padding-bottom: 1.2em; */
   /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
