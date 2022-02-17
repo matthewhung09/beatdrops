@@ -10,6 +10,7 @@ const app = express();
 const port = 5000;
 const Post = require('./models/post');
 const mongoose = require('mongoose');
+const { access } = require('fs');
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
@@ -46,6 +47,31 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+app.post('/auth/login', async (req, res) => {
+    const code = req.body.code;
+    let response;
+    const auth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`, 'utf-8').toString('base64');
+
+    try {
+        const data = qs.stringify({'grant_type':'authorization_code', 'code': code, 'redirect_uri': 'http://localhost:3000'});
+        response = await axios.post('https://accounts.spotify.com/api/token', data, {
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+    console.log(response.data);
+    res.json({
+        accessToken: response.data.access_token,
+        refreshToken: response.data.refresh_token,
+        expiresIn: response.data.expires_in,
+    });
+});
+
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
     let post = new Post(new_post);
@@ -77,6 +103,7 @@ async function getPostData(song, artist) {
         const song_name = response.data.tracks.items[0].name; 
         const song_artist = response.data.tracks.items[0].artists[0].name;
         const album_cover = response.data.tracks.items[0].album.images[2].url;
+        const song_uri = response.data.tracks.items[0].uri;
 
         const new_post = {
             'title': song_name,
@@ -84,7 +111,8 @@ async function getPostData(song, artist) {
             'likes': 0,
             'liked': false,
             'url': song_url,
-            'album': album_cover 
+            'album': album_cover,
+            'uri': song_uri
         };
         // console.log(new_post);
         return new_post;

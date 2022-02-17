@@ -23,7 +23,7 @@ function App() {
 
   // filter
   const [selected, setSelected] = useState('Default');
-  
+
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
@@ -35,7 +35,6 @@ function App() {
   async function getAllPosts() {
     try {
       const response = await axios.get('http://localhost:5000/posts');
-      // console.log(response);
       return response.data;
     }
     catch (error) {

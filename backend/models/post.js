@@ -21,7 +21,12 @@ const PostSchema = new mongoose.Schema({
   album: {
     type: String,
     required: true,
-    trime: true,
+    trim: true,
+  },
+  uri: {
+    type: String,
+    required: true,
+    trim: true,
   }
 }, {collection : 'Posts', timestamps: true});
 
