@@ -25,8 +25,9 @@ const PostSchema = new mongoose.Schema({
   },
   uri: {
     type: String,
+    required: true,
+    trim: true,
   }
-  
 }, {collection : 'Posts', timestamps: true});
 
 const Post = mongoose.model("Post", PostSchema);

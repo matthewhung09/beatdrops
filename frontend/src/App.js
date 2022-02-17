@@ -8,8 +8,6 @@ import Post from './components/Post/Post';
 import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
-import Login from './Login';
-import WebPlayer from './components/WebPlayer/WebPlayer';
 
 const Header = styled.div`
   text-align: center;
@@ -17,21 +15,12 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 
-const code = new URLSearchParams(window.location.search).get('code');
-
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
   // filter
   const [selected, setSelected] = useState('Default');
-  
-  const [playingTrack, setPlayingTrack] = useState('');
-
-  function chooseTrack(track) {
-    console.log(track);
-    setPlayingTrack(track);
-  }
 
   useEffect(() => {
     getAllPosts().then( result => {
@@ -44,7 +33,6 @@ function App() {
   async function getAllPosts() {
     try {
       const response = await axios.get('http://localhost:5000/posts');
-      // console.log(response);
       return response.data;
     }
     catch (error) {
@@ -117,14 +105,13 @@ function App() {
       return false;
     }
   }
-  //'spotify:track:39WFZVKifA8Fl2TZI2kp0S'
-  return code ? (
+
+  return (
     <div className='App'>
       <Header>
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
-      <WebPlayer code={code} trackUri={playingTrack} />
       <div className='home'>
         <div className='home-actions'>
           <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
@@ -160,13 +147,12 @@ function App() {
                 url={post.url}
                 updateLikes={() => updateLikes(post._id)}
                 album={post.album}
-                playTrack={() => chooseTrack(post.uri)}
             />
           )}
         </div>
       </div>
     </div>
-  ) : <Login />;
+  );
 }
 
 export default App;
