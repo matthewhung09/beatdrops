@@ -50,13 +50,16 @@ app.get('/posts', async (req, res) => {
 app.post('/auth/login', async (req, res) => {
     const code = req.body.code;
     let response;
-    const auth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`, 'utf-8').toString('base64');
 
     try {
-        const data = qs.stringify({'grant_type':'authorization_code', 'code': code, 'redirect_uri': 'http://localhost:3000'});
+        const data = qs.stringify({
+            'grant_type':'authorization_code', 
+            'code': code, 
+            'redirect_uri': 'http://localhost:3000'
+        });
         response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
-                'Authorization': `Basic ${auth}`,
+                'Authorization': `Basic ${auth_token}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
@@ -64,13 +67,52 @@ app.post('/auth/login', async (req, res) => {
     catch(error) {
         console.log(error);
     }
-    console.log(response.data);
+
     res.json({
         accessToken: response.data.access_token,
         refreshToken: response.data.refresh_token,
         expiresIn: response.data.expires_in,
     });
 });
+
+app.post('/auth/refresh', async (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    console.log('here');
+    try {
+        const data = qs.stringify({
+            'grant_type':'refresh_token', 
+            'refresh_token': refreshToken
+        });
+        response = await axios.post('https://accounts.spotify.com/api/token', data, {
+            headers: {
+                'Authorization': `Basic ${auth_token}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+    res.json({
+        accessToken: response.data.access_token,
+        expiresIn: response.data.expires_in,
+    });    
+})
+
+app.get('/current'), async (req, res) => {
+    try {
+        response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                'Authorization': `Bearer ${response.data.access_token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+    console.log(response.data.item.name);
+}
 
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)

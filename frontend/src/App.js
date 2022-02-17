@@ -9,12 +9,15 @@ import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
 import SignUpForm from './components/SignUpForm/SignUpForm';
+import Login from './Login';
+import Dashboard from './Dashboard'
 
 const Header = styled.div`
   text-align: center;
   margin-top: 2em;
   line-height: 1.5em;
 `;
+const code = new URLSearchParams(window.location.search).get('code');
 
 function App() {
   const [newSong, setNewSong] = useState('');
@@ -100,7 +103,7 @@ function App() {
     }
   }
 
-  return (
+  return ( code ? 
     <div className='App'>
       {/* routed from login, routes to main page */}
       <SignUpForm/>
@@ -108,6 +111,7 @@ function App() {
         <h1>beatdrops</h1>
         <h2><i>YikYak meets Spotify</i></h2>
       </Header>
+      {<Dashboard code={code}/>}
       <div className='home'>
         <div className='home-actions'>
           <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
@@ -148,6 +152,7 @@ function App() {
         </div>
       </div>
     </div>
+    : <Login />
   );
 }
 
