@@ -1,44 +1,35 @@
 import { BiLike } from "react-icons/bi";
-import { BsSpotify } from "react-icons/bs";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
-import Spotify from 'react-spotify-embed'; // https://www.npmjs.com/package/react-spotify-embed
+import Spotify from 'react-spotify-embed'; 
 
 function Post({song, artist, timePosted, likes, liked, url, updateLikes, album}) {
+	const location = "Kennedy Library";
+	// const timeAndLocation1 = `Posted less than an hour ago @ ${location}`
+	// const timeAndLocation2 = `Posted an hour ago @ ${location}`
+	// const timeAndLocation3 = `Posted ${timePosted} hours ago @ ${location}`
+	const view = 'coverart';
+	const theme = 'black';
 	return (
 		<div className='card'>
-			<Spotify wide link={url}/>
-
-			{/* <div className='left-wrapper'>
-				<div className='image'>
-					<img style={{height: '100px', width: '100px'}} src={album} alt='album'/>
-				</div>
-				<div className='description'>
-					<h2>{song}</h2>
-					<h3>{artist}</h3>
-					
-				</div>
-			</div> */}
+			<div className='spotify-div'>
+				<Spotify theme={theme} view={view} wide allowtransparency="false" link={url}/>
+			</div>
 			<div className='action'>
+				{timePosted < 1 ? <p className="time"> <span>Posted less than</span> an hour ago at <b className="location">{location}</b> </p>
+					: timePosted < 2 ? <p className="time"> <span>Posted an hour ago</span> at <b className="location"> {location}</b> </p>
+					: <p className="time"> <span>Posted {timePosted} hours</span> ago at <b className="location"> {location}</b> </p>
+				}
 				{liked === false ? (
-					<button className='likes' onClick={updateLikes} style={{border: '1px solid black', color: 'black', backgroundColor: 'transparent'}}> 
-						<BiLike/>{likes}
+					<button className='likes' onClick={updateLikes} style={{color: 'black', backgroundColor: 'rgb(236, 236, 236)'}}> 
+						<FaRegHeart/>{likes}
 					</button>
 				) : (
-					<button className='likes' onClick={updateLikes} style={{border:'1px solid #0065B8', color: '#0065B8', backgroundColor: '#DCEFFE'}}> 
-						<BiLike/>{likes}
+					<button className='likes' onClick={updateLikes} style={{color: '#0065B8', backgroundColor: '#DCEFFE'}}> 
+						<FaHeart/>{likes}
 					</button>
 				)}
-				{timePosted < 1 ? <p>Posted less than an hour ago</p>
-						: timePosted === 1 ? <p>Posted an hour ago</p>
-					 	: <p>Posted {timePosted} hours ago</p>
-					}
-				{/* <button onClick={() => {window.open(url, "_blank")}} className='spotify' type="submit">
-					<BsSpotify/>View on Spotify
-				</button>
-				<button onClick={playTrack} style={{border:'1px solid #0065B8', color: '#0065B8', backgroundColor: '#DCEFFE'}} className='play' type="submit">
-					Play
-				</button> */}
 			</div>
 		</div> 
 	);
