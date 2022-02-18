@@ -12,13 +12,20 @@ import SignUpForm from './components/SignUpForm/SignUpForm';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
+import Login from './Login';
+import Dashboard from './Dashboard'
 
 const Header = styled.div`
   text-align: center;
   margin-top: 2em;
   line-height: 1.5em;
 `;
+const code = new URLSearchParams(window.location.search).get('code');
+const user = {
+  username: "Mike",
+  password: "cat123"
 
+}
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
@@ -27,6 +34,8 @@ function App() {
   // filter
   const [selected, setSelected] = useState('Default');
 
+  // 'liked' set to false as default in the database
+  // loop through each post that user has liked and change status
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
@@ -92,6 +101,7 @@ function App() {
     })
   }
 
+  // send ID of post and user - add liked post to their array
   async function makeLikeCall(id, liked) {
     try {
       const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});
@@ -103,7 +113,7 @@ function App() {
     }
   }
 
-  return (
+  return ( code ? 
     <div className='App'>
       {/* routed from login, routes to main page */}
       <Router>
@@ -169,6 +179,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+    : <Login />
   );
 }
 
