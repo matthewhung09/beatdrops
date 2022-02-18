@@ -5,10 +5,11 @@ const path = require('path');
 const axios = require('axios');
 const qs = require('qs');
 const cors = require('cors');
-const postServices = require('./models/post-services');
+//const postServices = require('./models/post-services');
 const app = express();
 const port = 5000;
 const Post = require('./models/post');
+const User = require('./models/user');
 const mongoose = require('mongoose');
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
@@ -133,6 +134,43 @@ app.patch('/like/:id', async (req, res) => {
         res.status(201).send(updatedPost);
     else {
         res.status(404).send('Resource not found.');
+    }
+});
+
+app.post('/user', async (req, res) => {
+    const new_user = req.body;
+    let user = new User(new_user);
+    user = await user.save();
+    res.status(201).json(user);
+});
+
+app.get('/user', async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.send(users);         
+    } catch (error) {
+        res.status(500).send(error.message);
+        console.log('error');
+    }
+});
+
+app.get('/user/:id', async (req, res) => {
+    const id = req.params['id'];
+    const result = await User.findById(id);
+    if (result === undefined || result === null)
+        res.status(404).send('Resource not found.');
+    else {
+        res.send({user: result});
+    }
+});
+
+app.get('/user/:id/liked', async (req, res) => {
+    const id = req.params['id'];
+    const result = await User.findById(id);
+    if (result === undefined || result === null)
+        res.status(404).send('Resource not found.');
+    else {
+        res.send({liked_Posts: result.liked});
     }
 });
 
