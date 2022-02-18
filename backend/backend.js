@@ -174,3 +174,14 @@ app.get('/user/:id/liked', async (req, res) => {
     }
 });
 
+app.patch('/user/:id/liked', async (req, res) => {
+    const id = req.params['id'];
+    const post = req.body.post;
+    const updatedUser = await User.findByIdAndUpdate(id, {$push:{liked: post}});
+
+    if (updatedUser)
+        res.status(201).send(updatedUser);
+    else {
+        res.status(404).send('Resource not found.');
+    }
+});
