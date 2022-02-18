@@ -24,29 +24,29 @@ function useAuth(code) {
         if (!refreshToken || !expiresIn) {
             return;
         }
-        axios.post('http://localhost:5000/auth/refresh', {refreshToken})
-        .then(res => {
-            console.log(res);
-            setAccessToken(res.data.accessToken);
-            setExpiresIn(61);
-        })
-        .catch(() => {
-            console.log(code);
-            window.location = '/' 
-        });
-        // const interval = setInterval(() => {
-        //     axios.post('http://localhost:5000/auth/refresh', {refreshToken})
-        //         .then(res => {
-        //             console.log(res);
-        //             setAccessToken(res.data.accessToken);
-        //             setExpiresIn(61);
-        //         })
-        //         .catch(() => {
-        //             console.log(code);
-        //             window.location = '/' 
-        //         });
-        // }, (expiresIn - 60 ) * 1000);
-        // return () => clearInterval(interval); // in case refresh token changes before refresh, clear timeout
+        // axios.post('http://localhost:5000/auth/refresh', {refreshToken})
+        // .then(res => {
+        //     console.log(res);
+        //     setAccessToken(res.data.accessToken);
+        //     setExpiresIn(61);
+        // })
+        // .catch(() => {
+        //     console.log(code);
+        //     window.location = '/' 
+        // });
+        const interval = setInterval(() => {
+            axios.post('http://localhost:5000/auth/refresh', {refreshToken})
+                .then(res => {
+                    console.log(res);
+                    setAccessToken(res.data.accessToken);
+                    setExpiresIn(res.data.expiresIn);
+                })
+                .catch(() => {
+                    console.log(code);
+                    window.location = '/' 
+                });
+        }, (expiresIn - 60 ) * 1000);
+        return () => clearInterval(interval); // in case refresh token changes before refresh, clear timeout
     }, [refreshToken, expiresIn])
 
     return accessToken;

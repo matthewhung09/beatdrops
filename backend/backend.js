@@ -37,6 +37,8 @@ app.get('/', (req, res) => {
     res.send('Hello, World');
 });
 
+// Get all posts from the database
+// Called on initial load
 app.get('/posts', async (req, res) => {
     try {
         const posts = await Post.find({});
@@ -47,6 +49,7 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+// Handles user login - gets access token and reroutes them to redirect_uri
 app.post('/auth/login', async (req, res) => {
     const code = req.body.code;
     let response;
@@ -67,7 +70,7 @@ app.post('/auth/login', async (req, res) => {
     catch(error) {
         console.log(error);
     }
-
+    console.log('logged in');
     res.json({
         accessToken: response.data.access_token,
         refreshToken: response.data.refresh_token,
@@ -75,8 +78,10 @@ app.post('/auth/login', async (req, res) => {
     });
 });
 
+// Refreshes token 
 app.post('/auth/refresh', async (req, res) => {
     const refreshToken = req.body.refreshToken;
+    let response;
     console.log('here');
     try {
         const data = qs.stringify({
@@ -93,12 +98,14 @@ app.post('/auth/refresh', async (req, res) => {
     catch(error) {
         console.log(error);
     }
+
     res.json({
         accessToken: response.data.access_token,
         expiresIn: response.data.expires_in,
     });    
 })
 
+// Gets current playing song
 app.get('/current'), async (req, res) => {
     try {
         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
@@ -114,6 +121,7 @@ app.get('/current'), async (req, res) => {
     console.log(response.data.item.name);
 }
 
+// Creates a new post and adds it to the database
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
     let post = new Post(new_post);
@@ -121,6 +129,7 @@ app.post('/create', async (req, res) => {
     res.status(201).json(post); // same as res.send except sends in json format
 });
 
+// Queries Spotify API to get song information
 async function getPostData(song, artist) {
     const data = {
         'type': 'track',
@@ -162,12 +171,16 @@ async function getPostData(song, artist) {
     catch(error) {
         console.log(error);
     }
-
 }
 
+// Get access token in order to use Spotify API
+// This is different from /auth/login - here we use our developer credentials 
+// to get access token to make requests to API
 async function getAccessToken() {
     try {
-        const data = qs.stringify({'grant_type':'client_credentials'});
+        const data = qs.stringify({
+            'grant_type':'client_credentials'
+        });
         const response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
                 'Authorization': `Basic ${auth_token}`,
