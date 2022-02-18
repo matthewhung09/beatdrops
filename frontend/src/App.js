@@ -9,6 +9,9 @@ import PostForm from './components/PostForm/PostForm';
 import Dropdown from './components/Dropdown/Dropdown';
 import axios from 'axios';
 import SignUpForm from './components/SignUpForm/SignUpForm';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
+import LoginForm from './components/LoginForm/LoginForm';
 
 const Header = styled.div`
   text-align: center;
@@ -103,50 +106,68 @@ function App() {
   return (
     <div className='App'>
       {/* routed from login, routes to main page */}
-      <SignUpForm/>
-      <Header>
-        <h1>beatdrops</h1>
-        <h2><i>YikYak meets Spotify</i></h2>
-      </Header>
-      <div className='home'>
-        <div className='home-actions'>
-          <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
-          <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
-          >
-            {close => (
-              <div className="modal">
-                <button className="close" onClick={close}>
-                  &times;
-                </button>
-                <div className="header"> Post a song </div>
-                <div className="content">
-                    <PostForm
-                      newSong={newSong}
-                      newArtist={newArtist}
-                      onClick={onSubmitPostClick}
-                      onChangeSong={(e) => setNewSong(e.target.value)}
-                      onChangeArtist={(e) => setNewArtist(e.target.value)}
+      <Router>
+        <Routes>
+          <Route path="/" 
+            element={<LoginForm/>} 
+          />
+          <Route path="/signup" 
+            element={<SignUpForm/>} 
+          />
+          <Route path="/spotify" 
+            element={
+              <SpotifyLogin/>
+            }
+          />
+          <Route path="/home" 
+            element={
+              <div className='home'>
+                <Header>
+                  <h1>beatdrops</h1>
+                  <h2><i>YikYak meets Spotify</i></h2>
+                </Header>
+                <div className='home-actions'>
+                  <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
+                  <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
+                  >
+                    {close => (
+                      <div className="modal">
+                        <button className="close" onClick={close}>
+                          &times;
+                        </button>
+                        <div className="header"> Post a song </div>
+                        <div className="content">
+                            <PostForm
+                              newSong={newSong}
+                              newArtist={newArtist}
+                              onClick={onSubmitPostClick}
+                              onChangeSong={(e) => setNewSong(e.target.value)}
+                              onChangeArtist={(e) => setNewArtist(e.target.value)}
+                            />
+                        </div>
+                      </div>
+                    )}
+                  </Popup>
+                </div>
+                <div className='posts'>
+                  {postList.map((post, index) => 
+                    <Post key={index}
+                        song={post.title}
+                        artist={post.artist}
+                        timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                        likes={post.likes}
+                        liked={post.liked}
+                        url={post.url}
+                        updateLikes={() => updateLikes(post._id)}
+                        album={post.album}
                     />
+                  )}
                 </div>
               </div>
-            )}
-          </Popup>
-        </div>
-        <div className='posts'>
-          {postList.map((post, index) => 
-            <Post key={index}
-                song={post.title}
-                artist={post.artist}
-                timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
-                likes={post.likes}
-                liked={post.liked}
-                url={post.url}
-                updateLikes={() => updateLikes(post._id)}
-                album={post.album}
-            />
-          )}
-        </div>
-      </div>
+            } 
+          />
+        </Routes>
+      </Router>
     </div>
   );
 }
