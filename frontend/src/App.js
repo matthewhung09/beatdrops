@@ -113,7 +113,7 @@ function App() {
     }
   }
 
-  return ( code ? 
+  return (
     <div className='App'>
       {/* routed from login, routes to main page */}
       <Router>
@@ -179,7 +179,6 @@ function App() {
         </Routes>
       </Router>
     </div>
-    : <Login />
   );
 }
 

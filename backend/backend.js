@@ -59,7 +59,7 @@ app.post('/auth/login', async (req, res) => {
         const data = qs.stringify({
             'grant_type':'authorization_code', 
             'code': code, 
-            'redirect_uri': 'http://localhost:3000'
+            'redirect_uri': 'http://localhost:3000/home'
         });
         response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
