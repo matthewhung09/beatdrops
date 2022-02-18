@@ -1,5 +1,6 @@
-/* ---- general ---- */
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
+/* ---- general ---- */
 .App {
   text-align: center;
   display: flex;
@@ -7,13 +8,8 @@
   align-items: center;
 }
 
-/* .form-container input {
-  border: 0.2em rgb(56, 56, 56);
-} */
-
-.app-container {
-  display: flex;
-  flex-direction: column;
+h1 {
+  font-weight: 700;
 }
 
 /* ---- modal ---- */
@@ -74,7 +70,6 @@
   align-items: center;
   border-radius: 0;
   font-size: small;
-  font-weight: bold;
   width: 13em;
   padding: 0.8em;
   padding-left: 1em;
@@ -103,10 +98,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80%;
+  width: 85%;
   max-width: 60em;
   min-width: 36em;
-  margin-top: 2em;
+  margin-top: 1em;
   /* background-color: antiquewhite; */
 }
 
@@ -117,7 +112,7 @@
   justify-content: center;
   /* background-color: aliceblue; */
   margin-bottom: 2em;
-  margin-top: 0em;
+  margin-top: 1.2em;
 }
 
 .home-actions > * {

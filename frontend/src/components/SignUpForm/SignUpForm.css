@@ -1,0 +1,15 @@
+.login {
+  display: inline;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+}
+
+.login-btn {
+  background-color: white;
+  width: min-content;
+  color: black;
+  font-size: small;
+  text-decoration: underline;
+  cursor: pointer;
+}

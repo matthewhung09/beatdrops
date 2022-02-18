@@ -45,9 +45,7 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-
-
-function SignUpForm() {
+function LoginForm() {
     let navigate = useNavigate();
 
     // style
@@ -106,7 +104,7 @@ function SignUpForm() {
               <div className="header"> <b>♬ beatdrops </b> </div>
               <button className="close" onClick={close}>&times;</button>
               <PopupWrapper>
-                <PopupTitle> Sign up for a free beatdrops account.</PopupTitle>
+                <PopupTitle> Login to your account.</PopupTitle>
                 <form style={{width: "100%"}} onSubmit={handleSubmit(onSubmit)}>
                     {rEntries.map((entry) => (
                       <Controller defaultValue="" key={entry.input}
@@ -171,15 +169,15 @@ function SignUpForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/spotify")}
+                        onClick={() => navigate("/home")}
                       >
                         Continue
                       </StyledButton>
                       {/* need to add route to login page */}
                       <span className="login" style={{marginTop: 45, marginBottom: -22}}>
-                        Already have an account? 
-                        <button className="login-btn" onClick={()=>navigate("/")}> 
-                          LOGIN
+                        Don't have an account? 
+                        <button className="login-btn" onClick={()=>navigate("/signup")}> 
+                          SIGNUP
                         </button> 
                       </span> 
                     </Box>
@@ -192,4 +190,4 @@ function SignUpForm() {
     );
 }
 
-export default SignUpForm;
+export default LoginForm;
