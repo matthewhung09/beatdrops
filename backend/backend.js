@@ -120,7 +120,6 @@ app.post('/current', async (req, res) => {
     catch(error) {
         console.log(error);
     }
-    console.log(response.data.item.name);
     return res.json({
         song: response.data.item.name,
     });

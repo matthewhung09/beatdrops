@@ -18,7 +18,11 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 const code = new URLSearchParams(window.location.search).get('code');
+const user = {
+  username: "Mike",
+  password: "cat123"
 
+}
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
@@ -27,6 +31,8 @@ function App() {
   // filter
   const [selected, setSelected] = useState('Default');
 
+  // 'liked' set to false as default in the database
+  // loop through each post that user has liked and change status
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
@@ -92,6 +98,7 @@ function App() {
     })
   }
 
+  // send ID of post and user - add liked post to their array
   async function makeLikeCall(id, liked) {
     try {
       const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});

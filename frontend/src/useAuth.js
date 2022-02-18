@@ -14,9 +14,9 @@ function useAuth(code) {
                 setExpiresIn(res.data.expiresIn);
                 // window.history.pushState({}, null, '/'); // clears the code from the url
             })
-            .catch(() => {
-                window.location = '/' // reroute them to login if expires
-            })
+            // .catch(() => {
+            //     window.location = '/' // reroute them to login if expires
+            // })
     }, [code]);
 
     useEffect(() => {
