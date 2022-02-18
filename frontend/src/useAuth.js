@@ -12,7 +12,7 @@ function useAuth(code) {
                 setAccessToken(res.data.accessToken);
                 setRefreshToken(res.data.refreshToken);
                 setExpiresIn(res.data.expiresIn);
-                window.history.pushState({}, null, '/'); // clears the code from the url
+                // window.history.pushState({}, null, '/'); // clears the code from the url
             })
             .catch(() => {
                 window.location = '/' // reroute them to login if expires

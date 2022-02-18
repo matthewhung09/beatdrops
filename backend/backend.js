@@ -103,14 +103,16 @@ app.post('/auth/refresh', async (req, res) => {
         accessToken: response.data.access_token,
         expiresIn: response.data.expires_in,
     });    
-})
+});
 
 // Gets current playing song
-app.get('/current'), async (req, res) => {
+app.post('/current', async (req, res) => {
+    const accessToken = req.body.accessToken;
+    let response;
     try {
         response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
             headers: {
-                'Authorization': `Bearer ${response.data.access_token}`,
+                'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             }
         })
@@ -119,7 +121,10 @@ app.get('/current'), async (req, res) => {
         console.log(error);
     }
     console.log(response.data.item.name);
-}
+    return res.json({
+        song: response.data.item.name,
+    });
+});
 
 // Creates a new post and adds it to the database
 app.post('/create', async (req, res) => {
@@ -203,7 +208,7 @@ app.patch('/like/:id', async (req, res) => {
         updatedPost = await Post.findByIdAndUpdate(id, 
             {$inc: {likes: 1}, $set: {liked: true}},
             {new: true}
-        ); 
+        );
     }
     else {
         updatedPost = await Post.findByIdAndUpdate(id, 
