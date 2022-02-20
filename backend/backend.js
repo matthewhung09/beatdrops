@@ -199,26 +199,30 @@ async function getAccessToken() {
     }
 }
 
-app.patch('/like/:id', async (req, res) => {
+// Update user array and post and then send back new post and user information
+app.patch('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
-    const liked_status = req.body.liked;
+    const post = req.body.post;
+    const liked = req.body.liked;
     let updatedPost;
+    let updatedUser; 
 
-    if (!liked_status) {
-        updatedPost = await Post.findByIdAndUpdate(id, 
-            {$inc: {likes: 1}, $set: {liked: true}},
-            {new: true}
-        );
+    if (liked) {
+        updatedUser = await User.findByIdAndUpdate(id, {$pull:{liked: post}}, {new: true});
+        updatedPost = await Post.findByIdAndUpdate(post, {$inc: {likes: -1}}, {new: true});
     }
+
     else {
-        updatedPost = await Post.findByIdAndUpdate(id, 
-            {$inc: {likes: -1}, $set: {liked: false}},
-            {new: true}
-        ); 
+        updatedUser = await User.findByIdAndUpdate(id, {$push:{liked: post}}, {new: true});
+        updatedPost = await Post.findByIdAndUpdate(post, {$inc: {likes: 1}}, {new: true});
     }
 
-    if (updatedPost)
-        res.status(201).send(updatedPost);
+    if (updatedUser && updatedPost) {
+        res.status(201).json({
+            post: updatedPost,
+            user: updatedUser,
+        });
+    }
     else {
         res.status(404).send('Resource not found.');
     }
@@ -261,14 +265,4 @@ app.get('/user/:id/liked', async (req, res) => {
     }
 });
 
-app.patch('/user/:id/liked', async (req, res) => {
-    const id = req.params['id'];
-    const post = req.body.post;
-    const updatedUser = await User.findByIdAndUpdate(id, {$push:{liked: post}});
 
-    if (updatedUser)
-        res.status(201).send(updatedUser);
-    else {
-        res.status(404).send('Resource not found.');
-    }
-});

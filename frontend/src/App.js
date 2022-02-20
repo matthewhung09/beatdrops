@@ -12,7 +12,6 @@ import SignUpForm from './components/SignUpForm/SignUpForm';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
-import Login from './Login';
 import Dashboard from './Dashboard'
 
 const Header = styled.div`
@@ -21,11 +20,20 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 const code = new URLSearchParams(window.location.search).get('code');
-const user = {
-  username: "Mike",
-  password: "cat123"
 
+let user = {
+  "_id":"621019c3729a505a38048cd4",
+  "username":"Mike",
+  "password":"cat123",
+  "liked":[
+    "620c5593f8c01b6dc0416d56",
+    "620c568589c7a286a93b758f",
+  ],
+  "createdAt":{"$date":{"$numberLong":"1645222339516"}},
+  "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
+  "__v":{"$numberInt":"0"}
 }
+
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
@@ -34,8 +42,6 @@ function App() {
   // filter
   const [selected, setSelected] = useState('Default');
 
-  // 'liked' set to false as default in the database
-  // loop through each post that user has liked and change status
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
@@ -88,13 +94,15 @@ function App() {
     }
   }
 
-  function updateLikes(id) {
-    let objIndex = postList.findIndex((obj) => obj._id === id);
+  function updateLikes(post_id) {
+    let objIndex = postList.findIndex((obj) => obj._id === post_id);
     let elem = postList[objIndex];
-    makeLikeCall(id, elem.liked).then( result => {
+    let liked = user.liked.includes(post_id);
+
+    makeLikeCall(post_id, liked).then( result => {
       if (result && result.status === 201) {
-        elem.liked = !elem.liked; 
-        elem.likes = result.data.likes;
+        user.liked = result.data.user.liked; // Gets updated user liked list 
+        elem.likes = result.data.post.likes; 
         let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex+1)];
         setPosts(newArr);
       }
@@ -102,9 +110,9 @@ function App() {
   }
 
   // send ID of post and user - add liked post to their array
-  async function makeLikeCall(id, liked) {
+  async function makeLikeCall(post_id, liked) {
     try {
-      const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});
+      const response = await axios.patch('http://localhost:5000/user/' + user._id + '/liked', {post: post_id, liked: liked});
       return response;
     }
     catch (error) {
@@ -136,6 +144,7 @@ function App() {
                   <h1>beatdrops</h1>
                   <h2><i>YikYak meets Spotify</i></h2>
                 </Header>
+                {/* <Dashboard code={code} /> */}
                 <div className='home-actions'>
                   <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
                   <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
@@ -166,7 +175,7 @@ function App() {
                         artist={post.artist}
                         timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
                         likes={post.likes}
-                        liked={post.liked}
+                        liked={user.liked.includes(post._id)}
                         url={post.url}
                         updateLikes={() => updateLikes(post._id)}
                         album={post.album}
