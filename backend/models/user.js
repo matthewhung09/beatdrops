@@ -15,6 +15,4 @@ const UserSchema = new mongoose.Schema({
   position: {latitude: Number, longitude: Number},
 
 }, {collection : 'Users', timestamps: true});
-
-const User = mongoose.model("User", UserSchema);
-module.exports = User;
+module.exports = UserSchema;

@@ -5,12 +5,10 @@ const path = require('path');
 const axios = require('axios');
 const qs = require('qs');
 const cors = require('cors');
-//const postServices = require('./models/post-services');
+const postServices = require('./models/post-services');
+const userServices = require('./models/user-services');
 const app = express();
 const port = 5000;
-const Post = require('./models/post');
-const User = require('./models/user');
-const mongoose = require('mongoose');
 const { access } = require('fs');
 
 dotenv.config({path: path.resolve(__dirname, '.env')})
@@ -22,14 +20,6 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toStrin
 app.use(cors());
 app.use(express.json());
 
-if (!process.env.CONNECTION_URL) {
-    console.warn('missing connection url')
-}
-mongoose
-    .connect(process.env.CONNECTION_URL)
-    .then(() => console.log('Connected to database'))
-    .catch((error) => console.log(error));
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -40,7 +30,7 @@ app.get('/', (req, res) => {
 
 app.get('/posts', async (req, res) => {
     try {
-        const posts = await Post.find({});
+        const posts = await postServices.getPosts();
         res.send(posts);         
     } catch (error) {
         res.status(500).send(error.message);
@@ -75,9 +65,14 @@ app.post('/auth/login', async (req, res) => {
 
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
-    let post = new Post(new_post);
-    post = await post.save();
-    res.status(201).json(post); // same as res.send except sends in json format
+    let post = await postServices.addPost(new_post);
+    if(post){
+        res.status(201).json(post); // same as res.send except sends in json format
+    }
+    else{
+        res.status(500).end();
+    }
+    
 });
 
 async function getPostData(song, artist) {
@@ -143,21 +138,7 @@ async function getAccessToken() {
 app.patch('/like/:id', async (req, res) => {
     const id = req.params['id'];
     const liked_status = req.body.liked;
-    let updatedPost;
-
-    if (!liked_status) {
-        updatedPost = await Post.findByIdAndUpdate(id, 
-            {$inc: {likes: 1}, $set: {liked: true}},
-            {new: true}
-        ); 
-    }
-    else {
-        updatedPost = await Post.findByIdAndUpdate(id, 
-            {$inc: {likes: -1}, $set: {liked: false}},
-            {new: true}
-        ); 
-    }
-
+    let updatedPost = postServices.updateLikeStatus(id, liked_status);
     if (updatedPost)
         res.status(201).send(updatedPost);
     else {
@@ -167,14 +148,18 @@ app.patch('/like/:id', async (req, res) => {
 
 app.post('/user', async (req, res) => {
     const new_user = req.body;
-    let user = new User(new_user);
-    user = await user.save();
-    res.status(201).json(user);
+    let user =  await userServices.addUser(new_user);
+    if(post){
+        res.status(201).json(user);
+    }
+    else{
+        res.status(500).end();
+    }
 });
 
 app.get('/user', async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await userServices.getUsers();
         res.send(users);         
     } catch (error) {
         res.status(500).send(error.message);
@@ -184,7 +169,7 @@ app.get('/user', async (req, res) => {
 
 app.get('/user/:id', async (req, res) => {
     const id = req.params['id'];
-    const result = await User.findById(id);
+    const result = await userServices.findUserById(id);
     if (result === undefined || result === null)
         res.status(404).send('Resource not found.');
     else {
@@ -194,19 +179,18 @@ app.get('/user/:id', async (req, res) => {
 
 app.get('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
-    const result = await User.findById(id);
+    const result = await userServices.getUserLiked(id);
     if (result === undefined || result === null)
         res.status(404).send('Resource not found.');
     else {
-        res.send({liked_Posts: result.liked});
+        res.send(result);
     }
 });
 
 app.patch('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
     const post = req.body.post;
-    const updatedUser = await User.findByIdAndUpdate(id, {$push:{liked: post}});
-
+    const updatedUser = await userServices.addUserLiked(id, post);
     if (updatedUser)
         res.status(201).send(updatedUser);
     else {
