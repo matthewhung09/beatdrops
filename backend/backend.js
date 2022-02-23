@@ -213,9 +213,13 @@ app.patch('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
     const post = req.body.post;
     const liked = req.body.liked;
-
+    let updatedUser;
     let updatedPost = await postServices.updateLikeStatus(post, liked);
-    let updatedUser = await userServices.addUserLiked(id, post)
+    if (liked) 
+        updatedUser = await userServices.removeUserLiked(id, post);
+    else
+        updatedUser = await userServices.addUserLiked(id, post);
+
 
     if (updatedUser && updatedPost) {
         res.status(201).json({

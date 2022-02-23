@@ -54,7 +54,17 @@ async function getUserLiked(id){
 async function addUserLiked(user_id, post_id){
     const userModel = getDbConnection().model("User", UserSchema);    
     try{
-        return await userModel.findByIdAndUpdate(user_id, {$push:{liked: post_id}})
+        return await userModel.findByIdAndUpdate(user_id, {$push:{liked: post_id}}, {new: true});
+    }catch(error) {
+        console.log(error);
+        return undefined;
+    }
+}
+
+async function removeUserLiked(user_id, post_id){
+    const userModel = getDbConnection().model("User", UserSchema);    
+    try{
+        return await userModel.findByIdAndUpdate(user_id, {$pull:{liked: post_id}}, {new: true});
     }catch(error) {
         console.log(error);
         return undefined;
@@ -66,3 +76,4 @@ exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.getUserLiked = getUserLiked;
 exports.addUserLiked = addUserLiked;
+exports.removeUserLiked = removeUserLiked;

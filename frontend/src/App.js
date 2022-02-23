@@ -22,12 +22,11 @@ const Header = styled.div`
 const code = new URLSearchParams(window.location.search).get('code');
 
 let user = {
-  "_id":"621019c3729a505a38048cd4",
+  "_id":"6212bd6147c0e08e12ccc0b4",
   "username":"Mike",
   "password":"cat123",
   "liked":[
-    "620c5593f8c01b6dc0416d56",
-    "620c568589c7a286a93b758f",
+    "620c5019e318d799a0e1fcfe",
   ],
   "createdAt":{"$date":{"$numberLong":"1645222339516"}},
   "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
