@@ -11,6 +11,20 @@ const app = express();
 const port = 5000;
 const { access } = require('fs');
 
+const handleErrors = (err) => {
+    console.log(err.message, err.code);
+    let errors = { username: '', email: '', password: ''};
+
+    // validation errors
+    if (err.message.includes('User validation failed')) {
+        Object.values(err.errors).forEach(({properties}) => {
+            errors[properties.path] = properties.message;
+        })
+    }
+
+    return errors;
+};
+
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
 const client_id = process.env.CLIENT_ID; 
@@ -28,6 +42,8 @@ app.get('/', (req, res) => {
     res.send('Hello, World');
 });
 
+// Get all posts from the database
+// Called on initial load
 app.get('/posts', async (req, res) => {
     try {
         const posts = await postServices.getPosts();
@@ -38,16 +54,20 @@ app.get('/posts', async (req, res) => {
     }
 });
 
+// Handles user login - gets access token and reroutes them to redirect_uri
 app.post('/auth/login', async (req, res) => {
     const code = req.body.code;
     let response;
-    const auth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`, 'utf-8').toString('base64');
 
     try {
-        const data = qs.stringify({'grant_type':'authorization_code', 'code': code, 'redirect_uri': 'http://localhost:3000'});
+        const data = qs.stringify({
+            'grant_type':'authorization_code', 
+            'code': code, 
+            'redirect_uri': 'http://localhost:3000/home'
+        });
         response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
-                'Authorization': `Basic ${auth}`,
+                'Authorization': `Basic ${auth_token}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
@@ -55,7 +75,7 @@ app.post('/auth/login', async (req, res) => {
     catch(error) {
         console.log(error);
     }
-    console.log(response.data);
+    console.log('logged in');
     res.json({
         accessToken: response.data.access_token,
         refreshToken: response.data.refresh_token,
@@ -63,6 +83,54 @@ app.post('/auth/login', async (req, res) => {
     });
 });
 
+// Refreshes token 
+app.post('/auth/refresh', async (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    let response;
+    console.log('here');
+    try {
+        const data = qs.stringify({
+            'grant_type':'refresh_token', 
+            'refresh_token': refreshToken
+        });
+        response = await axios.post('https://accounts.spotify.com/api/token', data, {
+            headers: {
+                'Authorization': `Basic ${auth_token}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+
+    res.json({
+        accessToken: response.data.access_token,
+        expiresIn: response.data.expires_in,
+    });    
+});
+
+// Gets current playing song
+app.post('/current', async (req, res) => {
+    const accessToken = req.body.accessToken;
+    let response;
+    try {
+        response = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+    catch(error) {
+        console.log(error);
+    }
+    return res.json({
+        song: response.data.item.name,
+    });
+});
+
+// Creates a new post and adds it to the database
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
     let post = await postServices.addPost(new_post);
@@ -75,6 +143,7 @@ app.post('/create', async (req, res) => {
     
 });
 
+// Queries Spotify API to get song information
 async function getPostData(song, artist) {
     const data = {
         'type': 'track',
@@ -116,12 +185,16 @@ async function getPostData(song, artist) {
     catch(error) {
         console.log(error);
     }
-
 }
 
+// Get access token in order to use Spotify API
+// This is different from /auth/login - here we use our developer credentials 
+// to get access token to make requests to API
 async function getAccessToken() {
     try {
-        const data = qs.stringify({'grant_type':'client_credentials'});
+        const data = qs.stringify({
+            'grant_type':'client_credentials'
+        });
         const response = await axios.post('https://accounts.spotify.com/api/token', data, {
             headers: {
                 'Authorization': `Basic ${auth_token}`,
@@ -135,12 +208,21 @@ async function getAccessToken() {
     }
 }
 
-app.patch('/like/:id', async (req, res) => {
+// Update user array and post and then send back new post and user information
+app.patch('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
-    const liked_status = req.body.liked;
-    let updatedPost = postServices.updateLikeStatus(id, liked_status);
-    if (updatedPost)
-        res.status(201).send(updatedPost);
+    const post = req.body.post;
+    const liked = req.body.liked;
+
+    let updatedPost = await postServices.updateLikeStatus(post, liked);
+    let updatedUser = await userServices.addUserLiked(id, post)
+
+    if (updatedUser && updatedPost) {
+        res.status(201).json({
+            post: updatedPost,
+            user: updatedUser,
+        });
+    }
     else {
         res.status(404).send('Resource not found.');
     }
@@ -149,11 +231,12 @@ app.patch('/like/:id', async (req, res) => {
 app.post('/user', async (req, res) => {
     const new_user = req.body;
     let user =  await userServices.addUser(new_user);
-    if(post){
+    if(user){
         res.status(201).json(user);
     }
-    else{
-        res.status(500).end();
+     else {
+       // const errors = handleErrors(err);
+       res.status(400)// .json({errors});
     }
 });
 
@@ -187,13 +270,3 @@ app.get('/user/:id/liked', async (req, res) => {
     }
 });
 
-app.patch('/user/:id/liked', async (req, res) => {
-    const id = req.params['id'];
-    const post = req.body.post;
-    const updatedUser = await userServices.addUserLiked(id, post);
-    if (updatedUser)
-        res.status(201).send(updatedUser);
-    else {
-        res.status(404).send('Resource not found.');
-    }
-});
