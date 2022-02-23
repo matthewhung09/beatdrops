@@ -1,10 +1,9 @@
-import { BiLike } from "react-icons/bi";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import './Post.css';
 import 'reactjs-popup/dist/index.css';
 import Spotify from 'react-spotify-embed'; 
 
-function Post({song, artist, timePosted, likes, liked, url, updateLikes, album}) {
+function Post({timePosted, likes, liked, url, updateLikes}) {
 	const location = "Kennedy Library";
 	// const timeAndLocation1 = `Posted less than an hour ago @ ${location}`
 	// const timeAndLocation2 = `Posted an hour ago @ ${location}`

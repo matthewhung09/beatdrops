@@ -26,7 +26,6 @@ let user = {
   "username":"Mike",
   "password":"cat123",
   "liked":[
-    "620c5019e318d799a0e1fcfe",
   ],
   "createdAt":{"$date":{"$numberLong":"1645222339516"}},
   "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
@@ -170,14 +169,11 @@ function App() {
                 <div className='posts'>
                   {postList.map((post, index) => 
                     <Post key={index}
-                        song={post.title}
-                        artist={post.artist}
                         timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
                         likes={post.likes}
                         liked={user.liked.includes(post._id)}
                         url={post.url}
                         updateLikes={() => updateLikes(post._id)}
-                        album={post.album}
                     />
                   )}
                 </div>

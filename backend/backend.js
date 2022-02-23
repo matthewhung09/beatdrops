@@ -167,17 +167,12 @@ async function getPostData(song, artist) {
         // Get actual song name and artist in case of mispellings/typos
         const song_name = response.data.tracks.items[0].name; 
         const song_artist = response.data.tracks.items[0].artists[0].name;
-        const album_cover = response.data.tracks.items[0].album.images[2].url;
-        const song_uri = response.data.tracks.items[0].uri;
 
         const new_post = {
             'title': song_name,
             'artist': song_artist,
             'likes': 0,
-            'liked': false,
-            'url': song_url,
-            'album': album_cover,
-            'uri': song_uri
+            'url': song_url
         };
         // console.log(new_post);
         return new_post;
