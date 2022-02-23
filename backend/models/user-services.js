@@ -16,7 +16,7 @@ function getDbConnection() {
 async function addUser(user){
     const userModel = getDbConnection().model("User", UserSchema);
     try{
-        const userToAdd = new userModel(post);
+        const userToAdd = new userModel(user);
         const savedUser = await userToAdd.save()
         return savedUser;
     }catch(error) {
