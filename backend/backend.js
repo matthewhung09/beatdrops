@@ -5,12 +5,10 @@ const path = require('path');
 const axios = require('axios');
 const qs = require('qs');
 const cors = require('cors');
-//const postServices = require('./models/post-services');
+const postServices = require('./models/post-services');
+const userServices = require('./models/user-services');
 const app = express();
 const port = 5000;
-const Post = require('./models/post');
-const User = require('./models/user');
-const mongoose = require('mongoose');
 const { access } = require('fs');
 
 const handleErrors = (err) => {
@@ -36,15 +34,6 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toStrin
 app.use(cors());
 app.use(express.json());
 
-if (!process.env.CONNECTION_URL) {
-    console.warn('missing connection url')
-}
-
-mongoose
-    .connect(process.env.CONNECTION_URL)
-    .then(() => console.log('Connected to database'))
-    .catch((error) => console.log(error));
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -57,7 +46,7 @@ app.get('/', (req, res) => {
 // Called on initial load
 app.get('/posts', async (req, res) => {
     try {
-        const posts = await Post.find({});
+        const posts = await postServices.getPosts();
         res.send(posts);         
     } catch (error) {
         res.status(500).send(error.message);
@@ -144,9 +133,14 @@ app.post('/current', async (req, res) => {
 // Creates a new post and adds it to the database
 app.post('/create', async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist)
-    let post = new Post(new_post);
-    post = await post.save();
-    res.status(201).json(post); // same as res.send except sends in json format
+    let post = await postServices.addPost(new_post);
+    if(post){
+        res.status(201).json(post); // same as res.send except sends in json format
+    }
+    else{
+        res.status(500).end();
+    }
+    
 });
 
 // Queries Spotify API to get song information
@@ -219,18 +213,9 @@ app.patch('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
     const post = req.body.post;
     const liked = req.body.liked;
-    let updatedPost;
-    let updatedUser; 
 
-    if (liked) {
-        updatedUser = await User.findByIdAndUpdate(id, {$pull:{liked: post}}, {new: true});
-        updatedPost = await Post.findByIdAndUpdate(post, {$inc: {likes: -1}}, {new: true});
-    }
-
-    else {
-        updatedUser = await User.findByIdAndUpdate(id, {$push:{liked: post}}, {new: true});
-        updatedPost = await Post.findByIdAndUpdate(post, {$inc: {likes: 1}}, {new: true});
-    }
+    let updatedPost = await postServices.updateLikeStatus(post, liked);
+    let updatedUser = await userServices.addUserLiked(id, post)
 
     if (updatedUser && updatedPost) {
         res.status(201).json({
@@ -244,20 +229,20 @@ app.patch('/user/:id/liked', async (req, res) => {
 });
 
 app.post('/user', async (req, res) => {
-    const { username, email, password } = req.body;
-    try {
-        const user = await User.create({ username, email, password })
+    const new_user = req.body;
+    let user =  await userServices.addUser(new_user);
+    if(user){
         res.status(201).json(user);
     }
-    catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({errors});
+     else {
+       // const errors = handleErrors(err);
+       res.status(400)// .json({errors});
     }
 });
 
 app.get('/user', async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await userServices.getUsers();
         res.send(users);         
     } catch (error) {
         res.status(500).send(error.message);
@@ -267,7 +252,7 @@ app.get('/user', async (req, res) => {
 
 app.get('/user/:id', async (req, res) => {
     const id = req.params['id'];
-    const result = await User.findById(id);
+    const result = await userServices.findUserById(id);
     if (result === undefined || result === null)
         res.status(404).send('Resource not found.');
     else {
@@ -277,12 +262,11 @@ app.get('/user/:id', async (req, res) => {
 
 app.get('/user/:id/liked', async (req, res) => {
     const id = req.params['id'];
-    const result = await User.findById(id);
+    const result = await userServices.getUserLiked(id);
     if (result === undefined || result === null)
         res.status(404).send('Resource not found.');
     else {
-        res.send({liked_Posts: result.liked});
+        res.send(result);
     }
 });
-
 

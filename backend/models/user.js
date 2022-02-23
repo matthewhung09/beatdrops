@@ -30,6 +30,7 @@ const UserSchema = new mongoose.Schema({
 
 // UserSchema.index({ username: 1, email: 1 }, { unique: true});
 
+
 UserSchema.pre('save', async function(next) {
   const salt = await bcrypt.genSalt(); 
   this.password = await bcrypt.hash(this.password, salt);
@@ -37,5 +38,4 @@ UserSchema.pre('save', async function(next) {
 });
 
 UserSchema.plugin(uniqueValidator);
-const User = mongoose.model("User", UserSchema);
-module.exports = User;
+module.exports = UserSchema;
