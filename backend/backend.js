@@ -13,6 +13,20 @@ const User = require('./models/user');
 const mongoose = require('mongoose');
 const { access } = require('fs');
 
+const handleErrors = (err) => {
+    console.log(err.message, err.code);
+    let errors = { username: '', email: '', password: ''};
+
+    // validation errors
+    if (err.message.includes('User validation failed')) {
+        Object.values(err.errors).forEach(({properties}) => {
+            errors[properties.path] = properties.message;
+        })
+    }
+
+    return errors;
+};
+
 dotenv.config({path: path.resolve(__dirname, '.env')})
 
 const client_id = process.env.CLIENT_ID; 
@@ -25,6 +39,7 @@ app.use(express.json());
 if (!process.env.CONNECTION_URL) {
     console.warn('missing connection url')
 }
+
 mongoose
     .connect(process.env.CONNECTION_URL)
     .then(() => console.log('Connected to database'))
@@ -229,10 +244,15 @@ app.patch('/user/:id/liked', async (req, res) => {
 });
 
 app.post('/user', async (req, res) => {
-    const new_user = req.body;
-    let user = new User(new_user);
-    user = await user.save();
-    res.status(201).json(user);
+    const { username, email, password } = req.body;
+    try {
+        const user = await User.create({ username, email, password })
+        res.status(201).json(user);
+    }
+    catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({errors});
+    }
 });
 
 app.get('/user', async (req, res) => {
