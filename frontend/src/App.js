@@ -19,6 +19,12 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 
+axios.post('/api', (request, response) => {
+
+  console.log(response.data);
+
+});
+
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
@@ -26,6 +32,8 @@ function App() {
 
   // filter
   const [selected, setSelected] = useState('Default');
+
+
 
   useEffect(() => {
     getAllPosts().then( result => {
