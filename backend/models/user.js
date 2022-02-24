@@ -37,20 +37,20 @@ UserSchema.pre('save', async function(next) {
   next();
 });
 
-UserSchema.statics.login = async function(email, password) {
-  console.log(email);
-  const user = await this.find({ email: email });
-  console.log(user);
-  if (user) {
-    console.log('inside');
-    const auth = await bcrypt.compare(password, user.password);
-    if (auth) {
-      return user;
-    }
-    throw Error('incorrect password');
-  }
-  throw Error('incorrect email');
-};
+// UserSchema.statics.login = async function(email, password) {
+//   console.log(email);
+//   const user = await this.find({ email: email });
+//   console.log(user);
+//   if (user) {
+//     console.log('inside');
+//     const auth = await bcrypt.compare(password, user.password);
+//     if (auth) {
+//       return user;
+//     }
+//     throw Error('incorrect password');
+//   }
+//   throw Error('incorrect email');
+// };
 
 UserSchema.plugin(uniqueValidator);
 

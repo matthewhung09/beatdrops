@@ -75,18 +75,20 @@ function LoginForm() {
       resolver: yupResolver(validationSchema),
     });
   
-    // log values when data is submitted
     const onSubmit = async (values) => {
-      // console.log(values);
       let response;
       try {
         response = await axios.post('http://localhost:5000/login', {
           email: values.email,
           password: values.password,
         });
-        const data = response.data();
-        console.log(data);
+        const data = response.data;
 
+        if (data.errors) {
+          console.log(data.errors);
+        }
+        
+        // Route to main page if login info is correct
         if (data.user) {
           window.location.assign('/home');
         }

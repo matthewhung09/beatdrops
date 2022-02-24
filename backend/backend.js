@@ -11,12 +11,17 @@ const app = express();
 const port = 5000;
 const { access } = require('fs');
 const jwt = require('jsonwebtoken');
-const UserSchema = require('./models/user');
-const mongoose = require('mongoose');
 
 const handleErrors = (err) => {
     console.log(err.message, err.code);
     let errors = { username: '', email: '', password: ''};
+
+    if (err.message == 'incorrect email') {
+        errors.email = 'Email is not registered';
+    }
+    if (err.message == 'incorrect password') {
+        errors.email = 'Incorrect password';
+    }
 
     // validation errors
     if (err.message.includes('User validation failed')) {
@@ -241,30 +246,31 @@ function createToken(id) {
 app.post('/signup', async (req, res) => {
     const new_user = req.body;
     console.log(new_user);
-    let user = await userServices.addUser(new_user);
-    // log user in instantaneously
-    const token = createToken(user._id);
-    res.cookie('jwt', token, {httpOnly: true, maxAge: 3600 * 1000}); // in MILLISECONDS
-    if(user){
+    try {
+        // log user in instantaneously
+        const user = await userServices.addUser(new_user);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: 3600 * 1000});
         res.status(201).json({user: user._id});
     }
-     else {
-       // const errors = handleErrors(err);
-       res.status(400)// .json({errors});
+    catch{
+        const errors = handleErrors(err);
+        res.status(400)// .json({errors});
     }
 });
 
 app.post('/login', async (req, res) => {
-    const UserModel = mongoose.model('User', UserSchema)
     const {email, password} = req.body;
     try {
-        const user = await UserModel.login(email, password);
+        const user = await userServices.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: 3600 * 1000})
         res.status(200).json({user: user._id});
     }
     catch (err) {
-        res.status(400).json({})
+        const errors = handleErrors(err);
+        res.status(400).json({errors})
     }
-
 });
 
 app.get('/user', async (req, res) => {
