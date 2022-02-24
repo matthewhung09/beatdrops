@@ -13,6 +13,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
 import Dashboard from './Dashboard'
+import { useLocation } from "react-router-dom";
 
 const Header = styled.div`
   text-align: center;
@@ -36,7 +37,7 @@ function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
-
+  const user = useLocation();
   // filter
   const [selected, setSelected] = useState('Default');
 

@@ -227,8 +227,10 @@ app.patch('/user/:id/liked', async (req, res) => {
     }
 });
 
+// Adds user to database upon signup
 app.post('/user', async (req, res) => {
     const new_user = req.body;
+    console.log(new_user);
     let user =  await userServices.addUser(new_user);
     if(user){
         res.status(201).json(user);

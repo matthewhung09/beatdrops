@@ -11,6 +11,7 @@ import Popup from 'reactjs-popup';
 import '../../App.css';
 import { useNavigate } from "react-router-dom";
 import '../SignUpForm/SignUpForm.css';
+import axios from 'axios';
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -45,7 +46,14 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-
+// const register = () => {
+//     axios.post('https://localhost:5000/user', {
+//        username: a,
+//        password: a,
+//     }).then((response) => {
+//         console.log(response);
+//     });
+// };
 
 function SignUpForm() {
     let navigate = useNavigate();
@@ -77,9 +85,22 @@ function SignUpForm() {
     });
   
     // log values when data is submitted
-    const onSubmit = (values) => {
-      console.log(values);
+    const onSubmit = async (values) => {
+      // console.log(values);
+      let response;
+      try {
+        response = await axios.post('http://localhost:5000/user', {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        });
+      }
+      catch (error) {
+        console.log(error);
+      }
       reset();
+      console.log(response.data);
+      navigate("/spotify", {state: response.data});
     };
   
     // info for required entries
@@ -171,7 +192,7 @@ function SignUpForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/spotify")}
+                        // onClick={() => navigate("/spotify")}
                       >
                         Continue
                       </StyledButton>
