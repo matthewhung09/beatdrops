@@ -11,6 +11,7 @@ import Popup from 'reactjs-popup';
 import '../../App.css';
 import { useNavigate } from "react-router-dom";
 import '../SignUpForm/SignUpForm.css';
+import axios from 'axios'
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -57,17 +58,17 @@ function LoginForm() {
         email: Yup
             .string()      
             .email("Invalid email format.")
-            .required("Please enter your email.")
-            .test("is-valid", (message) => `${message.path} is invalid.`, (value) => value ? isEmailValidator(value) : new Yup.ValidationError("Invalid value.")),
+            .required("Please enter your email."),
+            // .test("is-valid", (message) => `${message.path} is invalid.`, (value) => value ? isEmailValidator(value) : new Yup.ValidationError("Invalid value.")),
         password: Yup
             .string()
             .required("Please enter your password.")
-            .matches(passwordRegExp,
-            "Password must contain at least 8 characters, one uppercase, one number and one special case character."
-            ),
-        username: Yup
-            .string()
-            .required("Username is a required field.")
+            // .matches(passwordRegExp,
+            // "Password must contain at least 8 characters, one uppercase, one number and one special case character."
+            // ),
+        // username: Yup
+        //     .string()
+        //     .required("Username is a required field.")
         // need to check if username is already taken!
     });
     const { handleSubmit, control, reset } = useForm({
@@ -75,16 +76,32 @@ function LoginForm() {
     });
   
     // log values when data is submitted
-    const onSubmit = (values) => {
-      console.log(values);
+    const onSubmit = async (values) => {
+      // console.log(values);
+      let response;
+      try {
+        response = await axios.post('http://localhost:5000/login', {
+          email: values.email,
+          password: values.password,
+        });
+        const data = response.data();
+        console.log(data);
+
+        if (data.user) {
+          window.location.assign('/home');
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
       reset();
     };
   
     // info for required entries
     const rEntries = [
       { input: "email", label: "Email" },
-      { input: "password", label: "Create a password" },
-      { input: "username", label: "What should we call you?" },
+      { input: "password", label: "Password" }
+      // { input: "username", label: "What should we call you?" },
     ];
 
     // sets popup to be open when page is first loaded
@@ -169,7 +186,7 @@ function LoginForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/home")}
+                        // onClick={() => navigate("/home")}
                       >
                         Continue
                       </StyledButton>

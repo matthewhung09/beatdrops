@@ -89,7 +89,7 @@ function SignUpForm() {
       // console.log(values);
       let response;
       try {
-        response = await axios.post('http://localhost:5000/user', {
+        response = await axios.post('http://localhost:5000/signup', {
           username: values.username,
           email: values.email,
           password: values.password,

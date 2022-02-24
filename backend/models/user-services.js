@@ -61,7 +61,7 @@ async function addUserLiked(user_id, post_id){
     }
 }
 
-async function removeUserLiked(user_id, post_id){
+async function removeUserLiked(user_id, post_id) {
     const userModel = getDbConnection().model("User", UserSchema);    
     try{
         return await userModel.findByIdAndUpdate(user_id, {$pull:{liked: post_id}}, {new: true});
@@ -70,6 +70,7 @@ async function removeUserLiked(user_id, post_id){
         return undefined;
     }
 }
+
 
 exports.getUsers = getUsers;
 exports.addUser = addUser;

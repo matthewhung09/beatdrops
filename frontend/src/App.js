@@ -37,7 +37,7 @@ function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
-  const user = useLocation();
+  //let user;
   // filter
   const [selected, setSelected] = useState('Default');
 
