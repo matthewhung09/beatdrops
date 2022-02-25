@@ -3,8 +3,8 @@ import './Post.css';
 import 'reactjs-popup/dist/index.css';
 import Spotify from 'react-spotify-embed'; 
 
-function Post({timePosted, likes, liked, url, updateLikes}) {
-	const location = "Kennedy Library";
+function Post({song, artist, timePosted, likes, liked, url, updateLikes, album, location}) {
+
 	// const timeAndLocation1 = `Posted less than an hour ago @ ${location}`
 	// const timeAndLocation2 = `Posted an hour ago @ ${location}`
 	// const timeAndLocation3 = `Posted ${timePosted} hours ago @ ${location}`
