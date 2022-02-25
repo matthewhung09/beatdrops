@@ -10,10 +10,29 @@ const userServices = require('./models/user-services');
 const app = express();
 const port = 5000;
 const { access } = require('fs');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+dotenv.config({path: path.resolve(__dirname, '.env')})
+
+const client_id = process.env.CLIENT_ID; 
+const client_secret = process.env.CLIENT_SECRET; 
+const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64');
+
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(express.json());
 
 const handleErrors = (err) => {
-    console.log(err.message, err.code);
+    // console.log(err.message, err.code);
     let errors = { username: '', email: '', password: ''};
+
+    if (err.message == 'incorrect email') {
+        errors.email = 'Email is not registered';
+    }
+    if (err.message == 'incorrect password') {
+        errors.password = 'Incorrect password';
+    }
 
     // validation errors
     if (err.message.includes('User validation failed')) {
@@ -25,15 +44,6 @@ const handleErrors = (err) => {
     return errors;
 };
 
-dotenv.config({path: path.resolve(__dirname, '.env')})
-
-const client_id = process.env.CLIENT_ID; 
-const client_secret = process.env.CLIENT_SECRET; 
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64');
-
-app.use(cors());
-app.use(express.json());
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -44,15 +54,43 @@ app.get('/', (req, res) => {
 
 // Get all posts from the database
 // Called on initial load
-app.get('/posts', async (req, res) => {
+app.get('/posts/:cookie', async (req, res) => {
+    const cookie = req.params['cookie'];
+    const user = await verifyCookie(cookie);
     try {
         const posts = await postServices.getPosts();
-        res.send(posts);         
+        const new_posts = posts.map(post => ({
+            _id: post._id,
+            title: post.title,
+            artist: post.artist,
+            likes: post.likes,
+            url: post.url,
+            createdAt: post.createdAt,
+            updatedAt: post.updatedAt,
+            liked: user.liked.includes(post._id)
+        }));
+        res.json({posts: new_posts, user: user});         
     } catch (error) {
         res.status(500).send(error.message);
         console.log('error');
     }
 });
+
+async function verifyCookie(token) {
+    let user;
+    if (token) {
+        await jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.log(err);
+            } 
+            else {
+                user = await userServices.findUserById(decodedToken.id);
+            } 
+        });
+    } 
+    return user;
+}
+
 
 // Handles user login - gets access token and reroutes them to redirect_uri
 app.post('/auth/login', async (req, res) => {
@@ -230,15 +268,58 @@ app.patch('/user/:id/liked', async (req, res) => {
     }
 });
 
-app.post('/user', async (req, res) => {
+function createToken(id) {
+    // payload, secret, options
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: 3600 // in SECONDS
+    });
+};
+
+// Adds user to database upon signup
+app.post('/signup', async (req, res) => {
     const new_user = req.body;
-    let user =  await userServices.addUser(new_user);
-    if(user){
-        res.status(201).json(user);
+    try {
+        // log user in instantaneously
+        const user = await userServices.addUser(new_user);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {maxAge: 3600 * 1000});
+        res.status(201).json({user: user._id});
     }
-     else {
-       // const errors = handleErrors(err);
-       res.status(400)// .json({errors});
+    catch{
+        const errors = handleErrors(err);
+        res.status(400)// .json({errors});
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const {email, password} = req.body;
+    try {
+        const user = await userServices.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {maxAge: 3600 * 1000})
+        res.status(200).json({user: user});
+    }
+    catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({errors})
+    }
+});
+
+app.post('/cookie/', async (req, res) => {
+    const token = req.body.token;
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.log(err);
+            } 
+            else {
+                let user = await userServices.findUserById(decodedToken.id);
+                res.status(200).json({user: user});
+            } 
+        });
+    } 
+    else {
+        res.status(400);
     }
 });
 
@@ -271,4 +352,5 @@ app.get('/user/:id/liked', async (req, res) => {
         res.send(result);
     }
 });
+
 

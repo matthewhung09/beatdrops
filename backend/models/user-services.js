@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const UserSchema = require("./user");
+const bcrypt = require('bcrypt');
 
 let dbConnection;
 
@@ -61,7 +62,7 @@ async function addUserLiked(user_id, post_id){
     }
 }
 
-async function removeUserLiked(user_id, post_id){
+async function removeUserLiked(user_id, post_id) {
     const userModel = getDbConnection().model("User", UserSchema);    
     try{
         return await userModel.findByIdAndUpdate(user_id, {$pull:{liked: post_id}}, {new: true});
@@ -70,6 +71,18 @@ async function removeUserLiked(user_id, post_id){
         return undefined;
     }
 }
+async function login(email, password) {
+    const userModel = getDbConnection().model("User", UserSchema);
+    const user = await userModel.findOne({ email: email });
+    if (user) {
+      const auth = await bcrypt.compare(password, user.password);
+      if (auth) {
+        return user;
+      }
+      throw Error('incorrect password');
+    }
+    throw Error('incorrect email');
+  };
 
 exports.getUsers = getUsers;
 exports.addUser = addUser;
@@ -77,3 +90,4 @@ exports.findUserById = findUserById;
 exports.getUserLiked = getUserLiked;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
+exports.login = login;

@@ -11,6 +11,7 @@ import Popup from 'reactjs-popup';
 import '../../App.css';
 import { useNavigate } from "react-router-dom";
 import '../SignUpForm/SignUpForm.css';
+import axios from 'axios'
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -52,39 +53,44 @@ function LoginForm() {
     const variant = "outlined";
   
     // validation
-    const passwordRegExp = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
     const validationSchema = Yup.object().shape({
         email: Yup
             .string()      
-            .email("Invalid email format.")
-            .required("Please enter your email.")
-            .test("is-valid", (message) => `${message.path} is invalid.`, (value) => value ? isEmailValidator(value) : new Yup.ValidationError("Invalid value.")),
+            .required("Please enter your email."),
         password: Yup
             .string()
             .required("Please enter your password.")
-            .matches(passwordRegExp,
-            "Password must contain at least 8 characters, one uppercase, one number and one special case character."
-            ),
-        username: Yup
-            .string()
-            .required("Username is a required field.")
-        // need to check if username is already taken!
     });
     const { handleSubmit, control, reset } = useForm({
       resolver: yupResolver(validationSchema),
     });
+
+    let vErr = {};
   
-    // log values when data is submitted
-    const onSubmit = (values) => {
-      console.log(values);
-      reset();
+    const onSubmit = async (values) => {
+      let response;
+      try {
+        response = await axios.post('http://localhost:5000/login', {
+          email: values.email,
+          password: values.password,
+        }, {withCredentials: true});
+        const data = response.data;
+        
+        // Route to main page if login info is correct
+        if (data.user) {
+          window.location.assign('/home');
+        }
+      }
+      catch (error) {
+        vErr = error.response.data.errors;
+      }
+      // reset();
     };
   
     // info for required entries
     const rEntries = [
       { input: "email", label: "Email" },
-      { input: "password", label: "Create a password" },
-      { input: "username", label: "What should we call you?" },
+      { input: "password", label: "Password" }
     ];
 
     // sets popup to be open when page is first loaded
@@ -128,7 +134,12 @@ function LoginForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : null
+                                  }
                                   type={showPassword ? "text" : "password"}
                                   InputProps={{ 
                                     endAdornment: (
@@ -151,7 +162,12 @@ function LoginForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : null
+                                  }
                                 />
                               )}
                             </Box>
@@ -169,7 +185,7 @@ function LoginForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/home")}
+                        // onClick={() => navigate("/home")}
                       >
                         Continue
                       </StyledButton>

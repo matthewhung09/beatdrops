@@ -14,6 +14,7 @@ import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
 
 import Dashboard from './Dashboard'
+import { useCookies } from 'react-cookie';
 
 const Header = styled.div`
   text-align: center;
@@ -21,28 +22,14 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 const code = new URLSearchParams(window.location.search).get('code');
-
-let user = {
-  "_id":"6212bd6147c0e08e12ccc0b4",
-  "username":"Mike",
-  "password":"cat123",
-  "liked":[
-  ],
-  "createdAt":{"$date":{"$numberLong":"1645222339516"}},
-  "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
-  "__v":{"$numberInt":"0"}
-}
-
-axios.post('/api', (request, response) => {
-
-  console.log(response.data);
-
-});
+let user;
 
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
+
+  const [cookies, setCookie, removeCookie] = useCookies();
 
   // filter
   const [selected, setSelected] = useState('Default');
@@ -52,14 +39,16 @@ function App() {
   useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
-        setPosts(result);
+        console.log(result);
+        setPosts(result.posts);
+        user = result.user;
       }
     });
   }, [] );
 
   async function getAllPosts() {
     try {
-      const response = await axios.get('http://localhost:5000/posts');
+      const response = await axios.get('http://localhost:5000/posts/' + cookies.jwt);
       return response.data;
     }
     catch (error) {
@@ -454,7 +443,6 @@ function App() {
                   <h1>beatdrops</h1>
                   <h2><i>YikYak meets Spotify</i></h2>
                 </Header>
-                {/* <Dashboard code={code} /> */}
                 <div className='home-actions'>
                   <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
                   <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
@@ -479,23 +467,32 @@ function App() {
                   </Popup>
                 </div>
                 <div className='posts'>
-                  {/* {console.log("as;dlkf:", (lat, long))} */}
-                  {postList.map((post, index) => 
-                    <Post key={index}
+                  {user !== undefined ?
+                      postList.map((post, index) => 
+                        <Post key={index}
+                            timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                            likes={post.likes}
+                            liked={ user.liked.includes(post._id) }
+                            url={post.url}
+                            updateLikes={() => updateLikes(post._id)}
+                            location = {`${json_string}`}
 
-                      song={post.title}
-                      artist={post.artist}
-                      timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
-                      likes={post.likes}
-                      liked={post.liked}
-                      url={post.url}
-                      updateLikes={() => updateLikes(post._id)}
-                      album={post.album}
-                  
-                      location = {`${json_string}`}
+                        />
+                    ) : (
+                      postList.map((post, index) => 
+                        <Post key={index}
+                          timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                          likes={post.likes}
+                          liked={ post.liked }
+                          url={post.url}
+                          updateLikes={() => updateLikes(post._id)}
+                          location = {`${json_string}`}
 
-                    />
-                  )}
+                      /> 
+                    ) 
+                    )
+                  }
+
                 </div>
               </div>
             } 
