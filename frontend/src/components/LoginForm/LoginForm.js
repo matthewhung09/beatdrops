@@ -87,7 +87,7 @@ function LoginForm() {
         if (data.errors) {
           console.log(data.errors);
         }
-        
+        console.log(response);
         // Route to main page if login info is correct
         if (data.user) {
           window.location.assign('/home');

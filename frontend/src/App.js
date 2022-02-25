@@ -13,7 +13,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
 import Dashboard from './Dashboard'
-import { useLocation } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 const Header = styled.div`
   text-align: center;
@@ -22,24 +22,31 @@ const Header = styled.div`
 `;
 const code = new URLSearchParams(window.location.search).get('code');
 
-let user = {
-  "_id":"6212bd6147c0e08e12ccc0b4",
-  "username":"Mike",
-  "password":"cat123",
-  "liked":[
-  ],
-  "createdAt":{"$date":{"$numberLong":"1645222339516"}},
-  "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
-  "__v":{"$numberInt":"0"}
-}
+let user;
 
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
   const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
-  //let user;
+
+  const [cookies, setCookie, removeCookie] = useCookies();
+
   // filter
   const [selected, setSelected] = useState('Default');
+
+  useEffect(() => {
+    getUser().then(result => {
+      console.log(result.user);
+      user = result.user;
+    });
+  }, [cookies] );
+
+  async function getUser() {
+    const user = await axios.post('http://localhost:5000/cookie', {
+      token: cookies.jwt
+    });
+    return user.data
+  }
 
   useEffect(() => {
     getAllPosts().then( result => {
@@ -120,6 +127,11 @@ function App() {
     }
   }
 
+  async function getJwt() {
+    const {data} = await axios.get('jwt');
+    console.log(data);
+  }
+
   return (
     <div className='App'>
       {/* routed from login, routes to main page */}
@@ -143,7 +155,6 @@ function App() {
                   <h1>beatdrops</h1>
                   <h2><i>YikYak meets Spotify</i></h2>
                 </Header>
-                {/* <Dashboard code={code} /> */}
                 <div className='home-actions'>
                   <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
                   <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
@@ -168,15 +179,19 @@ function App() {
                   </Popup>
                 </div>
                 <div className='posts'>
-                  {postList.map((post, index) => 
-                    <Post key={index}
-                        timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
-                        likes={post.likes}
-                        liked={user.liked.includes(post._id)}
-                        url={post.url}
-                        updateLikes={() => updateLikes(post._id)}
-                    />
-                  )}
+                  {user !== undefined ?
+                      postList.map((post, index) => 
+                        <Post key={index}
+                            timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                            likes={post.likes}
+                            liked={ user.liked.includes(post._id) }
+                            url={post.url}
+                            updateLikes={() => updateLikes(post._id)}
+                        />
+                    ) : (
+                      null 
+                    )
+                  }
                 </div>
               </div>
             } 

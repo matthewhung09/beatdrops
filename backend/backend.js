@@ -44,6 +44,8 @@ const handleErrors = (err) => {
     return errors;
 };
 
+// app.use(jwt({secret: process.env.JWT_SECRET, getToken: }))
+
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -252,7 +254,7 @@ app.post('/signup', async (req, res) => {
         // log user in instantaneously
         const user = await userServices.addUser(new_user);
         const token = createToken(user._id);
-        res.cookie('jwt', token, {httpOnly: true, maxAge: 3600 * 1000});
+        res.cookie('jwt', token, {maxAge: 3600 * 1000});
         res.status(201).json({user: user._id});
     }
     catch{
@@ -266,12 +268,30 @@ app.post('/login', async (req, res) => {
     try {
         const user = await userServices.login(email, password);
         const token = createToken(user._id);
-        res.cookie('jwt', token, {httpOnly: true, maxAge: 3600 * 1000})
+        res.cookie('jwt', token, {maxAge: 3600 * 1000})
         res.status(200).json({user: user._id});
     }
     catch (err) {
         const errors = handleErrors(err);
         res.status(400).json({errors})
+    }
+});
+
+app.post('/cookie/', async (req, res) => {
+    const token = req.body.token;
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.log(err);
+            } 
+            else {
+                let user = await userServices.findUserById(decodedToken.id);
+                res.status(200).json({user: user});
+            } 
+        });
+    } 
+    else {
+        res.status(400);
     }
 });
 
@@ -304,4 +324,5 @@ app.get('/user/:id/liked', async (req, res) => {
         res.send(result);
     }
 });
+
 
