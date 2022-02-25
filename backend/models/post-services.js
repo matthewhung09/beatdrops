@@ -5,10 +5,10 @@ let dbConnection;
 
 function getDbConnection() {
     if (!dbConnection) {
-        dbConnection = mongoose.createConnection("mongodb://localhost:27017/posts", {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+      dbConnection = mongoose.createConnection(process.env.CONNECTION_URL, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
     }
     return dbConnection;
   }

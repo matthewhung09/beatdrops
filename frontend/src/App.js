@@ -12,13 +12,26 @@ import SignUpForm from './components/SignUpForm/SignUpForm';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from './components/SpotifyLogin/SpotifyLogin';
 import LoginForm from './components/LoginForm/LoginForm';
-import { BsGoogle } from 'react-icons/bs';
+
+import Dashboard from './Dashboard'
 
 const Header = styled.div`
   text-align: center;
   margin-top: 2em;
   line-height: 1.5em;
 `;
+const code = new URLSearchParams(window.location.search).get('code');
+
+let user = {
+  "_id":"6212bd6147c0e08e12ccc0b4",
+  "username":"Mike",
+  "password":"cat123",
+  "liked":[
+  ],
+  "createdAt":{"$date":{"$numberLong":"1645222339516"}},
+  "updatedAt":{"$date":{"$numberLong":"1645226122873"}},
+  "__v":{"$numberInt":"0"}
+}
 
 axios.post('/api', (request, response) => {
 
@@ -88,22 +101,25 @@ function App() {
     }
   }
 
-  function updateLikes(id) {
-    let objIndex = postList.findIndex((obj) => obj._id === id);
+  function updateLikes(post_id) {
+    let objIndex = postList.findIndex((obj) => obj._id === post_id);
     let elem = postList[objIndex];
-    makeLikeCall(id, elem.liked).then( result => {
+    let liked = user.liked.includes(post_id);
+
+    makeLikeCall(post_id, liked).then( result => {
       if (result && result.status === 201) {
-        elem.liked = !elem.liked; 
-        elem.likes = result.data.likes;
+        user.liked = result.data.user.liked; // Gets updated user liked list 
+        elem.likes = result.data.post.likes; 
         let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex+1)];
         setPosts(newArr);
       }
     })
   }
 
-  async function makeLikeCall(id, liked) {
+  // send ID of post and user - add liked post to their array
+  async function makeLikeCall(post_id, liked) {
     try {
-      const response = await axios.patch('http://localhost:5000/like/' + id, {liked: liked});
+      const response = await axios.patch('http://localhost:5000/user/' + user._id + '/liked', {post: post_id, liked: liked});
       return response;
     }
     catch (error) {
@@ -425,6 +441,7 @@ function App() {
                   <h1>beatdrops</h1>
                   <h2><i>YikYak meets Spotify</i></h2>
                 </Header>
+                {/* <Dashboard code={code} /> */}
                 <div className='home-actions'>
                   <Dropdown selected={`Filtered by: ${selected}`} setSelected={setSelected}/>
                   <Popup modal nested trigger={<button className="create-btn"> Post a song <IoIosAddCircle className='circle'/></button>}
@@ -452,6 +469,7 @@ function App() {
                   {/* {console.log("as;dlkf:", (lat, long))} */}
                   {postList.map((post, index) => 
                     <Post key={index}
+
                       song={post.title}
                       artist={post.artist}
                       timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
@@ -460,8 +478,9 @@ function App() {
                       url={post.url}
                       updateLikes={() => updateLikes(post._id)}
                       album={post.album}
-                      //location={`${lat}, ${long}`}
+                  
                       location = {`${json_string}`}
+
                     />
                   )}
                 </div>

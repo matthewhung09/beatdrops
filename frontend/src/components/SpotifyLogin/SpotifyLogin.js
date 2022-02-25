@@ -5,6 +5,8 @@ import Popup from 'reactjs-popup';
 import '../../App.css';
 import { useNavigate } from "react-router-dom";
 
+const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
+
 const PopupWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,6 +56,11 @@ function SpotifyLogin() {
                 <button className="close" onClick={close}>&times;</button>
                 <PopupWrapper>
                     <PopupTitle> Connect with spotify </PopupTitle>
+                    <div className="login-button">
+                      <a href={AUTH_URL}>
+                        LOGIN WITH SPOTIFY
+                      </a>
+                    </div>
                     <StyledButton fullWidth
                         type="submit"
                         variant="contained" 
