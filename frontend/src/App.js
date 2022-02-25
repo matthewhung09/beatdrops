@@ -111,6 +111,37 @@ function App() {
     }
   }
 
+  /* ------ geolocation start ------ */
+
+  const [lat, setLat] = useState();
+  const [long, setLong] = useState();
+
+  useEffect(() => {
+    const handleLocation = () => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLat(position.coords.latitude);
+        setLong(position.coords.longitude);
+        // console.log(`${lat}, ${long}`);
+        // console.log(long);
+      });
+    };
+
+    if (navigator.geolocation) {
+      navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+        if (result.state === 'granted') {
+          console.log(result.state);
+          handleLocation();
+        } else if (result.state === 'prompt') {
+          console.log('prompt');
+        } else if (result.state === 'denied') {
+          console.log('Denied');
+        }
+      });
+    }
+  }, [lat, long]);
+
+  /* ------ geolocation end ------ */
+
   return (
     <div className='App'>
       {/* routed from login, routes to main page */}
@@ -158,16 +189,18 @@ function App() {
                   </Popup>
                 </div>
                 <div className='posts'>
+                  {/* {console.log("as;dlkf:", (lat, long))} */}
                   {postList.map((post, index) => 
                     <Post key={index}
-                        song={post.title}
-                        artist={post.artist}
-                        timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
-                        likes={post.likes}
-                        liked={post.liked}
-                        url={post.url}
-                        updateLikes={() => updateLikes(post._id)}
-                        album={post.album}
+                      song={post.title}
+                      artist={post.artist}
+                      timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                      likes={post.likes}
+                      liked={post.liked}
+                      url={post.url}
+                      updateLikes={() => updateLikes(post._id)}
+                      album={post.album}
+                      location={`${lat}, ${long}`}
                     />
                   )}
                 </div>
