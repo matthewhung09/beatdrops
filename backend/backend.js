@@ -44,8 +44,6 @@ const handleErrors = (err) => {
     return errors;
 };
 
-// app.use(jwt({secret: process.env.JWT_SECRET, getToken: }))
-
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
@@ -56,15 +54,43 @@ app.get('/', (req, res) => {
 
 // Get all posts from the database
 // Called on initial load
-app.get('/posts', async (req, res) => {
+app.get('/posts/:cookie', async (req, res) => {
+    const cookie = req.params['cookie'];
+    const user = await verifyCookie(cookie);
     try {
         const posts = await postServices.getPosts();
-        res.send(posts);         
+        const new_posts = posts.map(post => ({
+            _id: post._id,
+            title: post.title,
+            artist: post.artist,
+            likes: post.likes,
+            url: post.url,
+            createdAt: post.createdAt,
+            updatedAt: post.updatedAt,
+            liked: user.liked.includes(post._id)
+        }));
+        res.json({posts: new_posts, user: user});         
     } catch (error) {
         res.status(500).send(error.message);
         console.log('error');
     }
 });
+
+async function verifyCookie(token) {
+    let user;
+    if (token) {
+        await jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.log(err);
+            } 
+            else {
+                user = await userServices.findUserById(decodedToken.id);
+            } 
+        });
+    } 
+    return user;
+}
+
 
 // Handles user login - gets access token and reroutes them to redirect_uri
 app.post('/auth/login', async (req, res) => {
@@ -249,7 +275,6 @@ function createToken(id) {
 // Adds user to database upon signup
 app.post('/signup', async (req, res) => {
     const new_user = req.body;
-    console.log(new_user);
     try {
         // log user in instantaneously
         const user = await userServices.addUser(new_user);
@@ -269,7 +294,7 @@ app.post('/login', async (req, res) => {
         const user = await userServices.login(email, password);
         const token = createToken(user._id);
         res.cookie('jwt', token, {maxAge: 3600 * 1000})
-        res.status(200).json({user: user._id});
+        res.status(200).json({user: user});
     }
     catch (err) {
         const errors = handleErrors(err);

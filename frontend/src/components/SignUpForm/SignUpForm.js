@@ -46,15 +46,6 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-// const register = () => {
-//     axios.post('https://localhost:5000/user', {
-//        username: a,
-//        password: a,
-//     }).then((response) => {
-//         console.log(response);
-//     });
-// };
-
 function SignUpForm() {
     let navigate = useNavigate();
 
@@ -100,7 +91,7 @@ function SignUpForm() {
       }
       // reset();
       console.log(response.data);
-      navigate("/spotify", {state: response.data});
+      // navigate("/spotify", {state: response.data});
     };
   
     // info for required entries
@@ -192,7 +183,7 @@ function SignUpForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/spotify")}
+                        // onClick={() => navigate("/spotify")}
                       >
                         Continue
                       </StyledButton>

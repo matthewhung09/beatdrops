@@ -21,9 +21,7 @@ const Header = styled.div`
   line-height: 1.5em;
 `;
 const code = new URLSearchParams(window.location.search).get('code');
-
 let user;
-
 function App() {
   const [newSong, setNewSong] = useState('');
   const [newArtist, setNewArtist] = useState('');
@@ -35,30 +33,18 @@ function App() {
   const [selected, setSelected] = useState('Default');
 
   useEffect(() => {
-    getUser().then(result => {
-      console.log(result.user);
-      user = result.user;
-    });
-  }, [cookies] );
-
-  async function getUser() {
-    const user = await axios.post('http://localhost:5000/cookie', {
-      token: cookies.jwt
-    });
-    return user.data
-  }
-
-  useEffect(() => {
     getAllPosts().then( result => {
       if (result) {
-        setPosts(result);
+        console.log(result);
+        setPosts(result.posts);
+        user = result.user;
       }
     });
-  }, [user] );
+  }, [] );
 
   async function getAllPosts() {
     try {
-      const response = await axios.get('http://localhost:5000/posts');
+      const response = await axios.get('http://localhost:5000/posts/' + cookies.jwt);
       return response.data;
     }
     catch (error) {
@@ -127,11 +113,6 @@ function App() {
     }
   }
 
-  async function getJwt() {
-    const {data} = await axios.get('jwt');
-    console.log(data);
-  }
-
   return (
     <div className='App'>
       {/* routed from login, routes to main page */}
@@ -189,7 +170,15 @@ function App() {
                             updateLikes={() => updateLikes(post._id)}
                         />
                     ) : (
-                      null 
+                      postList.map((post, index) => 
+                        <Post key={index}
+                          timePosted={parseInt((new Date() - new Date(post.createdAt)) / 3600000)}
+                          likes={post.likes}
+                          liked={ post.liked }
+                          url={post.url}
+                          updateLikes={() => updateLikes(post._id)}
+                      /> 
+                    ) 
                     )
                   }
                 </div>
