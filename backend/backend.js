@@ -132,7 +132,9 @@ app.post('/current', async (req, res) => {
 
 // Creates a new post and adds it to the database
 app.post('/create', async (req, res) => {
-    const new_post = await getPostData(req.body.title, req.body.artist)
+    let new_post = await getPostData(req.body.title, req.body.artist)
+    new_post.position.latitude = req.body.position.latitude;
+    new_post.position.longitude = req.body.position.longitude;
     let post = await postServices.addPost(new_post);
     if(post){
         res.status(201).json(post); // same as res.send except sends in json format
@@ -172,7 +174,8 @@ async function getPostData(song, artist) {
             'title': song_name,
             'artist': song_artist,
             'likes': 0,
-            'url': song_url
+            'url': song_url,
+            'position': {'latitude': 0, 'longitude': 0}
         };
         // console.log(new_post);
         return new_post;

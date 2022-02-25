@@ -88,10 +88,14 @@ function App() {
   }
 
   async function makePostCall() {
+    const gpos = await getPostPosition();
+    // console.log("gpos:")
+    // console.log(gpos);
     try {
       const response = await axios.post('http://localhost:5000/create', {
         'title': newSong,
         'artist': newArtist,
+        'position': gpos,
       });
       return response;
     }
@@ -414,7 +418,16 @@ function App() {
   }, [lat, long]);
 
   //function to get location name
-
+  async function getPostPosition(){
+    const getPosition = new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition((position) => {
+          resolve(position);
+  
+      })
+    });
+    const position = await getPosition;
+    return {'latitude': position.coords.latitude, 'longitude': position.coords.longitude}
+  }
 
   /* ------ geolocation end ------ */
 
