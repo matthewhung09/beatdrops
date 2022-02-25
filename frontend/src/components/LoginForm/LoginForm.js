@@ -53,27 +53,22 @@ function LoginForm() {
     const variant = "outlined";
   
     // validation
-    const passwordRegExp = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
     const validationSchema = Yup.object().shape({
         email: Yup
             .string()      
-            .email("Invalid email format.")
+            // .email("Invalid email format.")
             .required("Please enter your email."),
-            // .test("is-valid", (message) => `${message.path} is invalid.`, (value) => value ? isEmailValidator(value) : new Yup.ValidationError("Invalid value.")),
+            // .matches("a", "Email is not registered"),
         password: Yup
             .string()
             .required("Please enter your password.")
-            // .matches(passwordRegExp,
-            // "Password must contain at least 8 characters, one uppercase, one number and one special case character."
-            // ),
-        // username: Yup
-        //     .string()
-        //     .required("Username is a required field.")
-        // need to check if username is already taken!
+            // .matches("a", "Password is incorrect")
     });
     const { handleSubmit, control, reset } = useForm({
       resolver: yupResolver(validationSchema),
     });
+
+    let vErr = {};
   
     const onSubmit = async (values) => {
       let response;
@@ -84,9 +79,13 @@ function LoginForm() {
         });
         const data = response.data;
 
-        if (data.errors) {
-          console.log(data.errors);
-        }
+        // console.log("HELOOOOO: ", data);
+
+        // if (data.errors) {
+        //   console.log("HELOOOOO");
+        //   console.log(data.errors);
+        //   // console.log("HELOOOOO");
+        // }
         
         // Route to main page if login info is correct
         if (data.user) {
@@ -94,9 +93,14 @@ function LoginForm() {
         }
       }
       catch (error) {
-        console.log(error);
+        console.log("HELLOo");
+        vErr = error.response.data;
+        // if (error.response.data.email !== "") 
+        //   console.log(error.response.data.email);
+        // else if (error.response.data.password !== "") 
+        //   console.log(error.response.data.password);
       }
-      reset();
+      // reset();
     };
   
     // info for required entries
@@ -147,7 +151,12 @@ function LoginForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : null
+                                  }
                                   type={showPassword ? "text" : "password"}
                                   InputProps={{ 
                                     endAdornment: (
@@ -170,7 +179,12 @@ function LoginForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : null
+                                  }
                                 />
                               )}
                             </Box>
