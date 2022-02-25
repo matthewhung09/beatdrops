@@ -54,7 +54,7 @@ function App() {
         setPosts(result);
       }
     });
-  }, [] );
+  }, [user] );
 
   async function getAllPosts() {
     try {

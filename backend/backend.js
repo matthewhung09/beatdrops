@@ -24,14 +24,14 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 
 const handleErrors = (err) => {
-    console.log(err.message, err.code);
+    // console.log(err.message, err.code);
     let errors = { username: '', email: '', password: ''};
 
     if (err.message == 'incorrect email') {
         errors.email = 'Email is not registered';
     }
     if (err.message == 'incorrect password') {
-        errors.email = 'Incorrect password';
+        errors.password = 'Incorrect password';
     }
 
     // validation errors

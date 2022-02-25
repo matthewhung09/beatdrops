@@ -98,7 +98,7 @@ function SignUpForm() {
       catch (error) {
         console.log(error);
       }
-      reset();
+      // reset();
       console.log(response.data);
       navigate("/spotify", {state: response.data});
     };
@@ -192,7 +192,7 @@ function SignUpForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        // onClick={() => navigate("/spotify")}
+                        onClick={() => navigate("/spotify")}
                       >
                         Continue
                       </StyledButton>
