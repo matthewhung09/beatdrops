@@ -11,6 +11,17 @@ const app = express();
 const port = 5000;
 const { access } = require('fs');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+dotenv.config({path: path.resolve(__dirname, '.env')})
+
+const client_id = process.env.CLIENT_ID; 
+const client_secret = process.env.CLIENT_SECRET; 
+const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64');
+
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(express.json());
 
 const handleErrors = (err) => {
     console.log(err.message, err.code);
@@ -32,15 +43,6 @@ const handleErrors = (err) => {
 
     return errors;
 };
-
-dotenv.config({path: path.resolve(__dirname, '.env')})
-
-const client_id = process.env.CLIENT_ID; 
-const client_secret = process.env.CLIENT_SECRET; 
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64');
-
-app.use(cors());
-app.use(express.json());
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);

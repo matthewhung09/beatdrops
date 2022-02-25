@@ -93,7 +93,7 @@ function SignUpForm() {
           username: values.username,
           email: values.email,
           password: values.password,
-        });
+        }, {withCredentials: true});
       }
       catch (error) {
         console.log(error);
