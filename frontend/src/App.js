@@ -163,6 +163,8 @@ function App() {
         try {
             const response = await axios.get(url);
             // setLocation(response.data.address.road);
+            console.log(response.data);
+            // if (response.data.name !== undefined) return response.data.name;
             return response.data.address.road;
             // return response.data;
         } catch (error) {
