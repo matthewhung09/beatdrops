@@ -14,7 +14,6 @@ import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
 import data from "./data.js";
 import Dashboard from "./Dashboard";
-import { useCookies } from "react-cookie";
 import { nominatim } from "nominatim-geocode";
 
 const Header = styled.div`
@@ -30,31 +29,36 @@ function App() {
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
 
-    const [cookies, setCookie, removeCookie] = useCookies();
-
     // filter
     const [selected, setSelected] = useState("Default");
 
+    // Gets all posts
+    // withCredentials : true allows us to send the cookie
+    // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
-        getAllPosts().then((result) => {
-            if (result) {
-                console.log(result);
-                setPosts(result.posts);
-                user = result.user;
-            }
-        });
+        axios.get("http://localhost:5000/posts/", {withCredentials: true})
+            .then(response => {
+                setPosts(response.data.posts);
+                user = response.data.user;
+            })
+            // Occurs when either invalid token or no token
+            .catch(error => {
+                console.log(error.response.data);
+            });
     }, []);
 
-    async function getAllPosts() {
-        try {
-            const response = await axios.get(
-                "http://localhost:5000/posts/" + cookies.jwt
-            );
-            return response.data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // async function getAllPosts() {
+    //     axios.get("http://localhost:5000/posts/", {withCredentials: true})
+    //         .then(response => {
+    //             console.log(response);
+    //             setPosts(response.data.posts);
+    //             user = response.data.user;
+    //         })
+    //         .catch(error => {
+    //             console.log(error.response.data);
+    //         });
+
+    // }
 
     useEffect(() => {
         if (selected === "Likes") {
@@ -129,7 +133,13 @@ function App() {
         }
     }
 
-    function logout() {
+    async function logout() {
+        try {
+            await axios.get("http://localhost:5000/logout", {withCredentials: true});
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
         window.location.assign('/');
     }
 
