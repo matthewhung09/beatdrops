@@ -9,7 +9,7 @@ import PostForm from "./components/PostForm/PostForm";
 import Dropdown from "./components/Dropdown/Dropdown";
 import axios from "axios";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
 import data from "./data.js";
@@ -129,6 +129,10 @@ function App() {
         }
     }
 
+    function logout() {
+        window.location.assign('/');
+    }
+
     /* ------ geolocation start ------ */
 
     const [lat, setLat] = useState();
@@ -186,6 +190,9 @@ function App() {
                         path="/home"
                         element={
                             <div className="home">
+                                <button className="create-btn" onClick={logout}>
+                                    Logout
+                                </button>
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
