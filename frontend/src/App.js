@@ -22,13 +22,13 @@ const Header = styled.div`
     line-height: 1.5em;
 `;
 // const code = new URLSearchParams(window.location.search).get("code");
-let user;
+// let user;
 
 function App() {
     const [newSong, setNewSong] = useState("");
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
-
+    const [user, setUser] = useState();
     // filter
     const [selected, setSelected] = useState("Default");
 
@@ -39,11 +39,14 @@ function App() {
         axios.get("http://localhost:5000/posts/", {withCredentials: true})
             .then(response => {
                 setPosts(response.data.posts);
-                user = response.data.user;
+                setUser(response.data.user);
             })
             // Occurs when either invalid token or no token
             .catch(error => {
                 console.log(error.response.data);
+                // if (error.response.status === 401) {
+                //     window.location.assign('/');
+                // }
             });
     }, []);
 
@@ -203,6 +206,8 @@ function App() {
                                 <button className="create-btn" onClick={logout}>
                                     Logout
                                 </button>
+                                {user !== undefined ? <span> Welcome, {user.username} </span> : <span> Welcome, Guest </span>}
+                                
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
@@ -270,23 +275,24 @@ function App() {
                                                   location={post.location}
                                               />
                                           ))
-                                        : postList.map((post, index) => (
-                                              <Post
-                                                  key={index}
-                                                  timePosted={parseInt(
-                                                      (new Date() -
-                                                          new Date(post.createdAt)) /
-                                                          3600000
-                                                  )}
-                                                  likes={post.likes}
-                                                  liked={post.liked}
-                                                  url={post.url}
-                                                  updateLikes={() =>
-                                                      updateLikes(post._id)
-                                                  }
-                                                  location={post.location}
-                                              />
-                                          ))}
+                                          : <p>Loading </p>
+                                        // : postList.map((post, index) => (
+                                        //       <Post
+                                        //           key={index}
+                                        //           timePosted={parseInt(
+                                        //               (new Date() -
+                                        //                   new Date(post.createdAt)) /
+                                        //                   3600000
+                                        //           )}
+                                        //           likes={post.likes}
+                                        //           liked={post.liked}
+                                        //           url={post.url}
+                                        //           updateLikes={() =>
+                                        //               updateLikes(post._id)
+                                        //           }
+                                        //           location={post.location}
+                                        //       />
+                                          }
                                 </div>
                             </div>
                         }
