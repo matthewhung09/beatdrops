@@ -38,11 +38,20 @@ const handleErrors = (err) => {
 
     // validation errors
     if (err.message.includes("User validation failed")) {
+        // console.log(err.errors);
         Object.values(err.errors).forEach(({ properties }) => {
+            if (properties.message.includes("expected `email` to be unique")){
+                errors[properties.path] = "Email already in use.";
+                return;
+            }
+            if (properties.message.includes("expected `username` to be unique")){
+                errors[properties.path] = "Username already in use.";
+                return;
+            }
             errors[properties.path] = properties.message;
         });
     }
-
+    // console.log(errors);
     return errors;
 };
 
@@ -193,12 +202,18 @@ app.post("/signup", async (req, res) => {
     try {
         // log user in instantaneously
         const user = await userServices.addUser(new_user);
-        const token = createToken(user._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
-        res.status(201).json({ user: user._id });
-    } catch {
+        if (user.errors) {
+            const errors = handleErrors(user);
+            res.status(400).json({errors});
+        }
+        else {
+            const token = createToken(user._id);
+            res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+            res.status(201).json({ user: user });
+        }
+    } catch (err) {
         const errors = handleErrors(err);
-        res.status(400); // .json({errors});
+        res.status(400).json({errors});
     }
 });
 
@@ -216,6 +231,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+    // We can't actually delete from backend - instead we replace with blank and short expire time
     res.cookie('jwt', '', {maxAge: 1});
     res.redirect('/');
 });

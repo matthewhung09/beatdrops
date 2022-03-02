@@ -75,8 +75,11 @@ function SignUpForm() {
       resolver: yupResolver(validationSchema),
     });
   
+    let vErr = {};
+
     // log values when data is submitted
     const onSubmit = async (values) => {
+      vErr = {};
       // console.log(values);
       let response;
       try {
@@ -87,11 +90,11 @@ function SignUpForm() {
         }, {withCredentials: true});
       }
       catch (error) {
-        console.log(error);
+        vErr = error.response.data.errors;
       }
-      // reset();
-      console.log(response.data);
-      // navigate("/spotify", {state: response.data});
+      if (Object.keys(vErr).length === 0) {
+        navigate("/spotify");
+      }
     };
   
     // info for required entries
@@ -142,7 +145,13 @@ function SignUpForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : name === "username" && vErr.username !== "" ? vErr.username
+                                      : null
+                                  }                                  
                                   type={showPassword ? "text" : "password"}
                                   InputProps={{ 
                                     endAdornment: (
@@ -165,7 +174,13 @@ function SignUpForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : name === "username" && vErr.username !== "" ? vErr.username
+                                      : null
+                                  }                                
                                 />
                               )}
                             </Box>

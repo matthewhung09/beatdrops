@@ -22,7 +22,6 @@ const Header = styled.div`
     line-height: 1.5em;
 `;
 // const code = new URLSearchParams(window.location.search).get("code");
-// let user;
 
 function App() {
     const [newSong, setNewSong] = useState("");
@@ -36,7 +35,7 @@ function App() {
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
-        axios.get("http://localhost:5000/posts/", {withCredentials: true})
+        axios.get("http://localhost:5000/posts", {withCredentials: true})
             .then(response => {
                 setPosts(response.data.posts);
                 setUser(response.data.user);
@@ -136,14 +135,14 @@ function App() {
         }
     }
 
-    async function logout() {
-        try {
-            await axios.get("http://localhost:5000/logout", {withCredentials: true});
-        } catch (error) {
-            console.log(error);
-            return false;
-        }
-        window.location.assign('/');
+    function logout() {
+        axios.get("http://localhost:5000/logout", {withCredentials: true})
+            .then(() => {
+                window.location.assign('/');
+            })
+            .catch((error) =>{
+                console.log(error);
+            });
     }
 
     /* ------ geolocation start ------ */
