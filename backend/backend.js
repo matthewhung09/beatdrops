@@ -44,10 +44,6 @@ const handleErrors = (err) => {
                 errors[properties.path] = "Email already in use.";
                 return;
             }
-            if (properties.message.includes("expected `username` to be unique")){
-                errors[properties.path] = "Username already in use.";
-                return;
-            }
             errors[properties.path] = properties.message;
         });
     }

@@ -206,7 +206,6 @@ function App() {
                                     Logout
                                 </button>
                                 {user !== undefined ? <span> Welcome, {user.username} </span> : <span> Welcome, Guest </span>}
-                                
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
