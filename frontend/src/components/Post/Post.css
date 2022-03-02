@@ -1,98 +1,101 @@
 h2 {
-  font-size: medium;
-  font-weight: 500;
-  line-height: 0.2em;
+    font-size: medium;
+    font-weight: 500;
+    line-height: 0.2em;
 }
 
 h3 {
-  font-size: small;
-  font-weight: 400;
+    font-size: small;
+    font-weight: 400;
 }
 
 p {
-  font-size: small;
-  color: rgb(134, 134, 134);
+    font-size: small;
+    color: rgb(134, 134, 134);
 }
 
 button {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5em;
-  padding: 0.6em;
-  width: 12em;
-  font-size: 80%;
-  color: white;
-  border-style: none;
-  border-radius: 5em;
-  font-weight: 500;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5em;
+    padding: 0.6em;
+    width: 12em;
+    font-size: 80%;
+    color: white;
+    border-style: none;
+    border-radius: 5em;
+    font-weight: 500;
 }
 
 .spotify-div {
-  width: 100%;
+    width: 100%;
 }
 
 .likes {
-  color: black;
-  background-color: rgb(236, 236, 236);
-  /* border: 1px solid black; */
-  margin-top: 0.5em 0 0 0.5em;
-  font-weight: 500;
-  width: 100%;
-  transform: scale(0.88);
+    color: black;
+    background-color: rgb(236, 236, 236);
+    /* border: 1px solid black; */
+    margin-top: 0.5em 0 0 0.5em;
+    font-weight: 500;
+    width: 100%;
+    transform: scale(0.88);
 }
 
 .location {
-  font-weight: bold;
-  font-style: normal;
-  font-size: small;
-  margin-bottom: 0em;
-  color: rgba(0, 0, 0, 0.74);
+    font-weight: bold;
+    font-style: normal;
+    font-size: small;
+    margin-bottom: 0em;
+    color: rgba(0, 0, 0, 0.74);
 }
 
 .time {
-  font-style: italic;
-  margin-top: 0;
-  opacity: 90%;
-  font-size: smaller;
-  transform: scale(0.97);
+    font-style: italic;
+    margin-top: 0;
+    opacity: 90%;
+    font-size: smaller;
+    transform: scale(0.97);
+    /* text-align: left; */
+    /* margin-left: 1em; */
 }
 
 .likes > * {
-  margin: 0 0.5em;
+    margin: 0 0.5em;
 }
 
 .action {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-left: 1em;
-  min-width: 8em;
-  margin-top: 0.2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1em;
+    /* min-width: 8em; */
+    width: 12em;
+    margin-top: 0.2em;
 }
 
 .card {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  /* justify-content: center; */
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1em;
-  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
-  /* border-radius: 0.3em; */
-  width: 80%;
-  margin-top: 1em;
-  border-top: 1px solid rgb(233, 233, 233);
-  /* background-color: #0d0d0e; */
-  /* color: #1a191b; */
-  /* padding: 0.2em 0.5em; */
-  /* padding: 0.4em 1em; */
-  padding-top: 1.4em;
-  padding-bottom: 0.35em;
-  max-width: 43em;
-  /* padding-bottom: 1.2em; */
-  /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    /* justify-content: center; */
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
+    /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+    /* border-radius: 0.3em; */
+    width: 80%;
+    margin-top: 1em;
+    border-top: 1px solid rgb(233, 233, 233);
+    /* background-color: #0d0d0e; */
+    /* color: #1a191b; */
+    /* padding: 0.2em 0.5em; */
+    /* padding: 0.4em 1em; */
+    padding-top: 1.4em;
+    padding-bottom: 0.35em;
+    max-width: 43em;
+    /* padding-bottom: 1.2em; */
+    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
     rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
 }
 
@@ -101,12 +104,12 @@ button {
 } */
 
 .card:last-child {
-  border-bottom: 1px solid rgb(233, 233, 233);
-  padding-bottom: 1.4em;
-  margin-bottom: 5em;
+    border-bottom: 1px solid rgb(233, 233, 233);
+    padding-bottom: 1.4em;
+    margin-bottom: 5em;
 }
 
 .likes:hover,
 .spotify:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
