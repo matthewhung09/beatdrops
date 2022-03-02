@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button, StylesProvider } from "@material-ui/core";
 import Popup from 'reactjs-popup';
 import '../../App.css';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
 
@@ -41,7 +41,6 @@ const StyledButton = styled(Button)`
 `;
 function SpotifyLogin() {
     let navigate = useNavigate();
-    const user = useLocation();
     
     // sets popup to be open when page is first loaded
     const [open, setOpen] = useState(true);
@@ -72,7 +71,8 @@ function SpotifyLogin() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        onClick={() => navigate("/home", {state: user})}
+                        onClick={() => window.location.assign('/home')}
+                        // onClick={() => navigate("/home")}
                     >
                         Continue
                     </StyledButton>

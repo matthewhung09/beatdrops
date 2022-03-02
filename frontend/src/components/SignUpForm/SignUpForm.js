@@ -75,23 +75,25 @@ function SignUpForm() {
       resolver: yupResolver(validationSchema),
     });
   
+    //let vErr = {};
+    const [vErr, setvErr] = useState("");
+    const [cemail, setEmail] = useState("");
+
     // log values when data is submitted
     const onSubmit = async (values) => {
       // console.log(values);
-      let response;
+      setEmail(values.email);
       try {
-        response = await axios.post('http://localhost:5000/signup', {
+        await axios.post('http://localhost:5000/signup', {
           username: values.username,
           email: values.email,
           password: values.password,
         }, {withCredentials: true});
+        navigate("/spotify");
       }
       catch (error) {
-        console.log(error);
+        setvErr(error.response.data.errors);
       }
-      // reset();
-      console.log(response.data);
-      // navigate("/spotify", {state: response.data});
     };
   
     // info for required entries
@@ -127,7 +129,7 @@ function SignUpForm() {
                         // render prop: technique for sharing code between React components using a prop whose value is a function
                         render={({
                             field: { 
-                              // value, // curr val of controlled component
+                              value, // curr val of controlled component
                               name, // input's name being registered
                               onChange // sends input's val to library
                             },
@@ -142,7 +144,19 @@ function SignUpForm() {
                                   label={entry.label}
                                   onChange={onChange}
                                   error={!!error}
-                                  helperText={error ? error.message : null}
+                                  helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : name === "username" && vErr.username !== "" ? vErr.username
+                                      : null
+
+                                    // error ? error.message
+                                    //   : name === "email" && vErr.email !== "" && value !== email ? vErr.email
+                                    //   : name === "password" && vErr.password !== "" ? vErr.password
+                                    //   : name === "username" && vErr.username !== "" ? vErr.username
+                                    //   : null
+                                  }                                  
                                   type={showPassword ? "text" : "password"}
                                   InputProps={{ 
                                     endAdornment: (
@@ -160,13 +174,22 @@ function SignUpForm() {
                                   }}
                                 />
                               ) : (
-                                <TextField fullWidth key={name}
-                                  variant={variant}
-                                  label={entry.label}
-                                  onChange={onChange}
-                                  error={!!error}
-                                  helperText={error ? error.message : null}
-                                />
+                                <div>
+                                  {console.log("value: ", value, "cemail: ", cemail)}
+                                  <TextField fullWidth key={name}
+                                    variant={variant}
+                                    label={entry.label}
+                                    onChange={onChange}
+                                    error={!!error}
+                                    helperText={ 
+                                      error ? error.message
+                                        : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                        : name === "password" && vErr.password !== "" ? vErr.password
+                                        : name === "username" && vErr.username !== "" ? vErr.username
+                                        : null
+                                    }                                
+                                  />
+                                </div>
                               )}
                             </Box>
                         )}

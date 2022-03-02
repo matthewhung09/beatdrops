@@ -16,13 +16,13 @@ function getDbConnection() {
   
 async function addUser(user){
     const userModel = getDbConnection().model("User", UserSchema);
-    try{
+    try {
         const userToAdd = new userModel(user);
         const savedUser = await userToAdd.save()
         return savedUser;
-    }catch(error) {
-        console.log(error);
-        return false;
+    } catch(error) {
+        // console.log(error);
+        return error;
     }   
 }
 

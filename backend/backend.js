@@ -1,7 +1,6 @@
 const express = require("express");
 const res = require("express/lib/response");
 const dotenv = require("dotenv");
-const path = require("path");
 const axios = require("axios");
 const qs = require("qs");
 const cors = require("cors");
@@ -12,8 +11,9 @@ const port = 5000;
 const { access } = require("fs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const checkUser = require('./middleware/authMiddleware');
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config();
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
@@ -38,11 +38,16 @@ const handleErrors = (err) => {
 
     // validation errors
     if (err.message.includes("User validation failed")) {
+        // console.log(err.errors);
         Object.values(err.errors).forEach(({ properties }) => {
+            if (properties.message.includes("expected `email` to be unique")){
+                errors[properties.path] = "Email already in use.";
+                return;
+            }
             errors[properties.path] = properties.message;
         });
     }
-
+    // console.log(errors);
     return errors;
 };
 
@@ -56,9 +61,8 @@ app.get("/", (req, res) => {
 
 // Get all posts from the database
 // Called on initial load
-app.get("/posts/:cookie", async (req, res) => {
-    const cookie = req.params["cookie"];
-    const user = await verifyCookie(cookie);
+// checkUser validates the jwt, sets req.user to the user
+app.get("/posts", checkUser, async (req, res) => {
     try {
         const posts = await postServices.getPosts();
         const new_posts = posts.map((post) => ({
@@ -69,29 +73,184 @@ app.get("/posts/:cookie", async (req, res) => {
             url: post.url,
             createdAt: post.createdAt,
             updatedAt: post.updatedAt,
-            liked: user.liked.includes(post._id),
+            liked: req.user.liked.includes(post._id),
             location: post.location,
         }));
-        res.json({ posts: new_posts, user: user });
+        res.status(201).json({ posts: new_posts, user: req.user });
     } catch (error) {
         res.status(500).send(error.message);
-        console.log("error");
+        console.log(error);
     }
 });
 
-async function verifyCookie(token) {
-    let user;
-    if (token) {
-        await jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-            if (err) {
-                console.log(err);
-            } else {
-                user = await userServices.findUserById(decodedToken.id);
-            }
-        });
+// Creates a new post and adds it to the database
+app.post("/create", async (req, res) => {
+    const new_post = await getPostData(req.body.title, req.body.artist, req.body.location);
+    let post = await postServices.addPost(new_post);
+    // console.log(new_post);
+    if (post) {
+        res.status(201).json(post); 
+    } else {
+        res.status(500).end();
     }
-    return user;
+});
+
+// Queries Spotify API to get song information
+async function getPostData(song, artist, location) {
+    const data = {
+        type: "track",
+        limit: "10",
+    };
+    // Format querystring - should probably find a better way to do this
+    const first_part =
+        "q=track:" +
+        song.replaceAll(" ", "%20") +
+        "%20artist:" +
+        artist.replaceAll(" ", "%20");
+    const second_part = new URLSearchParams(data).toString();
+    const queryparam = first_part + "&" + second_part;
+
+    const access_token = await getAccessToken();
+
+    try {
+        const response = await axios.get(
+            "https://api.spotify.com/v1/search?" + queryparam,
+            {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            }
+        );
+        const song_url = response.data.tracks.items[0].external_urls.spotify;
+
+        // Get actual song name and artist in case of mispellings/typos
+        const song_name = response.data.tracks.items[0].name;
+        const song_artist = response.data.tracks.items[0].artists[0].name;
+
+        const new_post = {
+            title: song_name,
+            artist: song_artist,
+            likes: 0,
+            url: song_url,
+            location: location,
+        };
+        console.log(new_post);
+        return new_post;
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+// Get access token in order to use Spotify API
+// This is different from /auth/login - here we use our developer credentials
+// to get access token to make requests to API
+async function getAccessToken() {
+    try {
+        const data = qs.stringify({
+            grant_type: "client_credentials",
+        });
+        const response = await axios.post(
+            "https://accounts.spotify.com/api/token",
+            data,
+            {
+                headers: {
+                    Authorization: `Basic ${auth_token}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            }
+        );
+        return response.data.access_token;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// Update user array and post and then send back new post and user information
+app.patch("/user/:id/liked", async (req, res) => {
+    const id = req.params["id"];
+    const post = req.body.post;
+    const liked = req.body.liked;
+    let updatedUser;
+    let updatedPost = await postServices.updateLikeStatus(post, liked);
+    if (liked) updatedUser = await userServices.removeUserLiked(id, post);
+    else updatedUser = await userServices.addUserLiked(id, post);
+
+    if (updatedUser && updatedPost) {
+        res.status(201).json({
+            post: updatedPost,
+            user: updatedUser,
+        });
+    } else {
+        res.status(404).send("Resource not found.");
+    }
+});
+
+function createToken(id) {
+    // payload, secret, options
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: 3600, // in SECONDS
+    });
+}
+
+// Adds user to database upon signup
+app.post("/signup", async (req, res) => {
+    const new_user = req.body;
+    try {
+        // log user in instantaneously
+        const user = await userServices.addUser(new_user);
+        if (user.errors) {
+            const errors = handleErrors(user);
+            res.status(400).json({errors});
+        }
+        else {
+            const token = createToken(user._id);
+            res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+            res.status(201).json({ user: user });
+        }
+    } catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({errors});
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await userServices.login(email, password);
+        const token = createToken(user._id);
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+        res.status(200).json({ user: user });
+    } catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
+    }
+});
+
+app.get("/logout", (req, res) => {
+    // We can't actually delete from backend - instead we replace with blank and short expire time
+    res.cookie('jwt', '', {maxAge: 1});
+    res.redirect('/');
+});
+
+app.get("/user/:id", async (req, res) => {
+    const id = req.params["id"];
+    const result = await userServices.findUserById(id);
+    if (result === undefined || result === null)
+        res.status(404).send("Resource not found.");
+    else {
+        res.send({ user: result });
+    }
+});
+
+app.get("/user/:id/liked", async (req, res) => {
+    const id = req.params["id"];
+    const result = await userServices.getUserLiked(id);
+    if (result === undefined || result === null)
+        res.status(404).send("Resource not found.");
+    else {
+        res.send(result);
+    }
+});
 
 // Handles user login - gets access token and reroutes them to redirect_uri
 app.post("/auth/login", async (req, res) => {
@@ -167,191 +326,4 @@ app.post("/current", async (req, res) => {
     return res.json({
         song: response.data.item.name,
     });
-});
-
-// Creates a new post and adds it to the database
-app.post("/create", async (req, res) => {
-    let new_post = await getPostData(req.body.title, req.body.artist, req.body.location);
-    // new_post.location = req.body.location;
-    // new_post.position.latitude = req.body.position.latitude;
-    // new_post.position.longitude = req.body.position.longitude;
-    let post = await postServices.addPost(new_post);
-    // console.log(new_post);
-    if (post) {
-        res.status(201).json(post); // same as res.send except sends in json format
-    } else {
-        res.status(500).end();
-    }
-});
-
-// Queries Spotify API to get song information
-async function getPostData(song, artist, location) {
-    const data = {
-        type: "track",
-        limit: "10",
-    };
-    // Format querystring - should probably find a better way to do this
-    const first_part =
-        "q=track:" +
-        song.replaceAll(" ", "%20") +
-        "%20artist:" +
-        artist.replaceAll(" ", "%20");
-    const second_part = new URLSearchParams(data).toString();
-    const queryparam = first_part + "&" + second_part;
-
-    const access_token = await getAccessToken();
-
-    try {
-        const response = await axios.get(
-            "https://api.spotify.com/v1/search?" + queryparam,
-            {
-                headers: {
-                    Authorization: `Bearer ${access_token}`,
-                },
-            }
-        );
-        const song_url = response.data.tracks.items[0].external_urls.spotify;
-
-        // Get actual song name and artist in case of mispellings/typos
-        const song_name = response.data.tracks.items[0].name;
-        const song_artist = response.data.tracks.items[0].artists[0].name;
-
-        const new_post = {
-            title: song_name,
-            artist: song_artist,
-            likes: 0,
-            url: song_url,
-            location: location,
-            // position: { latitude: 0, longitude: 0 },
-        };
-        console.log(new_post);
-        return new_post;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// Get access token in order to use Spotify API
-// This is different from /auth/login - here we use our developer credentials
-// to get access token to make requests to API
-async function getAccessToken() {
-    try {
-        const data = qs.stringify({
-            grant_type: "client_credentials",
-        });
-        const response = await axios.post(
-            "https://accounts.spotify.com/api/token",
-            data,
-            {
-                headers: {
-                    Authorization: `Basic ${auth_token}`,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-            }
-        );
-        return response.data.access_token;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// Update user array and post and then send back new post and user information
-app.patch("/user/:id/liked", async (req, res) => {
-    const id = req.params["id"];
-    const post = req.body.post;
-    const liked = req.body.liked;
-    let updatedUser;
-    let updatedPost = await postServices.updateLikeStatus(post, liked);
-    if (liked) updatedUser = await userServices.removeUserLiked(id, post);
-    else updatedUser = await userServices.addUserLiked(id, post);
-
-    if (updatedUser && updatedPost) {
-        res.status(201).json({
-            post: updatedPost,
-            user: updatedUser,
-        });
-    } else {
-        res.status(404).send("Resource not found.");
-    }
-});
-
-function createToken(id) {
-    // payload, secret, options
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: 3600, // in SECONDS
-    });
-}
-
-// Adds user to database upon signup
-app.post("/signup", async (req, res) => {
-    const new_user = req.body;
-    try {
-        // log user in instantaneously
-        const user = await userServices.addUser(new_user);
-        const token = createToken(user._id);
-        res.cookie("jwt", token, { maxAge: 3600 * 1000 });
-        res.status(201).json({ user: user._id });
-    } catch {
-        const errors = handleErrors(err);
-        res.status(400); // .json({errors});
-    }
-});
-
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await userServices.login(email, password);
-        const token = createToken(user._id);
-        res.cookie("jwt", token, { maxAge: 3600 * 1000 });
-        res.status(200).json({ user: user });
-    } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-    }
-});
-
-app.post("/cookie/", async (req, res) => {
-    const token = req.body.token;
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-            if (err) {
-                console.log(err);
-            } else {
-                let user = await userServices.findUserById(decodedToken.id);
-                res.status(200).json({ user: user });
-            }
-        });
-    } else {
-        res.status(400);
-    }
-});
-
-app.get("/user", async (req, res) => {
-    try {
-        const users = await userServices.getUsers();
-        res.send(users);
-    } catch (error) {
-        res.status(500).send(error.message);
-        console.log("error");
-    }
-});
-
-app.get("/user/:id", async (req, res) => {
-    const id = req.params["id"];
-    const result = await userServices.findUserById(id);
-    if (result === undefined || result === null)
-        res.status(404).send("Resource not found.");
-    else {
-        res.send({ user: result });
-    }
-});
-
-app.get("/user/:id/liked", async (req, res) => {
-    const id = req.params["id"];
-    const result = await userServices.getUserLiked(id);
-    if (result === undefined || result === null)
-        res.status(404).send("Resource not found.");
-    else {
-        res.send(result);
-    }
 });

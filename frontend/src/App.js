@@ -9,12 +9,11 @@ import PostForm from "./components/PostForm/PostForm";
 import Dropdown from "./components/Dropdown/Dropdown";
 import axios from "axios";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
 import data from "./data.js";
 import Dashboard from "./Dashboard";
-import { useCookies } from "react-cookie";
 import { nominatim } from "nominatim-geocode";
 
 const Header = styled.div`
@@ -23,38 +22,45 @@ const Header = styled.div`
     line-height: 1.5em;
 `;
 // const code = new URLSearchParams(window.location.search).get("code");
-let user;
 
 function App() {
     const [newSong, setNewSong] = useState("");
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
-
-    const [cookies, setCookie, removeCookie] = useCookies();
-
+    const [user, setUser] = useState();
     // filter
     const [selected, setSelected] = useState("Default");
 
+    // Gets all posts
+    // withCredentials : true allows us to send the cookie
+    // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
-        getAllPosts().then((result) => {
-            if (result) {
-                console.log(result);
-                setPosts(result.posts);
-                user = result.user;
-            }
-        });
+        axios.get("http://localhost:5000/posts", {withCredentials: true})
+            .then(response => {
+                setPosts(response.data.posts);
+                setUser(response.data.user);
+            })
+            // Occurs when either invalid token or no token
+            .catch(error => {
+                console.log(error.response.data);
+                // if (error.response.status === 401) {
+                //     window.location.assign('/');
+                // }
+            });
     }, []);
 
-    async function getAllPosts() {
-        try {
-            const response = await axios.get(
-                "http://localhost:5000/posts/" + cookies.jwt
-            );
-            return response.data;
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // async function getAllPosts() {
+    //     axios.get("http://localhost:5000/posts/", {withCredentials: true})
+    //         .then(response => {
+    //             console.log(response);
+    //             setPosts(response.data.posts);
+    //             user = response.data.user;
+    //         })
+    //         .catch(error => {
+    //             console.log(error.response.data);
+    //         });
+
+    // }
 
     useEffect(() => {
         if (selected === "Likes") {
@@ -129,6 +135,16 @@ function App() {
         }
     }
 
+    function logout() {
+        axios.get("http://localhost:5000/logout", {withCredentials: true})
+            .then(() => {
+                window.location.assign('/');
+            })
+            .catch((error) =>{
+                console.log(error);
+            });
+    }
+
     /* ------ geolocation start ------ */
 
     const [lat, setLat] = useState();
@@ -186,6 +202,10 @@ function App() {
                         path="/home"
                         element={
                             <div className="home">
+                                <button className="create-btn" onClick={logout}>
+                                    Logout
+                                </button>
+                                {user !== undefined ? <span> Welcome, {user.username} </span> : <span> Welcome, Guest </span>}
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
@@ -253,23 +273,24 @@ function App() {
                                                   location={post.location}
                                               />
                                           ))
-                                        : postList.map((post, index) => (
-                                              <Post
-                                                  key={index}
-                                                  timePosted={parseInt(
-                                                      (new Date() -
-                                                          new Date(post.createdAt)) /
-                                                          3600000
-                                                  )}
-                                                  likes={post.likes}
-                                                  liked={post.liked}
-                                                  url={post.url}
-                                                  updateLikes={() =>
-                                                      updateLikes(post._id)
-                                                  }
-                                                  location={post.location}
-                                              />
-                                          ))}
+                                          : <p>Loading </p>
+                                        // : postList.map((post, index) => (
+                                        //       <Post
+                                        //           key={index}
+                                        //           timePosted={parseInt(
+                                        //               (new Date() -
+                                        //                   new Date(post.createdAt)) /
+                                        //                   3600000
+                                        //           )}
+                                        //           likes={post.likes}
+                                        //           liked={post.liked}
+                                        //           url={post.url}
+                                        //           updateLikes={() =>
+                                        //               updateLikes(post._id)
+                                        //           }
+                                        //           location={post.location}
+                                        //       />
+                                          }
                                 </div>
                             </div>
                         }
