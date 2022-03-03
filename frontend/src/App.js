@@ -21,14 +21,13 @@ const Header = styled.div`
     margin-top: 2em;
     line-height: 1.5em;
 `;
-// const code = new URLSearchParams(window.location.search).get("code");
 
 function App() {
     const [newSong, setNewSong] = useState("");
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
     const [user, setUser] = useState();
-    
+    const [code, setCode] = useState("");
     // filter
     const [selected, setSelected] = useState("Default");
 
@@ -48,6 +47,15 @@ function App() {
                 //     window.location.assign('/');
                 // }
             });
+    }, []);
+
+    useEffect(() => {
+        const auth_code = new URLSearchParams(window.location.search).get("code");
+        // maybe useState here to store code? 
+        if (auth_code) {
+            setCode(auth_code);
+            console.log(code);
+        }
     }, []);
 
     useEffect(() => {
