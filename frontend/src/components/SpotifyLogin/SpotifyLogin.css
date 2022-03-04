@@ -1,0 +1,19 @@
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6em;
+    width: 90%;
+}
+/* 
+.login-btn {
+    background-color: black;
+    padding: 8px;
+    border-radius: none;
+    text-transform: uppercase;
+    margin-top: 10px;
+    letter-spacing: 1.6px;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+} */

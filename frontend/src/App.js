@@ -12,9 +12,9 @@ import SignUpForm from "./components/SignUpForm/SignUpForm";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
-import data from "./data.js";
-import Dashboard from "./Dashboard";
-import { nominatim } from "nominatim-geocode";
+// import data from "./data.js";
+// import Dashboard from "./Dashboard";
+// import { nominatim } from "nominatim-geocode";
 
 const Header = styled.div`
     text-align: center;
@@ -30,18 +30,22 @@ function App() {
     const [user, setUser] = useState();
     // filter
     const [selected, setSelected] = useState("Default");
+    //user settings
+    const [userSetting, setUserSetting] = useState(user);
 
     // Gets all posts
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
-        axios.get("http://localhost:5000/posts", {withCredentials: true})
-            .then(response => {
+        axios
+            .get("http://localhost:5000/posts", { withCredentials: true })
+            .then((response) => {
                 setPosts(response.data.posts);
                 setUser(response.data.user);
+                setUserSetting(response.data.user.username);
             })
             // Occurs when either invalid token or no token
-            .catch(error => {
+            .catch((error) => {
                 console.log(error.response.data);
                 // if (error.response.status === 401) {
                 //     window.location.assign('/');
@@ -61,6 +65,12 @@ function App() {
     //         });
 
     // }
+
+    useEffect(() => {
+        if (userSetting === "Logout") {
+            logout();
+        }
+    }, [userSetting]);
 
     useEffect(() => {
         if (selected === "Likes") {
@@ -136,11 +146,12 @@ function App() {
     }
 
     function logout() {
-        axios.get("http://localhost:5000/logout", {withCredentials: true})
+        axios
+            .get("http://localhost:5000/logout", { withCredentials: true })
             .then(() => {
-                window.location.assign('/');
+                window.location.assign("/");
             })
-            .catch((error) =>{
+            .catch((error) => {
                 console.log(error);
             });
     }
@@ -190,6 +201,17 @@ function App() {
 
     /* ------ geolocation end ------ */
 
+    /* ------ start dashboard menu ------ */
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    /* ------ end dashboard menu ------ */
+
     return (
         <div className="App">
             {/* routed from login, routes to main page */}
@@ -202,10 +224,43 @@ function App() {
                         path="/home"
                         element={
                             <div className="home">
-                                <button className="create-btn" onClick={logout}>
-                                    Logout
-                                </button>
-                                {user !== undefined ? <span> Welcome, {user.username} </span> : <span> Welcome, Guest </span>}
+                                <Dropdown
+                                    selected={userSetting}
+                                    setSelected={setUserSetting}
+                                    purpose="user"
+                                />
+                                {/* <div className="user-settings">
+                                    {user !== undefined ? (
+                                        <Button
+                                            id="basic-button"
+                                            aria-controls={
+                                                open ? "basic-menu" : undefined
+                                            }
+                                            aria-haspopup="true"
+                                            aria-expanded={open ? "true" : undefined}
+                                            onClick={handleClick}
+                                        >
+                                            {user.username}
+                                        </Button>
+                                    ) : (
+                                        <p>Welcome, Guest</p>
+                                    )}
+                                    <Menu
+                                        id="basic-menu"
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        MenuListProps={{
+                                            "aria-labelledby": "basic-button",
+                                        }}
+                                    >
+                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                        <MenuItem onClick={handleClose}>
+                                            My account
+                                        </MenuItem>
+                                        <MenuItem onClick={logout}>Logout</MenuItem>
+                                    </Menu>
+                                </div> */}
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
@@ -216,6 +271,7 @@ function App() {
                                     <Dropdown
                                         selected={`Filtered by: ${selected}`}
                                         setSelected={setSelected}
+                                        purpose="filter"
                                     />
                                     <Popup
                                         modal
@@ -254,44 +310,25 @@ function App() {
                                         )}
                                     </Popup>
                                 </div>
-                                <div className="posts">
-                                    {user !== undefined
-                                        ? postList.map((post, index) => (
-                                              <Post
-                                                  key={index}
-                                                  timePosted={parseInt(
-                                                      (new Date() -
-                                                          new Date(post.createdAt)) /
-                                                          3600000
-                                                  )}
-                                                  likes={post.likes}
-                                                  liked={user.liked.includes(post._id)}
-                                                  url={post.url}
-                                                  updateLikes={() =>
-                                                      updateLikes(post._id)
-                                                  }
-                                                  location={post.location}
-                                              />
-                                          ))
-                                          : <p>Loading </p>
-                                        // : postList.map((post, index) => (
-                                        //       <Post
-                                        //           key={index}
-                                        //           timePosted={parseInt(
-                                        //               (new Date() -
-                                        //                   new Date(post.createdAt)) /
-                                        //                   3600000
-                                        //           )}
-                                        //           likes={post.likes}
-                                        //           liked={post.liked}
-                                        //           url={post.url}
-                                        //           updateLikes={() =>
-                                        //               updateLikes(post._id)
-                                        //           }
-                                        //           location={post.location}
-                                        //       />
-                                          }
-                                </div>
+                                {user !== undefined && (
+                                    <div className="posts">
+                                        {postList.map((post, index) => (
+                                            <Post
+                                                key={index}
+                                                timePosted={parseInt(
+                                                    (new Date() -
+                                                        new Date(post.createdAt)) /
+                                                        3600000
+                                                )}
+                                                likes={post.likes}
+                                                liked={user.liked.includes(post._id)}
+                                                url={post.url}
+                                                updateLikes={() => updateLikes(post._id)}
+                                                location={post.location}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         }
                     />
