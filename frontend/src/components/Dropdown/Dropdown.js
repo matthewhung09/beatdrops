@@ -1,6 +1,7 @@
 import { React, useState } from "react";
 import "../Dropdown/Dropdown.css";
 import { BsFilterCircleFill } from "react-icons/bs";
+import { IoMdArrowDropdownCircle } from "react-icons/io";
 
 function Dropdown({ selected, setSelected, purpose }) {
     const [isActive, setIsActive] = useState(false);
@@ -11,9 +12,15 @@ function Dropdown({ selected, setSelected, purpose }) {
 
     return (
         <div className="dropdown">
-            <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
-                {selected} <BsFilterCircleFill />
-            </div>
+            {purpose === "filter" ? (
+                <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
+                    {selected} <BsFilterCircleFill />
+                </div>
+            ) : (
+                <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
+                    {selected} <IoMdArrowDropdownCircle />
+                </div>
+            )}
             {isActive && (
                 <div className="dropdown-content">
                     {options.map((option) => (

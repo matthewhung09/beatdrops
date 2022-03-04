@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { React, useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
@@ -229,38 +230,6 @@ function App() {
                                     setSelected={setUserSetting}
                                     purpose="user"
                                 />
-                                {/* <div className="user-settings">
-                                    {user !== undefined ? (
-                                        <Button
-                                            id="basic-button"
-                                            aria-controls={
-                                                open ? "basic-menu" : undefined
-                                            }
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? "true" : undefined}
-                                            onClick={handleClick}
-                                        >
-                                            {user.username}
-                                        </Button>
-                                    ) : (
-                                        <p>Welcome, Guest</p>
-                                    )}
-                                    <Menu
-                                        id="basic-menu"
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        MenuListProps={{
-                                            "aria-labelledby": "basic-button",
-                                        }}
-                                    >
-                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                        <MenuItem onClick={handleClose}>
-                                            My account
-                                        </MenuItem>
-                                        <MenuItem onClick={logout}>Logout</MenuItem>
-                                    </Menu>
-                                </div> */}
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
