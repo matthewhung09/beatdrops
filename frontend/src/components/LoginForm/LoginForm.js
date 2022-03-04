@@ -135,7 +135,7 @@ function LoginForm() {
                                         // render prop: technique for sharing code between React components using a prop whose value is a function
                                         render={({
                                             field: {
-                                                // value, // curr val of controlled component
+                                                value, // curr val of controlled component
                                                 name, // input's name being registered
                                                 onChange, // sends input's val to library
                                             },
@@ -153,16 +153,21 @@ function LoginForm() {
                                                         onChange={onChange}
                                                         error={!!error}
                                                         helperText={ 
-                                    error ? error.message
-                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
-                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
-                                      : null
-                                  }
+                                                            error ? error.message
+                                                            : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                                            : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
+                                                            : null
+                                                        }
                                                         type={
                                                             showPassword
                                                                 ? "text"
                                                                 : "password"
                                                         }
+                                                        FormHelperTextProps={{
+                                                            style: {
+                                                                color: "#f44434",
+                                                            },
+                                                        }}
                                                         InputProps={{
                                                             endAdornment: (
                                                                 <InputAdornment position="end">
@@ -198,11 +203,11 @@ function LoginForm() {
                                                         onChange={onChange}
                                                         error={!!error}
                                                         helperText={ 
-                                    error ? error.message
-                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
-                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
-                                      : null
-                                  }
+                                                            error ? error.message
+                                                            : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                                            : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
+                                                            : null
+                                                        }
                                                         FormHelperTextProps={{
                                                             style: {
                                                                 color: "#f44434",
