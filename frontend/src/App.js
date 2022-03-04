@@ -29,10 +29,8 @@ function App() {
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
     const [user, setUser] = useState();
-    // filter
-    const [selected, setSelected] = useState("Default");
-    //user settings
-    const [userSetting, setUserSetting] = useState(user);
+    const [selected, setSelected] = useState("Default"); // filter
+    const [userSetting, setUserSetting] = useState(user); //user settings
 
     // Gets all posts
     // withCredentials : true allows us to send the cookie
@@ -202,17 +200,6 @@ function App() {
 
     /* ------ geolocation end ------ */
 
-    /* ------ start dashboard menu ------ */
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    /* ------ end dashboard menu ------ */
-
     return (
         <div className="App">
             {/* routed from login, routes to main page */}
@@ -225,11 +212,13 @@ function App() {
                         path="/home"
                         element={
                             <div className="home">
-                                <Dropdown
-                                    selected={userSetting}
-                                    setSelected={setUserSetting}
-                                    purpose="user"
-                                />
+                                <div className="user-settings">
+                                    <Dropdown
+                                        selected={userSetting}
+                                        setSelected={setUserSetting}
+                                        purpose="user"
+                                    />
+                                </div>
                                 <Header>
                                     <h1>beatdrops</h1>
                                     <h2>
