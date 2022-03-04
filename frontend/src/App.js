@@ -232,6 +232,7 @@ function App() {
                                         purpose="filter"
                                     />
                                     <Popup
+                                        closeOnDocumentClick
                                         modal
                                         nested
                                         trigger={
@@ -268,7 +269,7 @@ function App() {
                                         )}
                                     </Popup>
                                 </div>
-                                {user !== undefined && (
+                                {user !== undefined ? (
                                     <div className="posts">
                                         {postList.map((post, index) => (
                                             <Post
@@ -286,6 +287,8 @@ function App() {
                                             />
                                         ))}
                                     </div>
+                                ) : (
+                                    <p>Loading...</p>
                                 )}
                             </div>
                         }
