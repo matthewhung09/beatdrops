@@ -4,14 +4,14 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const qs = require("qs");
 const cors = require("cors");
-const postServices = require("./models/post-services");
-const userServices = require("./models/user-services");
-const app = express();
-const port = 5000;
 const { access } = require("fs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const checkUser = require('./middleware/authMiddleware');
+const postServices = require("./models/post-services");
+const userServices = require("./models/user-services");
+const checkUser = require("./middleware/authMiddleware");
+const app = express();
+const port = 5000;
 
 dotenv.config();
 
@@ -26,7 +26,6 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 
 const handleErrors = (err) => {
-    // console.log(err.message, err.code);
     let errors = { username: "", email: "", password: "" };
 
     if (err.message == "incorrect email") {
@@ -38,7 +37,6 @@ const handleErrors = (err) => {
 
     // validation errors
     if (err.message.includes("User validation failed")) {
-        // console.log(err.errors);
         Object.values(err.errors).forEach(({ properties }) => {
             if (properties.message.includes("expected `email` to be unique")){
                 errors[properties.path] = "Email already in use.";
@@ -47,17 +45,8 @@ const handleErrors = (err) => {
             errors[properties.path] = properties.message;
         });
     }
-    // console.log(errors);
     return errors;
 };
-
-app.listen(port, () => {
-    console.log(`listening at http://localhost:${port}`);
-});
-
-app.get("/", (req, res) => {
-    res.send("Hello, World");
-});
 
 // Get all posts from the database
 // Called on initial load
@@ -65,18 +54,7 @@ app.get("/", (req, res) => {
 app.get("/posts", checkUser, async (req, res) => {
     try {
         const posts = await postServices.getPosts();
-        const new_posts = posts.map((post) => ({
-            _id: post._id,
-            title: post.title,
-            artist: post.artist,
-            likes: post.likes,
-            url: post.url,
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            liked: req.user.liked.includes(post._id),
-            location: post.location,
-        }));
-        res.status(201).json({ posts: new_posts, user: req.user });
+        res.status(201).json({ posts: posts, user: req.user });
     } catch (error) {
         res.status(500).send(error.message);
         console.log(error);
@@ -87,7 +65,6 @@ app.get("/posts", checkUser, async (req, res) => {
 app.post("/create", async (req, res) => {
     const new_post = await getPostData(req.body.title, req.body.artist, req.body.location);
     let post = await postServices.addPost(new_post);
-    // console.log(new_post);
     if (post) {
         res.status(201).json(post); 
     } else {
@@ -101,7 +78,7 @@ async function getPostData(song, artist, location) {
         type: "track",
         limit: "10",
     };
-    // Format querystring - should probably find a better way to do this
+    // Format querystring
     const first_part =
         "q=track:" +
         song.replaceAll(" ", "%20") +
@@ -226,9 +203,9 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// Delete the cookie
 app.get("/logout", (req, res) => {
-    // We can't actually delete from backend - instead we replace with blank and short expire time
-    res.cookie('jwt', '', {maxAge: 1});
+    res.clearCookie('jwt');
     res.redirect('/');
 });
 
@@ -326,4 +303,12 @@ app.post("/current", async (req, res) => {
     return res.json({
         song: response.data.item.name,
     });
+});
+
+app.listen(port, () => {
+    console.log(`listening at http://localhost:${port}`);
+});
+
+app.get("/", (req, res) => {
+    res.send("Hello, World");
 });

@@ -21,13 +21,13 @@ const Header = styled.div`
     margin-top: 2em;
     line-height: 1.5em;
 `;
-// const code = new URLSearchParams(window.location.search).get("code");
 
 function App() {
     const [newSong, setNewSong] = useState("");
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
     const [user, setUser] = useState();
+    const [code, setCode] = useState("");
     // filter
     const [selected, setSelected] = useState("Default");
 
@@ -49,18 +49,14 @@ function App() {
             });
     }, []);
 
-    // async function getAllPosts() {
-    //     axios.get("http://localhost:5000/posts/", {withCredentials: true})
-    //         .then(response => {
-    //             console.log(response);
-    //             setPosts(response.data.posts);
-    //             user = response.data.user;
-    //         })
-    //         .catch(error => {
-    //             console.log(error.response.data);
-    //         });
-
-    // }
+    useEffect(() => {
+        const auth_code = new URLSearchParams(window.location.search).get("code");
+        // maybe useState here to store code? 
+        if (auth_code) {
+            setCode(auth_code);
+            console.log(code);
+        }
+    }, []);
 
     useEffect(() => {
         if (selected === "Likes") {
@@ -76,8 +72,8 @@ function App() {
         }
     }, [selected]);
 
+    // Submit for making new post
     function onSubmitPostClick() {
-        // Submit for making new post
         makePostCall().then((result) => {
             if (result && result.status === 201) {
                 setPosts([result.data, ...postList]);
@@ -87,7 +83,6 @@ function App() {
 
     async function makePostCall() {
         const location = await getPostPosition(lat, long);
-        // console.log("gpos: ", gpos);
         // getPostPosition(lat, long);
         try {
             const response = await axios.post("http://localhost:5000/create", {
@@ -102,6 +97,7 @@ function App() {
         }
     }
 
+    // Called when user likes a post
     function updateLikes(post_id) {
         let objIndex = postList.findIndex((obj) => obj._id === post_id);
         let elem = postList[objIndex];
@@ -274,22 +270,6 @@ function App() {
                                               />
                                           ))
                                           : <p>Loading </p>
-                                        // : postList.map((post, index) => (
-                                        //       <Post
-                                        //           key={index}
-                                        //           timePosted={parseInt(
-                                        //               (new Date() -
-                                        //                   new Date(post.createdAt)) /
-                                        //                   3600000
-                                        //           )}
-                                        //           likes={post.likes}
-                                        //           liked={post.liked}
-                                        //           url={post.url}
-                                        //           updateLikes={() =>
-                                        //               updateLikes(post._id)
-                                        //           }
-                                        //           location={post.location}
-                                        //       />
                                           }
                                 </div>
                             </div>

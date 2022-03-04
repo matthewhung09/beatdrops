@@ -65,9 +65,13 @@ function LoginForm() {
       resolver: yupResolver(validationSchema),
     });
 
-    let vErr = {};
-  
+    const [vErr, setvErr] = useState("");
+    const [cemail, setEmail] = useState("");
+    const [cpassword, setPassword] = useState("");
+
     const onSubmit = async (values) => {
+      setEmail(values.email);
+      setPassword(values.password);
       let response;
       try {
         response = await axios.post('http://localhost:5000/login', {
@@ -82,9 +86,8 @@ function LoginForm() {
         }
       }
       catch (error) {
-        vErr = error.response.data.errors;
+        setvErr(error.response.data.errors);
       }
-      // reset();
     };
   
     // info for required entries
@@ -119,7 +122,7 @@ function LoginForm() {
                         // render prop: technique for sharing code between React components using a prop whose value is a function
                         render={({
                             field: { 
-                              // value, // curr val of controlled component
+                              value, // curr val of controlled component
                               name, // input's name being registered
                               onChange // sends input's val to library
                             },
@@ -136,8 +139,8 @@ function LoginForm() {
                                   error={!!error}
                                   helperText={ 
                                     error ? error.message
-                                      : name === "email" && vErr.email !== "" ? vErr.email
-                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
                                       : null
                                   }
                                   type={showPassword ? "text" : "password"}
@@ -164,8 +167,8 @@ function LoginForm() {
                                   error={!!error}
                                   helperText={
                                     error ? error.message
-                                      : name === "email" && vErr.email !== "" ? vErr.email
-                                      : name === "password" && vErr.password !== "" ? vErr.password
+                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
                                       : null
                                   }
                                 />
@@ -185,7 +188,6 @@ function LoginForm() {
                         type="submit"
                         variant="contained" 
                         color="primary" 
-                        // onClick={() => navigate("/home")}
                       >
                         Continue
                       </StyledButton>
