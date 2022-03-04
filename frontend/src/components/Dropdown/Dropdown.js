@@ -24,7 +24,6 @@ function Dropdown({ selected, setSelected, purpose }) {
                         backgroundColor: "black",
                         width: "100%",
                         borderRadius: "5em",
-                        textTransform: "capitalize",
                         gap: "1em",
                     }}
                     onClick={() => setIsActive(!isActive)}

@@ -220,7 +220,7 @@ function App() {
                                     />
                                 </div>
                                 <Header>
-                                    <h1>beatdrops</h1>
+                                    <h1 className="title">beatdrops</h1>
                                     <h2>
                                         <i>YikYak meets Spotify</i>
                                     </h2>
