@@ -81,17 +81,15 @@ function SignUpForm() {
                 "Password must contain at least 8 characters, one uppercase, one number and one special case character."
             ),
         username: Yup.string().required("Please enter a nickname."),
-        // need to check if username is already taken!
     });
+
     const { handleSubmit, control, reset } = useForm({
         resolver: yupResolver(validationSchema),
     });
-
-    //let vErr = {};
+  
     const [vErr, setvErr] = useState("");
     const [cemail, setEmail] = useState("");
 
-    // log values when data is submitted
     const onSubmit = async (values) => {
         // console.log(values);
         setEmail(values.email);

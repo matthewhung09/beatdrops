@@ -68,29 +68,29 @@ function LoginForm() {
         resolver: yupResolver(validationSchema),
     });
 
-    let vErr = {};
+    const [vErr, setvErr] = useState("");
+    const [cemail, setEmail] = useState("");
+    const [cpassword, setPassword] = useState("");
 
     const onSubmit = async (values) => {
-        let response;
-        try {
-            response = await axios.post(
-                "http://localhost:5000/login",
-                {
-                    email: values.email,
-                    password: values.password,
-                },
-                { withCredentials: true }
-            );
-            const data = response.data;
-
-            // Route to main page if login info is correct
-            if (data.user) {
-                window.location.assign("/home");
-            }
-        } catch (error) {
-            vErr = error.response.data.errors;
+      setEmail(values.email);
+      setPassword(values.password);
+      let response;
+      try {
+        response = await axios.post('http://localhost:5000/login', {
+          email: values.email,
+          password: values.password,
+        }, {withCredentials: true});
+        const data = response.data;
+        
+        // Route to main page if login info is correct
+        if (data.user) {
+          window.location.assign('/home');
         }
-        // reset();
+      }
+      catch (error) {
+        setvErr(error.response.data.errors);
+      }
     };
 
     // info for required entries
@@ -152,17 +152,12 @@ function LoginForm() {
                                                         label={entry.label}
                                                         onChange={onChange}
                                                         error={!!error}
-                                                        helperText={
-                                                            error
-                                                                ? error.message
-                                                                : name === "email" &&
-                                                                  vErr.email !== ""
-                                                                ? vErr.email
-                                                                : name === "password" &&
-                                                                  vErr.password !== ""
-                                                                ? vErr.password
-                                                                : null
-                                                        }
+                                                        helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
+                                      : null
+                                  }
                                                         type={
                                                             showPassword
                                                                 ? "text"
@@ -202,17 +197,12 @@ function LoginForm() {
                                                         label={entry.label}
                                                         onChange={onChange}
                                                         error={!!error}
-                                                        helperText={
-                                                            error
-                                                                ? error.message
-                                                                : name === "email" &&
-                                                                  vErr.email !== ""
-                                                                ? vErr.email
-                                                                : name === "password" &&
-                                                                  vErr.password !== ""
-                                                                ? vErr.password
-                                                                : null
-                                                        }
+                                                        helperText={ 
+                                    error ? error.message
+                                      : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
+                                      : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
+                                      : null
+                                  }
                                                         FormHelperTextProps={{
                                                             style: {
                                                                 color: "#f44434",
@@ -263,6 +253,7 @@ function LoginForm() {
                 )}
             </Popup>
         </StylesProvider>
+
     );
 }
 
