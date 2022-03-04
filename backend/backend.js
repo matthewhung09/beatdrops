@@ -11,7 +11,7 @@ const port = 5000;
 const { access } = require("fs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const checkUser = require('./middleware/authMiddleware');
+const checkUser = require("./middleware/authMiddleware");
 
 dotenv.config();
 
@@ -30,17 +30,17 @@ const handleErrors = (err) => {
     let errors = { username: "", email: "", password: "" };
 
     if (err.message == "incorrect email") {
-        errors.email = "Email is not registered";
+        errors.email = "Email is not registered.";
     }
     if (err.message == "incorrect password") {
-        errors.password = "Incorrect password";
+        errors.password = "Password is incorrect.";
     }
 
     // validation errors
     if (err.message.includes("User validation failed")) {
         // console.log(err.errors);
         Object.values(err.errors).forEach(({ properties }) => {
-            if (properties.message.includes("expected `email` to be unique")){
+            if (properties.message.includes("expected `email` to be unique")) {
                 errors[properties.path] = "Email already in use.";
                 return;
             }
@@ -85,11 +85,15 @@ app.get("/posts", checkUser, async (req, res) => {
 
 // Creates a new post and adds it to the database
 app.post("/create", async (req, res) => {
-    const new_post = await getPostData(req.body.title, req.body.artist, req.body.location);
+    const new_post = await getPostData(
+        req.body.title,
+        req.body.artist,
+        req.body.location
+    );
     let post = await postServices.addPost(new_post);
     // console.log(new_post);
     if (post) {
-        res.status(201).json(post); 
+        res.status(201).json(post);
     } else {
         res.status(500).end();
     }
@@ -200,16 +204,15 @@ app.post("/signup", async (req, res) => {
         const user = await userServices.addUser(new_user);
         if (user.errors) {
             const errors = handleErrors(user);
-            res.status(400).json({errors});
-        }
-        else {
+            res.status(400).json({ errors });
+        } else {
             const token = createToken(user._id);
             res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
             res.status(201).json({ user: user });
         }
     } catch (err) {
         const errors = handleErrors(err);
-        res.status(400).json({errors});
+        res.status(400).json({ errors });
     }
 });
 
@@ -228,8 +231,8 @@ app.post("/login", async (req, res) => {
 
 app.get("/logout", (req, res) => {
     // We can't actually delete from backend - instead we replace with blank and short expire time
-    res.cookie('jwt', '', {maxAge: 1});
-    res.redirect('/');
+    res.cookie("jwt", "", { maxAge: 1 });
+    res.redirect("/");
 });
 
 app.get("/user/:id", async (req, res) => {

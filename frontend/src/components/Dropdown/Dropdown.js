@@ -17,25 +17,64 @@ function Dropdown({ selected, setSelected, purpose }) {
                     {selected} <BsFilterCircleFill />
                 </div>
             ) : (
-                <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
+                <div
+                    className="dropdown-btn"
+                    style={{
+                        color: "white",
+                        backgroundColor: "black",
+                        width: "100%",
+                        borderRadius: "5em",
+                        textTransform: "capitalize",
+                        gap: "1em",
+                    }}
+                    onClick={() => setIsActive(!isActive)}
+                >
                     {selected} <IoMdArrowDropdownCircle />
                 </div>
             )}
-            {isActive && (
-                <div className="dropdown-content">
-                    {options.map((option) => (
-                        <div
-                            className="dropdown-item"
-                            onClick={() => {
-                                setSelected(option);
-                                setIsActive(false);
-                            }}
-                        >
-                            {option}
-                        </div>
-                    ))}
-                </div>
-            )}
+            {isActive &&
+                (purpose === "filter" ? (
+                    <div
+                        className="dropdown-content"
+                        style={{
+                            width: "93%",
+                        }}
+                    >
+                        {options.map((option) => (
+                            <div
+                                className="dropdown-item"
+                                onClick={() => {
+                                    setSelected(option);
+                                    setIsActive(false);
+                                }}
+                            >
+                                {option}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div
+                        className="dropdown-content"
+                        style={{
+                            width: "110%",
+                            borderRadius: "1em",
+                            backgroundColor: "black",
+                            color: "white",
+                        }}
+                    >
+                        {options.map((option) => (
+                            <div
+                                className="dropdown-item"
+                                onClick={() => {
+                                    setSelected(option);
+                                    setIsActive(false);
+                                }}
+                            >
+                                {option}
+                            </div>
+                        ))}
+                    </div>
+                ))}
         </div>
     );
 }

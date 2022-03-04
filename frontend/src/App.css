@@ -63,7 +63,8 @@ h1 {
     flex-direction: row;
     justify-content: space-between;
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
+    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     font-weight: bold;
     color: #333;
     cursor: pointer;
@@ -128,4 +129,8 @@ h1 {
     /* margin-right: 10em;
     margin-top: 2em;
     margin-right: 2em;  */
+}
+
+.user-dropdown {
+    background-color: green !important;
 }
