@@ -214,7 +214,6 @@ function App() {
                             <div className="home">
                                 <div className="user-settings">
                                     <Dropdown
-                                        className="user-dropdown"
                                         selected={userSetting}
                                         setSelected={setUserSetting}
                                         purpose="user"
