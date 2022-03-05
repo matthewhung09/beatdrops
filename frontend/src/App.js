@@ -177,26 +177,12 @@ function App() {
         // getPostPosition(lat, long);
     }, [lat, long]);
 
-    //function to get location coordinates
       //function to get location coordinates
       async function getPostPosition(lat, long) {
         console.log("(lat, long): ", lat, long);
         const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
   
         try {
-
-            
-            // fetch(url).then(result => result.json()).then(featureCollection => {
-            //     if (featureCollection.features.length === 0) {
-            //         document.getElementById("status").textContent = "The address is not found";
-            //         return;
-            //     }
-        
-            //     const foundAddress = featureCollection.features[0];
-            //     console.log(foundAddress.properties.name);
-            //     return foundAddress.properties.name;
-            // });
-
 
             const response = await axios(url);
 
@@ -206,43 +192,6 @@ function App() {
         catch (error) {
             console.log(error);
         }
-
-    
-            
-        
-      //  try {
-             //   const response = await axios.get(url);
-
-            //    const nameStr = "California Polytechnic State University - San Luis Obispo";
-
-               // if(response.data.name === nameStr) {
-
-                    // const nearestLocation = findNearestLocation(myLocation, loca);
-
-                    // console.log(nearestLocation);
-                    
-              //  }
-
-              //  else {
-               //     return response.data.name
-               // }
-       // }
-
-       // catch (error) {
-      //      console.log(error);
-      //  }
-
-          
-        // try {
-        //     const response = await axios.get(url);
-        //     const foundAddress = response.features[0];
-        //     console.log(foundAddress.properties.name);
-        //     return foundAddress.properties.name;
-            
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        
 
     }
 
