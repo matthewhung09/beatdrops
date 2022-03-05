@@ -252,7 +252,10 @@ function App() {
                                                     <PostForm
                                                         newSong={newSong}
                                                         newArtist={newArtist}
-                                                        onClick={onSubmitPostClick}
+                                                        onClick={() => {
+                                                            onSubmitPostClick();
+                                                            close();
+                                                        }}
                                                         onChangeSong={(e) =>
                                                             setNewSong(e.target.value)
                                                         }
