@@ -177,21 +177,22 @@ function App() {
         // getPostPosition(lat, long);
     }, [lat, long]);
 
-    //function to get location coordinates
-    async function getPostPosition(lat, long) {
+      //function to get location coordinates
+      async function getPostPosition(lat, long) {
         console.log("(lat, long): ", lat, long);
-        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`;
-
+        const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
+  
         try {
-            const response = await axios.get(url);
-            // setLocation(response.data.address.road);
-            console.log(response.data);
-            // if (response.data.name !== undefined) return response.data.name;
-            return response.data.address.road;
-            // return response.data;
-        } catch (error) {
+
+            const response = await axios(url);
+
+            console.log(response.data.features[0].properties.address_line1);
+            return response.data.features[0].properties.address_line1;
+        }
+        catch (error) {
             console.log(error);
         }
+
     }
 
     /* ------ geolocation end ------ */
