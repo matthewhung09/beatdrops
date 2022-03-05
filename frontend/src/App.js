@@ -54,7 +54,7 @@ function App() {
 
     useEffect(() => {
         const auth_code = new URLSearchParams(window.location.search).get("code");
-        // maybe useState here to store code? 
+        // maybe useState here to store code?
         if (auth_code) {
             setCode(auth_code);
             console.log(code);
@@ -177,22 +177,19 @@ function App() {
         // getPostPosition(lat, long);
     }, [lat, long]);
 
-      //function to get location coordinates
-      async function getPostPosition(lat, long) {
+    //function to get location coordinates
+    async function getPostPosition(lat, long) {
         console.log("(lat, long): ", lat, long);
         const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
-  
-        try {
 
+        try {
             const response = await axios(url);
 
-            console.log(response.data.features[0].properties.address_line1);
+            console.log(response.data.features[0]);
             return response.data.features[0].properties.address_line1;
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
-
     }
 
     /* ------ geolocation end ------ */
@@ -290,7 +287,6 @@ function App() {
                                 ) : (
                                     <p>Loading...</p>
                                 )}
-
                             </div>
                         }
                     />

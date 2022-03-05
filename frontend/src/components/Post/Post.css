@@ -55,6 +55,8 @@ button {
     opacity: 90%;
     font-size: smaller;
     transform: scale(0.97);
+    margin-left: 0.8em;
+    color: rgb(145, 145, 145);
     /* text-align: left; */
     /* margin-left: 1em; */
 }
@@ -68,6 +70,7 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: start;
     margin-left: 1em;
     /* min-width: 8em; */
     width: 12em;

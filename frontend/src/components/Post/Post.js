@@ -4,39 +4,35 @@ import "reactjs-popup/dist/index.css";
 import Spotify from "react-spotify-embed";
 
 function Post({ timePosted, likes, liked, url, updateLikes, location }) {
-    // const timeAndLocation1 = `Posted less than an hour ago @ ${location}`
-    // const timeAndLocation2 = `Posted an hour ago @ ${location}`
-    // const timeAndLocation3 = `Posted ${timePosted} hours ago @ ${location}`
-    const view = "coverart";
-    const theme = "black";
+    // first part of location message based on post time
+    let message = "";
+    if (timePosted < 1) {
+        message = `Streamed less than an hour ago at`;
+    } else if (timePosted < 2) {
+        message = `Streamed an hour ago at`;
+    } else if (timePosted < 24) {
+        message = `Streamed ${timePosted} hours ago at`;
+    } else if (timePosted < 25) {
+        message = `Streamed a day ago at`;
+    } else {
+        message = `Streamed ${parseInt(timePosted / 24)} days ago at`;
+    }
+
+    // strip number from campus buildings
+    if (location.includes("(")) {
+        location = location.substring(0, location.indexOf("("));
+    }
+
     return (
         <div className="card">
             <div className="spotify-div">
-                <Spotify
-                    theme={theme}
-                    view={view}
-                    wide
-                    allowtransparency="false"
-                    link={url}
-                />
+                <Spotify wide allowtransparency="false" link={url} />
             </div>
             <div className="action">
-                {timePosted < 1 ? (
-                    <p className="time">
-                        Posted {`<`} 1 hour ago at{" "}
-                        <b className="location">{` ${location}`}</b>
-                    </p>
-                ) : timePosted < 2 ? (
-                    <p className="time">
-                        Posted an hour ago at{" "}
-                        <b className="location"> {` ${location}`}</b>
-                    </p>
-                ) : (
-                    <p className="time">
-                        Posted {timePosted} hours ago at{" "}
-                        <b className="location"> {` ${location}`}</b>
-                    </p>
-                )}
+                <p className="time">
+                    {message}
+                    <b className="location">{` ${location}`}</b>
+                </p>
                 {liked === false ? (
                     <button
                         className="likes"

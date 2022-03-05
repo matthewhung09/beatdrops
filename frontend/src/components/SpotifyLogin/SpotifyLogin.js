@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button, StylesProvider } from "@material-ui/core";
 import Popup from "reactjs-popup";
 import "../../App.css";
-import "../SpotifyLogin/SpotifyLogin.css";
+// import "../SpotifyLogin/SpotifyLogin.css";
 import { useNavigate } from "react-router-dom";
 
 const AUTH_URL =
