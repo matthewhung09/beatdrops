@@ -41,11 +41,9 @@ function App() {
 
     // takes care of rate limiting issues
     const http = rateLimit(axios.create(), {
-        maxRequests: 2,
-        perMilliseconds: 1000,
-        maxRPS: 2,
+        maxRequests: 5, // 5 requests
+        maxRPS: 1000, // per 1000 milliseconds
     });
-    http.getMaxRPS(); // 2
 
     // Gets all posts
     // withCredentials : true allows us to send the cookie

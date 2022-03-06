@@ -15,7 +15,7 @@ const port = 5000;
 
 // import Bottleneck from "bottleneck";
 // Note: To support older browsers and Node <6.0, you must import the ES5 bundle instead.
-var Bottleneck = require("bottleneck");
+var Bottleneck = require("bottleneck/es5");
 const limiter = new Bottleneck({
     maxConcurrent: 1,
     minTime: 333,
@@ -103,8 +103,8 @@ async function getPostData(song, artist, location) {
     const second_part = new URLSearchParams(data).toString();
     const queryparam = first_part + "&" + second_part;
 
-    // const access_token = await getAccessToken();
-    const access_token = await limiter.schedule(() => getAccessToken());
+    const access_token = await getAccessToken();
+    // const access_token = await limiter.schedule(() => getAccessToken());
 
     try {
         const response = await axios.get(

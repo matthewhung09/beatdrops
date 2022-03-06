@@ -32,7 +32,7 @@ function Post({ timePosted, likes, liked, url, updateLikes, location }) {
     return (
         <div className="card">
             <div className="spotify-div">
-                <Spotify wide allowtransparency="false" link={url} />
+                {/* <Spotify wide allowtransparency="false" link={url} /> */}
             </div>
             <div className="action">
                 <p className="time">
