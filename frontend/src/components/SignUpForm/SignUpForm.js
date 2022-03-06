@@ -86,7 +86,7 @@ function SignUpForm() {
     const { handleSubmit, control, reset } = useForm({
         resolver: yupResolver(validationSchema),
     });
-  
+
     const [vErr, setvErr] = useState("");
     const [cemail, setEmail] = useState("");
 
@@ -146,10 +146,10 @@ function SignUpForm() {
                                 style={{ width: "100%" }}
                                 onSubmit={handleSubmit(onSubmit)}
                             >
-                                {rEntries.map((entry) => (
+                                {rEntries.map((entry, index) => (
                                     <Controller
                                         defaultValue=""
-                                        key={entry.input}
+                                        key={index}
                                         name={entry.input} // unique name of your input
                                         control={control} // control obj from invoking useForm
                                         // render prop: technique for sharing code between React components using a prop whose value is a function
