@@ -31,7 +31,7 @@ function App() {
     const [selected, setSelected] = useState("Default"); // filter
     const [userSetting, setUserSetting] = useState(user); //user settings
     const [code, setCode] = useState("");
-
+    const [postError, setPostError] = useState("");
     // Gets all posts
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
@@ -82,12 +82,18 @@ function App() {
     }, [selected]);
 
     // Submit for making new post
-    function onSubmitPostClick() {
-        makePostCall().then((result) => {
+    async function onSubmitPostClick() {
+        let success = false;
+        await makePostCall().then((result) => {
             if (result && result.status === 201) {
                 setPosts([result.data, ...postList]);
+                success = true;
+            }
+            else {
+                success = false;
             }
         });
+        return success;
     }
 
     async function makePostCall() {
@@ -101,7 +107,6 @@ function App() {
             });
             return response;
         } catch (error) {
-            console.log(error);
             return false;
         }
     }
@@ -168,7 +173,7 @@ function App() {
         if (navigator.geolocation) {
             navigator.permissions.query({ name: "geolocation" }).then(function (result) {
                 if (result.state !== "denied") {
-                    console.log(result.state);
+                    // console.log(result.state);
                     handleLocation();
                 }
             });
@@ -179,13 +184,13 @@ function App() {
 
     //function to get location coordinates
     async function getPostPosition(lat, long) {
-        console.log("(lat, long): ", lat, long);
+        // console.log("(lat, long): ", lat, long);
         const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
 
         try {
             const response = await axios(url);
 
-            console.log(response.data.features[0]);
+            // console.log(response.data.features[0]);
             return response.data.features[0].properties.address_line1;
         } catch (error) {
             console.log(error);
@@ -250,9 +255,16 @@ function App() {
                                                     <PostForm
                                                         newSong={newSong}
                                                         newArtist={newArtist}
-                                                        onClick={() => {
-                                                            onSubmitPostClick();
-                                                            close();
+                                                        onClick={async () => {
+                                                            if (await onSubmitPostClick()) {
+                                                                setNewSong("");
+                                                                setNewArtist("");
+                                                                setPostError("");
+                                                                close();
+                                                            }
+                                                            else {
+                                                                setPostError("Could not find specified song, please check your spelling.");
+                                                            }
                                                         }}
                                                         onChangeSong={(e) =>
                                                             setNewSong(e.target.value)
@@ -260,6 +272,7 @@ function App() {
                                                         onChangeArtist={(e) =>
                                                             setNewArtist(e.target.value)
                                                         }
+                                                        postError={postError}
                                                     />
                                                 </div>
                                             </div>
