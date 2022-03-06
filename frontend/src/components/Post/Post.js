@@ -18,21 +18,10 @@ function Post({ timePosted, likes, liked, url, updateLikes, location }) {
         }
     }
 
-    // strip number from campus buildings
-    // if (location.includes("(")) {
-    //     location = location.substring(0, location.indexOf("("));
-    // }
-
-    // if (location) {
-    //     if (location.includes("(")) {
-    //         location = location.substring(0, location.indexOf("("));
-    //     }
-    // }
-
     return (
         <div className="card">
             <div className="spotify-div">
-                {/* <Spotify wide allowtransparency="false" link={url} /> */}
+                <Spotify wide allowtransparency="false" link={url} />
             </div>
             <div className="action">
                 <p className="time">
