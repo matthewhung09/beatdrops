@@ -10,6 +10,8 @@ const cookieParser = require("cookie-parser");
 const postServices = require("./models/post-services");
 const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
+const bodyParser = require("body-parser");
+
 const app = express();
 const port = 5000;
 
@@ -32,6 +34,7 @@ const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toStrin
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
+app.use(bodyParser.json());
 
 const handleErrors = (err) => {
     let errors = { username: "", email: "", password: "" };
@@ -253,7 +256,7 @@ app.get("/user/:id/liked", async (req, res) => {
 app.post("/auth/login", async (req, res) => {
     const code = req.body.code;
     let response;
-
+    // console.log(code);
     try {
         const data = qs.stringify({
             grant_type: "authorization_code",
@@ -275,6 +278,34 @@ app.post("/auth/login", async (req, res) => {
         refreshToken: response.data.refresh_token,
         expiresIn: response.data.expires_in,
     });
+});
+
+app.get("/auth/callback", async (req, res) => {
+    const code = req.query.code;
+    let response;
+    console.log(code);
+    try {
+        const data = qs.stringify({
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: "http://localhost:5000/auth/callback",
+        });
+        response = await axios.post("https://accounts.spotify.com/api/token", data, {
+            headers: {
+                Authorization: `Basic ${auth_token}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    console.log("logged in");
+    res.redirect("http://localhost:3000/home/?token=" + response.data.access_token);
+    // res.json({
+    //     accessToken: response.data.access_token,
+    //     refreshToken: response.data.refresh_token,
+    //     expiresIn: response.data.expires_in,
+    // });
 });
 
 // Refreshes token
@@ -306,6 +337,9 @@ app.post("/auth/refresh", async (req, res) => {
 // Gets current playing song
 app.post("/current", async (req, res) => {
     const accessToken = req.body.accessToken;
+    if (accessToken === undefined) {
+        return;
+    }
     let response;
     try {
         response = await axios.get(

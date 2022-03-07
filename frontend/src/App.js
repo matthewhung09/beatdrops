@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
 import rateLimit from "axios-rate-limit";
+import Dashboard from './Dashboard'
 
 const Header = styled.div`
     text-align: center;
@@ -67,11 +68,11 @@ function App() {
     }, []);
 
     useEffect(() => {
-        const auth_code = new URLSearchParams(window.location.search).get("code");
-        // maybe useState here to store code?
-        if (auth_code) {
-            setCode(auth_code);
-            console.log(code);
+        const token = new URLSearchParams(window.location.search).get("token");
+        console.log(token);
+        if (token) {
+            setCode(token);
+            // console.log(code);
         }
     }, []);
 
@@ -243,6 +244,7 @@ function App() {
                                         <i>YikYak meets Spotify</i>
                                     </h2>
                                 </Header>
+                                {code !== undefined ? <Dashboard code={code}/> : null}
                                 <div className="home-actions">
                                     <Dropdown
                                         selected={`Filtered by: ${selected}`}
