@@ -73,24 +73,27 @@ function LoginForm() {
     const [cpassword, setPassword] = useState("");
 
     const onSubmit = async (values) => {
-      setEmail(values.email);
-      setPassword(values.password);
-      let response;
-      try {
-        response = await axios.post('http://localhost:5000/login', {
-          email: values.email,
-          password: values.password,
-        }, {withCredentials: true});
-        const data = response.data;
-        
-        // Route to main page if login info is correct
-        if (data.user) {
-          window.location.assign('/home');
+        setEmail(values.email);
+        setPassword(values.password);
+        let response;
+        try {
+            response = await axios.post(
+                "http://localhost:5000/login",
+                {
+                    email: values.email,
+                    password: values.password,
+                },
+                { withCredentials: true }
+            );
+            const data = response.data;
+
+            // Route to main page if login info is correct
+            if (data.user) {
+                window.location.assign("/home");
+            }
+        } catch (error) {
+            setvErr(error.response.data.errors);
         }
-      }
-      catch (error) {
-        setvErr(error.response.data.errors);
-      }
     };
 
     // info for required entries
@@ -126,10 +129,10 @@ function LoginForm() {
                                 style={{ width: "100%" }}
                                 onSubmit={handleSubmit(onSubmit)}
                             >
-                                {rEntries.map((entry) => (
+                                {rEntries.map((entry, index) => (
                                     <Controller
                                         defaultValue=""
-                                        key={entry.input}
+                                        key={index}
                                         name={entry.input} // unique name of your input
                                         control={control} // control obj from invoking useForm
                                         // render prop: technique for sharing code between React components using a prop whose value is a function
@@ -152,11 +155,18 @@ function LoginForm() {
                                                         label={entry.label}
                                                         onChange={onChange}
                                                         error={!!error}
-                                                        helperText={ 
-                                                            error ? error.message
-                                                            : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
-                                                            : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
-                                                            : null
+                                                        helperText={
+                                                            error
+                                                                ? error.message
+                                                                : name === "email" &&
+                                                                  vErr.email !== "" &&
+                                                                  value === cemail
+                                                                ? vErr.email
+                                                                : name === "password" &&
+                                                                  vErr.password !== "" &&
+                                                                  value === cpassword
+                                                                ? vErr.password
+                                                                : null
                                                         }
                                                         type={
                                                             showPassword
@@ -202,11 +212,18 @@ function LoginForm() {
                                                         label={entry.label}
                                                         onChange={onChange}
                                                         error={!!error}
-                                                        helperText={ 
-                                                            error ? error.message
-                                                            : name === "email" && vErr.email !== "" && value === cemail ? vErr.email
-                                                            : name === "password" && vErr.password !== "" && value === cpassword ? vErr.password
-                                                            : null
+                                                        helperText={
+                                                            error
+                                                                ? error.message
+                                                                : name === "email" &&
+                                                                  vErr.email !== "" &&
+                                                                  value === cemail
+                                                                ? vErr.email
+                                                                : name === "password" &&
+                                                                  vErr.password !== "" &&
+                                                                  value === cpassword
+                                                                ? vErr.password
+                                                                : null
                                                         }
                                                         FormHelperTextProps={{
                                                             style: {
@@ -258,7 +275,6 @@ function LoginForm() {
                 )}
             </Popup>
         </StylesProvider>
-
     );
 }
 
