@@ -25,6 +25,7 @@ function App() {
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
     const [code, setCode] = useState("");
+    const [postError, setPostError] = useState("");
 
     // post creation
     const [newSong, setNewSong] = useState("");
@@ -107,12 +108,18 @@ function App() {
     /* ------ post creation ------ */
 
     // Submit for making new post
-    function onSubmitPostClick() {
-        makePostCall().then((result) => {
+    async function onSubmitPostClick() {
+        let success = false;
+        await makePostCall().then((result) => {
             if (result && result.status === 201) {
                 setPosts([result.data, ...postList]);
+                success = true;
+            }
+            else {
+                success = false;
             }
         });
+        return success;
     }
 
     async function makePostCall() {
@@ -126,7 +133,6 @@ function App() {
             });
             return response;
         } catch (error) {
-            console.log(error);
             return false;
         }
     }
@@ -186,6 +192,7 @@ function App() {
             });
         }
     }, [lat, long]);
+
 
     // use reverse geocoding API to get location based on coordinates
     async function getPostPosition() {
@@ -267,9 +274,16 @@ function App() {
                                                     <PostForm
                                                         newSong={newSong}
                                                         newArtist={newArtist}
-                                                        onClick={() => {
-                                                            onSubmitPostClick();
-                                                            close();
+                                                        onClick={async () => {
+                                                            if (await onSubmitPostClick()) {
+                                                                setNewSong("");
+                                                                setNewArtist("");
+                                                                setPostError("");
+                                                                close();
+                                                            }
+                                                            else {
+                                                                setPostError("Could not find specified song, please check your spelling.");
+                                                            }
                                                         }}
                                                         onChangeSong={(e) =>
                                                             setNewSong(e.target.value)
@@ -277,6 +291,7 @@ function App() {
                                                         onChangeArtist={(e) =>
                                                             setNewArtist(e.target.value)
                                                         }
+                                                        postError={postError}
                                                     />
                                                 </div>
                                             </div>

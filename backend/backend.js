@@ -80,11 +80,16 @@ app.post("/create", async (req, res) => {
         getPostData(req.body.title, req.body.artist, req.body.location)
     );
 
-    let post = await postServices.addPost(new_post);
-    if (post) {
-        res.status(201).json(post);
-    } else {
+    if (!new_post) {
         res.status(500).end();
+    }
+    else {
+        let post = await postServices.addPost(new_post);
+        if (post) {
+            res.status(201).json(post);
+        } else {
+            res.status(500).end();
+        }
     }
 });
 
@@ -128,10 +133,9 @@ async function getPostData(song, artist, location) {
             url: song_url,
             location: location,
         };
-        console.log(new_post);
         return new_post;
     } catch (error) {
-        console.log(error);
+        return false;
     }
 }
 
