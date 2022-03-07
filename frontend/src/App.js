@@ -10,12 +10,10 @@ import PostForm from "./components/PostForm/PostForm";
 import Dropdown from "./components/Dropdown/Dropdown";
 import axios from "axios";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
-// import data from "./data.js";
-// import Dashboard from "./Dashboard";
-// import { nominatim } from "nominatim-geocode";
+import rateLimit from "axios-rate-limit";
 
 const Header = styled.div`
     text-align: center;
@@ -24,14 +22,30 @@ const Header = styled.div`
 `;
 
 function App() {
-    const [newSong, setNewSong] = useState("");
-    const [newArtist, setNewArtist] = useState("");
-    const [postList, setPosts] = useState([]); // used for creating new post and setting initial array
+    /* ------ useState setup ------ */
     const [user, setUser] = useState();
-    const [selected, setSelected] = useState("Default"); // filter
-    const [userSetting, setUserSetting] = useState(user); //user settings
     const [code, setCode] = useState("");
     const [postError, setPostError] = useState("");
+
+    // post creation
+    const [newSong, setNewSong] = useState("");
+    const [newArtist, setNewArtist] = useState("");
+    const [postList, setPosts] = useState([]);
+
+    // dropdowns
+    const [selected, setSelected] = useState("Default"); // post filtering
+    const [userSetting, setUserSetting] = useState(user); // logout
+
+    // geolocation
+    const [lat, setLat] = useState();
+    const [long, setLong] = useState();
+
+    // takes care of rate limiting issues
+    const http = rateLimit(axios.create(), {
+        maxRequests: 5, // 5 requests
+        maxRPS: 1000, // per 1000 milliseconds
+    });
+
     // Gets all posts
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
@@ -61,11 +75,7 @@ function App() {
         }
     }, []);
 
-    useEffect(() => {
-        if (userSetting === "Logout") {
-            logout();
-        }
-    }, [userSetting]);
+    /* ------ post filtering ------ */
 
     useEffect(() => {
         if (selected === "Likes") {
@@ -80,6 +90,22 @@ function App() {
             setPosts(postList);
         }
     }, [selected]);
+
+    // send ID of post and user - add liked post to their array
+    async function makeLikeCall(post_id, liked) {
+        try {
+            const response = await axios.patch(
+                "http://localhost:5000/user/" + user._id + "/liked",
+                { post: post_id, liked: liked }
+            );
+            return response;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    /* ------ post creation ------ */
 
     // Submit for making new post
     async function onSubmitPostClick() {
@@ -97,7 +123,7 @@ function App() {
     }
 
     async function makePostCall() {
-        const location = await getPostPosition(lat, long);
+        const location = await getPostPosition();
         // getPostPosition(lat, long);
         try {
             const response = await axios.post("http://localhost:5000/create", {
@@ -131,19 +157,13 @@ function App() {
         });
     }
 
-    // send ID of post and user - add liked post to their array
-    async function makeLikeCall(post_id, liked) {
-        try {
-            const response = await axios.patch(
-                "http://localhost:5000/user/" + user._id + "/liked",
-                { post: post_id, liked: liked }
-            );
-            return response;
-        } catch (error) {
-            console.log(error);
-            return false;
+    /* ------ logout ------ */
+
+    useEffect(() => {
+        if (userSetting === "Logout") {
+            logout();
         }
-    }
+    }, [userSetting]);
 
     function logout() {
         axios
@@ -156,48 +176,47 @@ function App() {
             });
     }
 
-    /* ------ geolocation start ------ */
+    /* ------ geolocation ------ */
 
-    const [lat, setLat] = useState();
-    const [long, setLong] = useState();
-    // const [location, setLocation] = useState();
-
+    // get coordinates from navigator API
     useEffect(() => {
-        const handleLocation = () => {
-            navigator.geolocation.getCurrentPosition((position) => {
-                setLat(position.coords.latitude);
-                setLong(position.coords.longitude);
-            });
-        };
-
         if (navigator.geolocation) {
             navigator.permissions.query({ name: "geolocation" }).then(function (result) {
                 if (result.state !== "denied") {
                     // console.log(result.state);
-                    handleLocation();
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        setLat(position.coords.latitude);
+                        setLong(position.coords.longitude);
+                    });
                 }
             });
         }
-
-        // getPostPosition(lat, long);
     }, [lat, long]);
 
-    //function to get location coordinates
-    async function getPostPosition(lat, long) {
-        // console.log("(lat, long): ", lat, long);
+
+    // use reverse geocoding API to get location based on coordinates
+    async function getPostPosition() {
         const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
 
         try {
-            const response = await axios(url);
+            // const response = await axios(url);
+            const response = await http.get(url);
+            let geoData = response.data.features[0].properties;
 
-            // console.log(response.data.features[0]);
-            return response.data.features[0].properties.address_line1;
+            // random off campus place
+            if (geoData.name === undefined) return geoData.street;
+            // not at a specific campus building
+            else if (geoData.name === "California Polytechnic State University")
+                return geoData.street;
+            // strip number from on campus buildings
+            else if (geoData.name.includes("("))
+                return geoData.name.substring(0, geoData.name.indexOf("("));
+            // by default, return name of place
+            return geoData.properties.name;
         } catch (error) {
             console.log(error);
         }
     }
-
-    /* ------ geolocation end ------ */
 
     return (
         <div className="App">

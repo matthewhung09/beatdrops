@@ -1,0 +1,17 @@
+// --- random tests ---
+
+// cerro vista - good
+// lat = 35.305569613780676;
+// long = -120.65679823292362;
+// console.log(geoData);
+
+// // random street on campus
+// lat = 35.30528067834929;
+// long = -120.66160475154602;
+
+// // random building on campus
+// lat = 35.30222490410011;
+// long = -120.66083227532549;
+
+// console.log(lat, long);
+// console.log("hellooooo");

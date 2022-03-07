@@ -13,6 +13,14 @@ const checkUser = require("./middleware/authMiddleware");
 const app = express();
 const port = 5000;
 
+// import Bottleneck from "bottleneck";
+// Note: To support older browsers and Node <6.0, you must import the ES5 bundle instead.
+var Bottleneck = require("bottleneck/es5");
+const limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: 333,
+});
+
 dotenv.config();
 
 const client_id = process.env.CLIENT_ID;
@@ -63,10 +71,13 @@ app.get("/posts", checkUser, async (req, res) => {
 
 // Creates a new post and adds it to the database
 app.post("/create", async (req, res) => {
-    const new_post = await getPostData(
-        req.body.title,
-        req.body.artist,
-        req.body.location
+    // const new_post = await getPostData(
+    //     req.body.title,
+    //     req.body.artist,
+    //     req.body.location
+    // );
+    const new_post = await limiter.schedule(() =>
+        getPostData(req.body.title, req.body.artist, req.body.location)
     );
 
     if (!new_post) {
@@ -98,6 +109,7 @@ async function getPostData(song, artist, location) {
     const queryparam = first_part + "&" + second_part;
 
     const access_token = await getAccessToken();
+    // const access_token = await limiter.schedule(() => getAccessToken());
 
     try {
         const response = await axios.get(
@@ -213,8 +225,8 @@ app.post("/login", async (req, res) => {
 
 // Delete the cookie
 app.get("/logout", (req, res) => {
-    res.clearCookie('jwt');
-    res.redirect('/');
+    res.clearCookie("jwt");
+    res.redirect("/");
 });
 
 app.get("/user/:id", async (req, res) => {

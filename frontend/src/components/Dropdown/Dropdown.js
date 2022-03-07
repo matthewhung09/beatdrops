@@ -39,9 +39,10 @@ function Dropdown({ selected, setSelected, purpose }) {
                             width: "93%",
                         }}
                     >
-                        {options.map((option) => (
+                        {options.map((option, index) => (
                             <div
                                 className="dropdown-item"
+                                key={index}
                                 onClick={() => {
                                     setSelected(option);
                                     setIsActive(false);
@@ -61,9 +62,10 @@ function Dropdown({ selected, setSelected, purpose }) {
                             color: "white",
                         }}
                     >
-                        {options.map((option) => (
+                        {options.map((option, index) => (
                             <div
                                 className="dropdown-item"
+                                key={index}
                                 onClick={() => {
                                     setSelected(option);
                                     setIsActive(false);
