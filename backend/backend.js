@@ -27,6 +27,7 @@ dotenv.config();
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
+const redirect_uri = process.env.REDIRECT_URI;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString(
     "base64"
 );
@@ -254,7 +255,7 @@ app.get("/user/:id/liked", async (req, res) => {
 
 // Handles user login - gets access token and reroutes them to redirect_uri
 app.get("/auth/login", async (req, res) => {
-    const auth_url = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:5000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
+    const auth_url = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`
     res.redirect(auth_url);
 });
 
@@ -266,7 +267,7 @@ app.get("/auth/callback", async (req, res) => {
         const data = qs.stringify({
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:5000/auth/callback",
+            redirect_uri: redirect_uri
         });
         response = await axios.post("https://accounts.spotify.com/api/token", data, {
             headers: {
