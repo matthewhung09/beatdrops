@@ -15,8 +15,10 @@ function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick, po
                 onChange={onChangeArtist}
             />
             {postError ? <p> {postError} </p> : null }
-            <button onClick={onClick} className='btn'>Submit</button>
-            <button onClick={postCurrent} className='btn'>Post Current Song</button>
+            <div className="actions">
+                <button onClick={onClick} className='btn'>Submit</button>
+                <button onClick={postCurrent} className='btn'>Post Currently Playing Song</button>
+            </div>
             <br/>
         </div>
     );

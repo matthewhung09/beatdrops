@@ -308,12 +308,13 @@ function App() {
                                                 </button>
                                                 <div className="header">
                                                     {" "}
-                                                    Post a song{" "}
+                                                    Post a song
+                                                    {" "}
+                                                </div>
+                                                <div className="current-song">
+                                                    Currently playing song: {currentlyPlaying.name}
                                                 </div>
                                                 <div className="content">
-                                                    <div>
-                                                        Currently playing song: {currentlyPlaying.name}
-                                                    </div>
                                                     <PostForm
                                                         newSong={newSong}
                                                         newArtist={newArtist}
