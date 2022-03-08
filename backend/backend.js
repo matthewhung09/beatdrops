@@ -253,37 +253,15 @@ app.get("/user/:id/liked", async (req, res) => {
 });
 
 // Handles user login - gets access token and reroutes them to redirect_uri
-app.post("/auth/login", async (req, res) => {
-    const code = req.body.code;
-    let response;
-    // console.log(code);
-    try {
-        const data = qs.stringify({
-            grant_type: "authorization_code",
-            code: code,
-            redirect_uri: "http://localhost:3000/home",
-        });
-        response = await axios.post("https://accounts.spotify.com/api/token", data, {
-            headers: {
-                Authorization: `Basic ${auth_token}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        });
-    } catch (error) {
-        console.log(error);
-    }
-    console.log("logged in");
-    res.json({
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-        expiresIn: response.data.expires_in,
-    });
+app.get("/auth/login", async (req, res) => {
+    const auth_url = "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:5000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
+    res.redirect(auth_url);
 });
 
 app.get("/auth/callback", async (req, res) => {
     const code = req.query.code;
     let response;
-    console.log(code);
+
     try {
         const data = qs.stringify({
             grant_type: "authorization_code",
@@ -299,7 +277,7 @@ app.get("/auth/callback", async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-    console.log("logged in");
+
     res.redirect("http://localhost:3000/home/?token=" + response.data.access_token);
     // res.json({
     //     accessToken: response.data.access_token,
@@ -308,35 +286,9 @@ app.get("/auth/callback", async (req, res) => {
     // });
 });
 
-// Refreshes token
-app.post("/auth/refresh", async (req, res) => {
-    const refreshToken = req.body.refreshToken;
-    let response;
-    console.log("here");
-    try {
-        const data = qs.stringify({
-            grant_type: "refresh_token",
-            refresh_token: refreshToken,
-        });
-        response = await axios.post("https://accounts.spotify.com/api/token", data, {
-            headers: {
-                Authorization: `Basic ${auth_token}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        });
-    } catch (error) {
-        console.log(error);
-    }
-
-    res.json({
-        accessToken: response.data.access_token,
-        expiresIn: response.data.expires_in,
-    });
-});
-
 // Gets current playing song
 app.post("/current", async (req, res) => {
-    const accessToken = req.body.accessToken;
+    const accessToken = req.body.token;
     if (accessToken === undefined) {
         return;
     }
@@ -351,12 +303,14 @@ app.post("/current", async (req, res) => {
                 },
             }
         );
+        res.json({
+            song: response.data.item,
+        });
     } catch (error) {
         console.log(error);
+        return false;
     }
-    return res.json({
-        song: response.data.item.name,
-    });
+    
 });
 
 app.listen(port, () => {

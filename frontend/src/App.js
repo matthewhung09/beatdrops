@@ -25,13 +25,14 @@ const Header = styled.div`
 function App() {
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
-    const [code, setCode] = useState("");
+    const [token, setToken] = useState("");
     const [postError, setPostError] = useState("");
 
     // post creation
     const [newSong, setNewSong] = useState("");
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]);
+    const [currentlyPlaying, setCurrentlyPlaying] = useState('');
 
     // dropdowns
     const [selected, setSelected] = useState("Default"); // post filtering
@@ -69,12 +70,30 @@ function App() {
 
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token");
-        console.log(token);
         if (token) {
-            setCode(token);
-            // console.log(code);
+            setToken(token);
         }
     }, []);
+
+    useEffect(() => {
+        if (token === '') {
+            return;
+        }
+        getCurrentSong();
+            // .then(console.log(currentlyPlaying));
+    }, [token] );
+
+    async function getCurrentSong() {
+        await axios.post('http://localhost:5000/current', {token})
+            .then(res => {
+                if (res) {
+                    setCurrentlyPlaying(res.data.song);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     /* ------ post filtering ------ */
 
@@ -109,9 +128,9 @@ function App() {
     /* ------ post creation ------ */
 
     // Submit for making new post
-    async function onSubmitPostClick() {
+    async function onSubmitPostClick(song, artist) {
         let success = false;
-        await makePostCall().then((result) => {
+        await makePostCall(song, artist).then((result) => {
             if (result && result.status === 201) {
                 setPosts([result.data, ...postList]);
                 success = true;
@@ -123,18 +142,32 @@ function App() {
         return success;
     }
 
-    async function makePostCall() {
+    async function makePostCall(song, artist) {
         const location = await getPostPosition();
         // getPostPosition(lat, long);
-        try {
-            const response = await axios.post("http://localhost:5000/create", {
-                title: newSong,
-                artist: newArtist,
-                location: location,
-            });
-            return response;
-        } catch (error) {
-            return false;
+        if (song && artist) {
+            try {
+                const response = await axios.post("http://localhost:5000/create", {
+                    title: song,
+                    artist: artist,
+                    location: location,
+                });
+                return response;
+            } catch (error) {
+                return false;
+            }
+        }
+        else {
+            try {
+                const response = await axios.post("http://localhost:5000/create", {
+                    title: newSong,
+                    artist: newArtist,
+                    location: location,
+                });
+                return response;
+            } catch (error) {
+                return false;
+            }
         }
     }
 
@@ -161,8 +194,13 @@ function App() {
     /* ------ logout ------ */
 
     useEffect(() => {
+        const AUTH_URL =
+            "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:5000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
         if (userSetting === "Logout") {
             logout();
+        }
+        else if (userSetting === "Settings") {
+            window.location.assign(AUTH_URL);
         }
     }, [userSetting]);
 
@@ -244,7 +282,7 @@ function App() {
                                         <i>YikYak meets Spotify</i>
                                     </h2>
                                 </Header>
-                                {code !== undefined ? <Dashboard code={code}/> : null}
+                                {/* {token !== undefined && token !== '' ? <Dashboard token={token}/> : null} */}
                                 <div className="home-actions">
                                     <Dropdown
                                         selected={`Filtered by: ${selected}`}
@@ -273,6 +311,9 @@ function App() {
                                                     Post a song{" "}
                                                 </div>
                                                 <div className="content">
+                                                    <div>
+                                                        Currently playing song: {currentlyPlaying.name}
+                                                    </div>
                                                     <PostForm
                                                         newSong={newSong}
                                                         newArtist={newArtist}
@@ -286,6 +327,19 @@ function App() {
                                                             else {
                                                                 setPostError("Could not find specified song, please check your spelling.");
                                                             }
+                                                        }}
+                                                        postCurrent={async () => {
+                                                            setNewSong(currentlyPlaying.name);
+                                                            setNewArtist(currentlyPlaying.artists[0].name);
+                                                            if (await onSubmitPostClick(currentlyPlaying.name, currentlyPlaying.artists[0].name)) {
+                                                                setNewSong("");
+                                                                setNewArtist("");
+                                                                setPostError("");
+                                                                close();
+                                                            }
+                                                            else {
+                                                                setPostError("Could not find specified song, please check your spelling.");
+                                                            } 
                                                         }}
                                                         onChangeSong={(e) =>
                                                             setNewSong(e.target.value)
