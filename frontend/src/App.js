@@ -199,7 +199,7 @@ function App() {
         if (userSetting === "Logout") {
             logout();
         }
-        else if (userSetting === "Settings") {
+        else if (userSetting === "Spotify") {
             window.location.assign(AUTH_URL);
         }
     }, [userSetting]);
@@ -311,9 +311,13 @@ function App() {
                                                     Post a song
                                                     {" "}
                                                 </div>
-                                                <div className="current-song">
-                                                    Currently playing song: {currentlyPlaying.name}
-                                                </div>
+                                                {(currentlyPlaying !== undefined) ?
+                                                    <div className="current-song">
+                                                        Currently playing song: {currentlyPlaying.name}
+                                                    </div>
+                                                    :
+                                                    null
+                                                }
                                                 <div className="content">
                                                     <PostForm
                                                         newSong={newSong}
