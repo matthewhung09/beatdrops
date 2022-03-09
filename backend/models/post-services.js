@@ -111,3 +111,4 @@ exports.addPost = addPost;
 exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
+exports.setConnection = setConnection;
