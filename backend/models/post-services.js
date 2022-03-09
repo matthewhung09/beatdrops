@@ -3,6 +3,11 @@ const PostSchema = require("./post");
 
 let dbConnection;
 
+function setConnection(newConn){
+    dbConnection = newConn;
+    return dbConnection;
+  }
+
 function getDbConnection() {
     if (!dbConnection) {
       dbConnection = mongoose.createConnection(process.env.CONNECTION_URL, {

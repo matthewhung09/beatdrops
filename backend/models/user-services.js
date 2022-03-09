@@ -4,6 +4,11 @@ const bcrypt = require('bcrypt');
 
 let dbConnection;
 
+function setConnection(newConn){
+    dbConnection = newConn;
+    return dbConnection;
+  }
+
 function getDbConnection() {
     if (!dbConnection) {
       dbConnection = mongoose.createConnection(process.env.CONNECTION_URL, {
@@ -91,3 +96,4 @@ exports.getUserLiked = getUserLiked;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
+exports.setConnection = setConnection;
