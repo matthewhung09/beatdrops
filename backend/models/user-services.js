@@ -4,6 +4,11 @@ const bcrypt = require('bcrypt');
 
 let dbConnection;
 
+function setConnection(newConn){
+    dbConnection = newConn;
+    return dbConnection;
+  }
+
 function getDbConnection() {
     if (!dbConnection) {
       dbConnection = mongoose.createConnection(process.env.CONNECTION_URL, {
@@ -21,8 +26,7 @@ async function addUser(user){
         const savedUser = await userToAdd.save()
         return savedUser;
     } catch(error) {
-        // console.log(error);
-        return error;
+        return false;
     }   
 }
 
@@ -37,7 +41,6 @@ async function findUserById(id){
     try{
         return await userModel.findById(id);
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -47,7 +50,6 @@ async function getUserLiked(id){
     try{
         return await userModel.findById(id).select("liked -_id");
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -57,7 +59,6 @@ async function addUserLiked(user_id, post_id){
     try{
         return await userModel.findByIdAndUpdate(user_id, {$push:{liked: post_id}}, {new: true});
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -67,7 +68,6 @@ async function removeUserLiked(user_id, post_id) {
     try{
         return await userModel.findByIdAndUpdate(user_id, {$pull:{liked: post_id}}, {new: true});
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -91,3 +91,4 @@ exports.getUserLiked = getUserLiked;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
+exports.setConnection = setConnection;

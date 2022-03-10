@@ -9,12 +9,10 @@ body {
 .dropdown .dropdown-btn {
     padding: 0.8em;
     background: #fff;
-    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
     box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     font-weight: bold;
     color: #333;
     display: flex;
-    /* align-items: center; */
     cursor: pointer;
     justify-content: space-between;
     font-size: small;
@@ -49,8 +47,4 @@ body {
 
 .dropdown .dropdown-content .dropdown-item:hover {
     font-weight: bold;
-    /* color: rgb(46, 46, 46); */
-    /* background-color: #f1f1f1c9; */
-    /* border-radius: 0.5em;
-    text-decoration: underline; */
 }

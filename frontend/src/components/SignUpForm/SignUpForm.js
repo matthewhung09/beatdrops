@@ -91,7 +91,6 @@ function SignUpForm() {
     const [cemail, setEmail] = useState("");
 
     const onSubmit = async (values) => {
-        // console.log(values);
         setEmail(values.email);
         try {
             await axios.post(
@@ -186,12 +185,6 @@ function SignUpForm() {
                                                                   vErr.username !== ""
                                                                 ? vErr.username
                                                                 : null
-
-                                                            // error ? error.message
-                                                            //   : name === "email" && vErr.email !== "" && value !== email ? vErr.email
-                                                            //   : name === "password" && vErr.password !== "" ? vErr.password
-                                                            //   : name === "username" && vErr.username !== "" ? vErr.username
-                                                            //   : null
                                                         }
                                                         type={
                                                             showPassword
@@ -281,11 +274,9 @@ function SignUpForm() {
                                         type="submit"
                                         variant="contained"
                                         color="primary"
-                                        // onClick={() => navigate("/spotify")}
                                     >
                                         Continue
                                     </StyledButton>
-                                    {/* need to add route to login page */}
                                     <div
                                         className="login"
                                         style={{ marginTop: 45, marginBottom: -22 }}
