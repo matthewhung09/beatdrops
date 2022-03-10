@@ -28,3 +28,6 @@ https://www.figma.com/file/rHUc0rkb2ESU2wNWrxs2Vy/Team-F---308?node-id=0%3A1
 ## Product Spec:
 https://docs.google.com/document/d/1jwzeS3_eT3y_dK8E0HfiQFx5vckhO2nUL89Dgi97kEg/edit?usp=sharing
 
+## Coverage Report:
+![alt text](https://github.com/matthewhung09/beatdrops/blob/unit-tests-matthew/images/coverage_report.PNG)
+
