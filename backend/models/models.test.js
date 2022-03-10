@@ -167,66 +167,166 @@ test("Adding user -- successful path", async () => {
   expect(result).toHaveProperty("updatedAt");
 });
 
-// test("Adding user liked -- succuess", async () => {
-//   const dummyPost = {
-//     title: "Food Court",
-//     artist: "Potsu",
-//     likes: 27,
-//     location: "Dexter Lawn",
-//     url:"http://temp.com/not?aReal=url/"
-//   };
-//   const dummyUser = {
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: []
-//   };
-//   let result = new userModel(dummyUser);
-//   const addedUser = await result.save();
-//   result = new postModel(dummyPost);
-//   const addedPost = await result.save();
-//   result = await userServices.addUserLiked(addedUser.id, addedPost.id);
-//   console.log(result);
-//   expect(result).toBeTruthy();
-//   console.log(result.liked);
-//   expect(result.liked[0]).toMatchObject(addedPost.id);
-// })
+test("Adding user liked -- succuess", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url:"http://temp.com/not?aReal=url/"
+  };
+  const dummyUser = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: []
+  };
+  const addedUser = await userServices.addUser(dummyUser);
+  const addedPost = await postServices.addPost(dummyPost);
+  let result = await userServices.addUserLiked(addedUser._id, addedPost._id);
+  console.log(result);
+  expect(result).toBeTruthy();
+  console.log(result.liked);
+  expect(result.liked[0]).toMatchObject(addedPost._id);
+})
 
-// test("Removing user liked -- succuess", async () => {
-//   const dummyPost = {
-//     title: "Food Court",
-//     artist: "Potsu",
-//     likes: 27,
-//     location: "Dexter Lawn",
-//     url:"http://temp.com/not?aReal=url/"
-//   };
-//   result = new postModel(dummyPost);
-//   const addedPost = await result.save();
+test("Adding user liked -- failure", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url:"http://temp.com/not?aReal=url/"
+  };
 
-//   const dummyUser = {
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: [addedPost.id]
-//   };
-//   let result = new userModel(dummyUser);
-//   const addedUser = await result.save();
+  const addedPost = await postServices.addPost(dummyPost);
+  let result = await userServices.addUserLiked(1234567, addedPost._id);
+  expect(result).toBe(undefined);
+})
 
-//   result = await userServices.removeUserLiked(addedUser.id, addedPost.id);
-//   expect(result).toBeTruthy();
-//   expect(result.liked).toBe([]);
-// })
+test("Removing user liked -- succuess", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url:"http://temp.com/not?aReal=url/"
+  };
+  const addedPost = await postServices.addPost(dummyPost);
 
-// test("Adding user -- failure path with invalid id", async () => {
-//   const dummyUser = {
-//     _id: "123",
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: []
-//   };
-//   const result = await userServices.addUser(dummyUser);
-//   expect(result).toBe();
+  const dummyUser = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [addedPost._id]
+  };
+  const addedUser = await userServices.addUser(dummyUser);
+  let result = await userServices.removeUserLiked(addedUser._id, addedPost._id);
+  expect(result).toBeTruthy();
+  expect(result.liked).toStrictEqual([]);
+})
+
+test("Removing user liked -- failure", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url:"http://temp.com/not?aReal=url/"
+  };
+  const addedPost = await postServices.addPost(dummyPost);
+  let result = await userServices.removeUserLiked(1234567, addedPost._id);
+  expect(result).toBe(undefined);
+})
+
+test("Adding user -- failure path with missing required field", async () => {
+  const dummyUser = {
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+  };
+  const result = await userServices.addUser(dummyUser);
+  expect(result).toBeFalsy();
+});
+
+test("Get user liked -- sucess", async () => {
+  const dummyUser = {
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: []
+  };
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url:"http://temp.com/not?aReal=url/"
+  };
+
+  const addedUser = await userServices.addUser(dummyUser);
+  const addedPost = await postServices.addPost(dummyPost);
+
+  const new_user = await userServices.addUserLiked(addedUser._id, addedPost._id);
+  console.log(new_user);
+  const result = await userServices.getUserLiked(new_user._id);
+  console.log(result);
+  expect(result.liked[0]).toStrictEqual(addedPost._id);
+});
+
+test("Get user liked -- failure with invalid id", async () => {
+  const dummyUser = {
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [123, 456]
+  };
+  
+  const user = await userServices.addUser(dummyUser);
+  const result = await userServices.getUserLiked(45678909876);
+  expect(result).toBe(undefined);
+});
+
+test("login -- success", async () => {
+  const dummyUser = {
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: []
+  };
+  
+  const user = await userServices.addUser(dummyUser);
+  const result = await userServices.login(dummyUser.email, dummyUser.password);
+  expect(result.email).toBe(user.email);
+});
+
+test("login -- failure with invalid password", async () => {
+  // const dummyUser = {
+  //   username: "Matt",
+  //   password: "DogFan4571?",
+  //   email: "gMan@gmail.com",
+  //   liked: []
+  // };
+  const all_users = await userServices.getUsers();
+  console.log(all_users);
+  // const user = await userServices.addUser(dummyUser);
+  expect(async () => {
+    await userServices.login("cnorris@gmail.com", "hghjhgcghgf");
+  }).toThrowError('incorrect password');
+});
+
+// test("login -- failure with invalid email", async () => {
+//   // const dummyUser = {
+//   //   username: "Matt",
+//   //   password: "DogFan4571?",
+//   //   email: "gMan@gmail.com",
+//   //   liked: []
+//   // };
+  
+//   // const user = await userServices.addUser(dummyUser);
+
+//   expect(async () => {
+//     await userServices.login("asdfasdf@gmail.com", "asdfasdf");
+//   }).toThrowError('incorrect email');
 // });
 
 // test("Adding user -- failure path with already taken id", async () => {

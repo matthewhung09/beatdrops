@@ -47,27 +47,21 @@ async function addPost(post){
 
 async function updateLikeStatus(id, liked_status){
     const postModel = getDbConnection().model("Post", PostSchema);
-    try{
-        if (!liked_status) {
-            return await postModel.findByIdAndUpdate(id, { 
-                $inc: {likes: 1}, 
-                $set: {liked: true}, 
-            },
-                {new: true}
-            );
-        }
-        else {
-            return await postModel.findByIdAndUpdate(id, { 
-                $inc: {likes: -1}, 
-                $set: {liked: false}, 
-            },
-                {new: true}
-            );
-        }
-        
-    }catch(error) {
-        console.log(error);
-        return false;
+    if (!liked_status) {
+        return await postModel.findByIdAndUpdate(id, { 
+            $inc: {likes: 1}, 
+            $set: {liked: true}, 
+        },
+            {new: true}
+        );
+    }
+    else {
+        return await postModel.findByIdAndUpdate(id, { 
+            $inc: {likes: -1}, 
+            $set: {liked: false}, 
+        },
+            {new: true}
+        );
     }
 }
 

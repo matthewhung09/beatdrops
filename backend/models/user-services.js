@@ -27,7 +27,7 @@ async function addUser(user){
         return savedUser;
     } catch(error) {
         // console.log(error);
-        return error;
+        return false;
     }   
 }
 
@@ -78,7 +78,9 @@ async function removeUserLiked(user_id, post_id) {
 }
 async function login(email, password) {
     const userModel = getDbConnection().model("User", UserSchema);
+    console.log(email);
     const user = await userModel.findOne({ email: email });
+    console.log(user);
     if (user) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
