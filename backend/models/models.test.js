@@ -184,9 +184,7 @@ test("Adding user liked -- succuess", async () => {
   const addedUser = await userServices.addUser(dummyUser);
   const addedPost = await postServices.addPost(dummyPost);
   let result = await userServices.addUserLiked(addedUser._id, addedPost._id);
-  console.log(result);
   expect(result).toBeTruthy();
-  console.log(result.liked);
   expect(result.liked[0]).toMatchObject(addedPost._id);
 })
 
@@ -267,9 +265,7 @@ test("Get user liked -- sucess", async () => {
   const addedPost = await postServices.addPost(dummyPost);
 
   const new_user = await userServices.addUserLiked(addedUser._id, addedPost._id);
-  console.log(new_user);
   const result = await userServices.getUserLiked(new_user._id);
-  console.log(result);
   expect(result.liked[0]).toStrictEqual(addedPost._id);
 });
 
@@ -315,20 +311,14 @@ test("login -- failure with invalid password", async () => {
   }
 });
 
-// test("login -- failure with invalid email", async () => {
-//   // const dummyUser = {
-//   //   username: "Matt",
-//   //   password: "DogFan4571?",
-//   //   email: "gMan@gmail.com",
-//   //   liked: []
-//   // };
-  
-//   // const user = await userServices.addUser(dummyUser);
-
-//   expect(async () => {
-//     await userServices.login("asdfasdf@gmail.com", "asdfasdf");
-//   }).toThrowError('incorrect email');
-// });
+test("login -- failure with invalid email", async () => {
+  try{
+    await userServices.login("aaaaaaaaaa@gmail.com", "Password1!");
+    fail('error should be thrown');
+  }catch(error){
+    expect(1).toEqual(1);
+  }
+});
 
 // test("Adding user -- failure path with already taken id", async () => {
 //   const dummyUser = {
