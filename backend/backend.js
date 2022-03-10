@@ -4,7 +4,6 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const qs = require("qs");
 const cors = require("cors");
-const { access } = require("fs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const postServices = require("./models/post-services");
@@ -265,7 +264,6 @@ app.post("/auth/login", async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-    console.log("logged in");
     res.json({
         accessToken: response.data.access_token,
         refreshToken: response.data.refresh_token,
@@ -277,7 +275,6 @@ app.post("/auth/login", async (req, res) => {
 app.post("/auth/refresh", async (req, res) => {
     const refreshToken = req.body.refreshToken;
     let response;
-    console.log("here");
     try {
         const data = qs.stringify({
             grant_type: "refresh_token",
@@ -325,6 +322,6 @@ app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
 });
 
-app.get("/", (req, res) => {
-    res.send("Hello, World");
-});
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+})

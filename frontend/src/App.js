@@ -68,7 +68,6 @@ function App() {
 
     useEffect(() => {
         const auth_code = new URLSearchParams(window.location.search).get("code");
-        // maybe useState here to store code?
         if (auth_code) {
             setCode(auth_code);
             console.log(code);
@@ -169,6 +168,7 @@ function App() {
         axios
             .get("http://localhost:5000/logout", { withCredentials: true })
             .then(() => {
+                console.log('here');
                 window.location.assign("/");
             })
             .catch((error) => {
@@ -183,7 +183,6 @@ function App() {
         if (navigator.geolocation) {
             navigator.permissions.query({ name: "geolocation" }).then(function (result) {
                 if (result.state !== "denied") {
-                    // console.log(result.state);
                     navigator.geolocation.getCurrentPosition((position) => {
                         setLat(position.coords.latitude);
                         setLong(position.coords.longitude);
@@ -199,7 +198,6 @@ function App() {
         const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
 
         try {
-            // const response = await axios(url);
             const response = await http.get(url);
             let geoData = response.data.features[0].properties;
 
@@ -220,7 +218,6 @@ function App() {
 
     return (
         <div className="App">
-            {/* routed from login, routes to main page */}
             <Router>
                 <Routes>
                     <Route path="/" element={<LoginForm />} />

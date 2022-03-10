@@ -40,7 +40,6 @@ async function addPost(post){
         const savedPost = await postToAdd.save()
         return savedPost;
     }catch(error) {
-        console.log(error);
         return false;
     }   
 }
@@ -65,27 +64,11 @@ async function updateLikeStatus(id, liked_status){
     }
 }
 
-// async function unlikePost(id){
-//     const postModel = getDbConnection().model("Post", PostSchema);
-//     try{
-//         return await postModel.findByIdAndUpdate(id, { 
-//             $inc: { likes: -1 }, 
-//             $set: {liked: false}, 
-//         },
-//             {new: true}
-//         );
-//     }catch(error) {
-//         console.log(error);
-//         return false;
-//     }
-// }
-
 async function findPostById(id){
     const postModel = getDbConnection().model("Post", PostSchema);    
     try{
         return await postModel.findById(id);
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }

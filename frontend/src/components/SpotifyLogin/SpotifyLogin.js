@@ -58,9 +58,9 @@ function SpotifyLogin() {
                         </button>
                         <PopupWrapper>
                             <PopupTitle> Connect with spotify </PopupTitle>
-                            <div className="login-button">
+                            {/* <div className="login-button">
                                 <a href={AUTH_URL}>LOGIN WITH SPOTIFY</a>
-                            </div>
+                            </div> */}
                             <div className="actions">
                                 <StyledButton
                                     fullWidth
@@ -77,7 +77,6 @@ function SpotifyLogin() {
                                     variant="contained"
                                     color="primary"
                                     onClick={() => window.location.assign("/home")}
-                                    // onClick={() => navigate("/home")}
                                 >
                                     Continue
                                 </StyledButton>

@@ -26,7 +26,6 @@ async function addUser(user){
         const savedUser = await userToAdd.save()
         return savedUser;
     } catch(error) {
-        // console.log(error);
         return false;
     }   
 }
@@ -42,7 +41,6 @@ async function findUserById(id){
     try{
         return await userModel.findById(id);
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -52,7 +50,6 @@ async function getUserLiked(id){
     try{
         return await userModel.findById(id).select("liked -_id");
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -62,7 +59,6 @@ async function addUserLiked(user_id, post_id){
     try{
         return await userModel.findByIdAndUpdate(user_id, {$push:{liked: post_id}}, {new: true});
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -72,15 +68,12 @@ async function removeUserLiked(user_id, post_id) {
     try{
         return await userModel.findByIdAndUpdate(user_id, {$pull:{liked: post_id}}, {new: true});
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
 async function login(email, password) {
     const userModel = getDbConnection().model("User", UserSchema);
-    console.log(email);
     const user = await userModel.findOne({ email: email });
-    console.log(user);
     if (user) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {

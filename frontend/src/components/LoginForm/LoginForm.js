@@ -249,11 +249,9 @@ function LoginForm() {
                                         type="submit"
                                         variant="contained"
                                         color="primary"
-                                        // onClick={() => navigate("/home")}
                                     >
                                         Continue
                                     </StyledButton>
-                                    {/* need to add route to login page */}
                                     <div
                                         className="login"
                                         style={{ marginTop: 45, marginBottom: -22 }}

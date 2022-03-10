@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1646880722098" clover="3.2.0">
-  <project timestamp="1646880722099" name="All files">
-    <metrics statements="109" coveredstatements="107" conditionals="22" coveredconditionals="19" methods="18" coveredmethods="18" elements="149" coveredelements="144" complexity="0" loc="109" ncloc="109" packages="1" files="4" classes="4"/>
+<coverage generated="1646882556776" clover="3.2.0">
+  <project timestamp="1646882556776" name="All files">
+    <metrics statements="101" coveredstatements="99" conditionals="22" coveredconditionals="19" methods="18" coveredmethods="18" elements="141" coveredelements="136" complexity="0" loc="101" ncloc="101" packages="1" files="4" classes="4"/>
     <file name="post-services.js" path="C:\Users\Matthew Hung\Desktop\beatdrops\backend\models\post-services.js">
-      <metrics statements="40" coveredstatements="39" conditionals="16" coveredconditionals="14" methods="8" coveredmethods="8"/>
+      <metrics statements="38" coveredstatements="37" conditionals="16" coveredconditionals="14" methods="8" coveredmethods="8"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="7" count="1" type="stmt"/>
@@ -25,25 +25,23 @@
       <line num="40" count="14" type="stmt"/>
       <line num="41" count="9" type="stmt"/>
       <line num="43" count="5" type="stmt"/>
-      <line num="44" count="5" type="stmt"/>
-      <line num="49" count="2" type="stmt"/>
-      <line num="50" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="51" count="1" type="stmt"/>
-      <line num="59" count="1" type="stmt"/>
-      <line num="84" count="3" type="stmt"/>
-      <line num="85" count="3" type="stmt"/>
-      <line num="86" count="3" type="stmt"/>
+      <line num="48" count="2" type="stmt"/>
+      <line num="49" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="50" count="1" type="stmt"/>
+      <line num="58" count="1" type="stmt"/>
+      <line num="68" count="3" type="stmt"/>
+      <line num="69" count="3" type="stmt"/>
+      <line num="70" count="3" type="stmt"/>
+      <line num="72" count="1" type="stmt"/>
+      <line num="77" count="1" type="stmt"/>
+      <line num="78" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="83" count="1" type="stmt"/>
+      <line num="86" count="1" type="stmt"/>
+      <line num="87" count="1" type="stmt"/>
       <line num="88" count="1" type="stmt"/>
-      <line num="89" count="1" type="stmt"/>
-      <line num="94" count="1" type="stmt"/>
-      <line num="95" count="1" type="stmt"/>
-      <line num="99" count="1" type="stmt"/>
-      <line num="100" count="1" type="stmt"/>
-      <line num="103" count="1" type="stmt"/>
-      <line num="104" count="1" type="stmt"/>
-      <line num="105" count="1" type="stmt"/>
-      <line num="107" count="1" type="stmt"/>
-      <line num="108" count="1" type="stmt"/>
+      <line num="90" count="1" type="stmt"/>
+      <line num="91" count="1" type="stmt"/>
     </file>
     <file name="post.js" path="C:\Users\Matthew Hung\Desktop\beatdrops\backend\models\post.js">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -52,7 +50,7 @@
       <line num="26" count="1" type="stmt"/>
     </file>
     <file name="user-services.js" path="C:\Users\Matthew Hung\Desktop\beatdrops\backend\models\user-services.js">
-      <metrics statements="55" coveredstatements="54" conditionals="6" coveredconditionals="5" methods="9" coveredmethods="9"/>
+      <metrics statements="49" coveredstatements="48" conditionals="6" coveredconditionals="5" methods="9" coveredmethods="9"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -74,40 +72,34 @@
       <line num="42" count="3" type="stmt"/>
       <line num="43" count="3" type="stmt"/>
       <line num="45" count="1" type="stmt"/>
-      <line num="46" count="1" type="stmt"/>
+      <line num="50" count="2" type="stmt"/>
       <line num="51" count="2" type="stmt"/>
       <line num="52" count="2" type="stmt"/>
-      <line num="53" count="2" type="stmt"/>
-      <line num="55" count="1" type="stmt"/>
-      <line num="56" count="1" type="stmt"/>
+      <line num="54" count="1" type="stmt"/>
+      <line num="59" count="3" type="stmt"/>
+      <line num="60" count="3" type="stmt"/>
       <line num="61" count="3" type="stmt"/>
-      <line num="62" count="3" type="stmt"/>
-      <line num="63" count="3" type="stmt"/>
-      <line num="65" count="1" type="stmt"/>
-      <line num="66" count="1" type="stmt"/>
-      <line num="71" count="2" type="stmt"/>
-      <line num="72" count="2" type="stmt"/>
-      <line num="73" count="2" type="stmt"/>
-      <line num="75" count="1" type="stmt"/>
-      <line num="76" count="1" type="stmt"/>
-      <line num="80" count="3" type="stmt"/>
-      <line num="81" count="3" type="stmt"/>
-      <line num="82" count="3" type="stmt"/>
-      <line num="83" count="3" type="stmt"/>
-      <line num="84" count="3" type="cond" truecount="2" falsecount="0"/>
-      <line num="85" count="2" type="stmt"/>
-      <line num="86" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="87" count="1" type="stmt"/>
+      <line num="63" count="1" type="stmt"/>
+      <line num="68" count="2" type="stmt"/>
+      <line num="69" count="2" type="stmt"/>
+      <line num="70" count="2" type="stmt"/>
+      <line num="72" count="1" type="stmt"/>
+      <line num="76" count="3" type="stmt"/>
+      <line num="77" count="3" type="stmt"/>
+      <line num="78" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="79" count="2" type="stmt"/>
+      <line num="80" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="81" count="1" type="stmt"/>
+      <line num="83" count="1" type="stmt"/>
+      <line num="85" count="1" type="stmt"/>
+      <line num="88" count="1" type="stmt"/>
       <line num="89" count="1" type="stmt"/>
+      <line num="90" count="1" type="stmt"/>
       <line num="91" count="1" type="stmt"/>
+      <line num="92" count="1" type="stmt"/>
+      <line num="93" count="1" type="stmt"/>
       <line num="94" count="1" type="stmt"/>
       <line num="95" count="1" type="stmt"/>
-      <line num="96" count="1" type="stmt"/>
-      <line num="97" count="1" type="stmt"/>
-      <line num="98" count="1" type="stmt"/>
-      <line num="99" count="1" type="stmt"/>
-      <line num="100" count="1" type="stmt"/>
-      <line num="101" count="1" type="stmt"/>
     </file>
     <file name="user.js" path="C:\Users\Matthew Hung\Desktop\beatdrops\backend\models\user.js">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
