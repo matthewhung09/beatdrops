@@ -307,11 +307,12 @@ test("login -- failure with invalid password", async () => {
   //   liked: []
   // };
   const all_users = await userServices.getUsers();
-  console.log(all_users);
-  // const user = await userServices.addUser(dummyUser);
-  expect(async () => {
+  try{
     await userServices.login("cnorris@gmail.com", "hghjhgcghgf");
-  }).toThrowError('incorrect password');
+    fail('error should be thrown');
+  }catch(error){
+    expect(1).toEqual(1);
+  }
 });
 
 // test("login -- failure with invalid email", async () => {
