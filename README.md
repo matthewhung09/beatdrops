@@ -21,7 +21,7 @@ Make sure all your code is pushed to your branch\
 Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
 ## Code Coverage:
-![alt text](https://github.com/matthewhung09/beatdrops/blob/unit-tests-matthew/images/coverage_report.PNG)
+![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
 ## Storyboard:
 https://www.figma.com/file/rHUc0rkb2ESU2wNWrxs2Vy/Team-F---308?node-id=0%3A1
