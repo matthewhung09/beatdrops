@@ -1,7 +1,7 @@
 import React from 'react';
 import './PostForm.css';
 
-function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick, postError}) {
+function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick, postCurrent, postError}) {
     return (
         <div className="form-container">
             <input 
@@ -15,7 +15,10 @@ function PostForm({newSong, onChangeSong, newArtist, onChangeArtist, onClick, po
                 onChange={onChangeArtist}
             />
             {postError ? <p> {postError} </p> : null }
-            <button onClick={onClick} className='btn'>Submit</button>
+            <div className="actions">
+                <button onClick={onClick} className='btn'>Submit</button>
+                <button onClick={postCurrent} className='btn'>Post Currently Playing Song</button>
+            </div>
             <br/>
         </div>
     );

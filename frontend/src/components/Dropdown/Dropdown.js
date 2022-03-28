@@ -8,7 +8,7 @@ function Dropdown({ selected, setSelected, purpose }) {
     let options = [];
     purpose === "filter"
         ? (options = ["Likes", "Recent"])
-        : (options = ["Settings", "Logout"]);
+        : (options = ["Spotify", "Logout"]);
 
     return (
         <div className="dropdown">

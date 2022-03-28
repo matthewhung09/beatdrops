@@ -226,12 +226,12 @@ function SignUpForm() {
                                                     />
                                                 ) : (
                                                     <div>
-                                                        {console.log(
+                                                        {/* {console.log(
                                                             "value: ",
                                                             value,
                                                             "cemail: ",
                                                             cemail
-                                                        )}
+                                                        )} */}
                                                         <TextField
                                                             fullWidth
                                                             key={name}

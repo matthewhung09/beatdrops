@@ -6,9 +6,6 @@ import "../../App.css";
 // import "../SpotifyLogin/SpotifyLogin.css";
 import { useNavigate } from "react-router-dom";
 
-const AUTH_URL =
-    "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
-
 const PopupWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -58,9 +55,6 @@ function SpotifyLogin() {
                         </button>
                         <PopupWrapper>
                             <PopupTitle> Connect with spotify </PopupTitle>
-                            <div className="login-button">
-                                <a href={AUTH_URL}>LOGIN WITH SPOTIFY</a>
-                            </div>
                             <div className="actions">
                                 <StyledButton
                                     fullWidth
@@ -71,16 +65,17 @@ function SpotifyLogin() {
                                 >
                                     Go Back
                                 </StyledButton>
-                                <StyledButton
-                                    fullWidth
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => window.location.assign("/home")}
-                                    // onClick={() => navigate("/home")}
-                                >
-                                    Continue
-                                </StyledButton>
+                                <a href="http://localhost:5000/auth/login">
+                                    <StyledButton
+                                        fullWidth
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        // onClick={() => window.location.assign(AUTH_URL)}
+                                    >
+                                        Continue
+                                    </StyledButton>
+                                </a>
                             </div>
                         </PopupWrapper>
                     </div>
