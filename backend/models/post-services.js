@@ -3,6 +3,11 @@ const PostSchema = require("./post");
 
 let dbConnection;
 
+function setConnection(newConn){
+    dbConnection = newConn;
+    return dbConnection;
+  }
+
 function getDbConnection() {
     if (!dbConnection) {
       dbConnection = mongoose.createConnection(process.env.CONNECTION_URL, {
@@ -35,58 +40,35 @@ async function addPost(post){
         const savedPost = await postToAdd.save()
         return savedPost;
     }catch(error) {
-        console.log(error);
         return false;
     }   
 }
 
 async function updateLikeStatus(id, liked_status){
     const postModel = getDbConnection().model("Post", PostSchema);
-    try{
-        if (!liked_status) {
-            return await postModel.findByIdAndUpdate(id, { 
-                $inc: {likes: 1}, 
-                $set: {liked: true}, 
-            },
-                {new: true}
-            );
-        }
-        else {
-            return await postModel.findByIdAndUpdate(id, { 
-                $inc: {likes: -1}, 
-                $set: {liked: false}, 
-            },
-                {new: true}
-            );
-        }
-        
-    }catch(error) {
-        console.log(error);
-        return false;
+    if (!liked_status) {
+        return await postModel.findByIdAndUpdate(id, { 
+            $inc: {likes: 1}, 
+            $set: {liked: true}, 
+        },
+            {new: true}
+        );
+    }
+    else {
+        return await postModel.findByIdAndUpdate(id, { 
+            $inc: {likes: -1}, 
+            $set: {liked: false}, 
+        },
+            {new: true}
+        );
     }
 }
-
-// async function unlikePost(id){
-//     const postModel = getDbConnection().model("Post", PostSchema);
-//     try{
-//         return await postModel.findByIdAndUpdate(id, { 
-//             $inc: { likes: -1 }, 
-//             $set: {liked: false}, 
-//         },
-//             {new: true}
-//         );
-//     }catch(error) {
-//         console.log(error);
-//         return false;
-//     }
-// }
 
 async function findPostById(id){
     const postModel = getDbConnection().model("Post", PostSchema);    
     try{
         return await postModel.findById(id);
     }catch(error) {
-        console.log(error);
         return undefined;
     }
 }
@@ -106,3 +88,4 @@ exports.addPost = addPost;
 exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
+exports.setConnection = setConnection;
