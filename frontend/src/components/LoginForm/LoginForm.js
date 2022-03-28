@@ -73,8 +73,6 @@ function LoginForm() {
     const [cpassword, setPassword] = useState("");
 
     const onSubmit = async (values) => {
-        setEmail(values.email);
-        setPassword(values.password);
         let response;
         try {
             response = await axios.post(
@@ -92,6 +90,8 @@ function LoginForm() {
                 window.location.assign("/home");
             }
         } catch (error) {
+            setEmail(values.email);
+            setPassword(values.password);
             setvErr(error.response.data.errors);
         }
     };

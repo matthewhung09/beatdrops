@@ -91,7 +91,6 @@ function SignUpForm() {
     const [cemail, setEmail] = useState("");
 
     const onSubmit = async (values) => {
-        setEmail(values.email);
         try {
             await axios.post(
                 "http://localhost:5000/signup",
@@ -104,6 +103,7 @@ function SignUpForm() {
             );
             navigate("/spotify");
         } catch (error) {
+            setEmail(values.email);
             setvErr(error.response.data.errors);
         }
     };
