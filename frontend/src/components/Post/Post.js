@@ -3,7 +3,7 @@ import "./Post.css";
 import "reactjs-popup/dist/index.css";
 import Spotify from "react-spotify-embed";
 
-function Post({ timePosted, likes, liked, url, updateLikes, location }) {
+function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike }) {
     // first part of location message based on post time
     let message = "Streamed less than an hour ago at";
     if (timePosted) {
@@ -47,6 +47,13 @@ function Post({ timePosted, likes, liked, url, updateLikes, location }) {
                         {likes}
                     </button>
                 )}
+                <button
+                    className="likes"
+                    onClick={spotifyLike}
+                    style={{ color: "black", backgroundColor: "rgb(236, 236, 236)" }}
+                >
+                    {"Like on Spotify"}
+                </button>
             </div>
         </div>
     );

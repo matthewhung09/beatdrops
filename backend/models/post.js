@@ -19,6 +19,10 @@ const PostSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        spotify_id: {
+            type: String,
+            trim: true
+        },
     },
     { collection: "Posts", timestamps: true }
 );

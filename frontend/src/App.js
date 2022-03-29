@@ -83,6 +83,7 @@ function App() {
     }, [token] );
 
     async function getCurrentSong() {
+        console.log('here');
         await axios.post('http://localhost:5000/current', {token})
             .then(res => {
                 if (res) {
@@ -190,6 +191,25 @@ function App() {
         });
     }
 
+    async function spotifyLike(spotify_id) {
+        console.log(spotify_id);
+        const data = {
+            ids: [spotify_id]
+        }
+        try {
+            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log(response);
+            return response;
+        } catch (error) {
+            return false;
+        }
+    }
+
     /* ------ logout ------ */
 
     useEffect(() => {
@@ -279,7 +299,6 @@ function App() {
                                         <i>YikYak meets Spotify</i>
                                     </h2>
                                 </Header>
-                                {/* {token !== undefined && token !== '' ? <Dashboard token={token}/> : null} */}
                                 <div className="home-actions">
                                     <Dropdown
                                         selected={`Filtered by: ${selected}`}
@@ -308,7 +327,7 @@ function App() {
                                                     Post a song
                                                     {" "}
                                                 </div>
-                                                {(currentlyPlaying !== undefined) ?
+                                                {(currentlyPlaying !== undefined && currentlyPlaying !== '') ?
                                                     <div className="current-song">
                                                         Currently playing song: {currentlyPlaying.name}
                                                     </div>
@@ -371,6 +390,7 @@ function App() {
                                                 url={post.url}
                                                 updateLikes={() => updateLikes(post._id)}
                                                 location={post.location}
+                                                spotifyLike={() => spotifyLike(post.spotify_id)}
                                             />
                                         ))}
                                     </div>
