@@ -1,6 +1,6 @@
 import * as React from "react";
 import "reactjs-popup/dist/index.css";
-import "../../App.css";
+import "./Home.css";
 import { useState, useEffect } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import Popup from "reactjs-popup";
@@ -22,6 +22,7 @@ function Home() {
     const [newArtist, setNewArtist] = useState("");
     const [postList, setPosts] = useState([]);
     const [currentlyPlaying, setCurrentlyPlaying] = useState("");
+    const postErrMsg = "Could not find specified song, please check your spelling.";
 
     // dropdowns
     const [selected, setSelected] = useState("Default"); // post filtering
@@ -131,24 +132,12 @@ function Home() {
         return success;
     }
 
-    // Called when users attempt to create a new post
-    // async function postFormHandler(close, postType) {
-    //     let manualInput = (await onSubmitPostClick()) && postType === "manual";
-    //     let cpInput =
-    //         (await onSubmitPostClick(
-    //             currentlyPlaying.name,
-    //             currentlyPlaying.artists[0].name
-    //         )) && postType === "currently-playing";
-
-    //     if (manualInput || cpInput) {
-    //         setNewSong("");
-    //         setNewArtist("");
-    //         setPostError("");
-    //         close();
-    //     } else {
-    //         setPostError("Could not find specified song, please check your spelling.");
-    //     }
-    // }
+    function resetPostForm(close) {
+        setNewSong("");
+        setNewArtist("");
+        setPostError("");
+        close();
+    }
 
     async function makePostCall(song, artist) {
         const location = await getPostPosition();
@@ -197,35 +186,6 @@ function Home() {
             }
         });
     }
-
-    // async function postFormClickHandler(close) {
-    //     if (await onSubmitPostClick()) {
-    //         setNewSong("");
-    //         setNewArtist("");
-    //         setPostError("");
-    //         close();
-    //     } else {
-    //         setPostError("Could not find specified song, please check your spelling.");
-    //     }
-    // }
-
-    // async function postCurrentHandler(close) {
-    //     setNewSong(currentlyPlaying.name);
-    //     setNewArtist(currentlyPlaying.artists[0].name);
-    //     if (
-    //         await onSubmitPostClick(
-    //             currentlyPlaying.name,
-    //             currentlyPlaying.artists[0].name
-    //         )
-    //     ) {
-    //         setNewSong("");
-    //         setNewArtist("");
-    //         setPostError("");
-    //         close();
-    //     } else {
-    //         setPostError("Could not find specified song, please check your spelling.");
-    //     }
-    // };
 
     /* ------ logout ------ */
 
@@ -292,14 +252,14 @@ function Home() {
 
     return (
         <div className="home">
-            <Dropdown
-                className="user-settings"
-                selected={userSetting}
-                setSelected={setUserSetting}
-                purpose="user"
-            />
+            <div className="user-settings">
+                <Dropdown
+                    selected={userSetting}
+                    setSelected={setUserSetting}
+                    purpose="user"
+                />
+            </div>
             <Header />
-            {/* {token !== undefined && token !== '' ? <Dashboard token={token}/> : null} */}
             <div className="home-actions">
                 <Dropdown
                     selected={`Filtered by: ${selected}`}
@@ -322,46 +282,25 @@ function Home() {
                             <button className="close" onClick={close}>
                                 &times;
                             </button>
-                            <div className="header"> Post a song </div>
-                            {currentlyPlaying !== undefined ? (
-                                <div className="current-song">
-                                    Currently playing song: {currentlyPlaying.name}
-                                </div>
-                            ) : null}
                             <div className="content">
                                 <PostForm
+                                    currentlyPlaying={currentlyPlaying}
                                     newSong={newSong}
                                     newArtist={newArtist}
                                     onClick={async () => {
-                                        if (await onSubmitPostClick()) {
-                                            setNewSong("");
-                                            setNewArtist("");
-                                            setPostError("");
-                                            close();
-                                        } else {
-                                            setPostError(
-                                                "Could not find specified song, please check your spelling."
-                                            );
-                                        }
+                                        (await onSubmitPostClick())
+                                            ? resetPostForm(close)
+                                            : setPostError(postErrMsg);
                                     }}
                                     postCurrent={async () => {
                                         setNewSong(currentlyPlaying.name);
                                         setNewArtist(currentlyPlaying.artists[0].name);
-                                        if (
-                                            await onSubmitPostClick(
-                                                currentlyPlaying.name,
-                                                currentlyPlaying.artists[0].name
-                                            )
-                                        ) {
-                                            setNewSong("");
-                                            setNewArtist("");
-                                            setPostError("");
-                                            close();
-                                        } else {
-                                            setPostError(
-                                                "Could not find specified song, please check your spelling."
-                                            );
-                                        }
+                                        (await onSubmitPostClick(
+                                            currentlyPlaying.name,
+                                            currentlyPlaying.artists[0].name
+                                        ))
+                                            ? resetPostForm(close)
+                                            : setPostError(postErrMsg);
                                     }}
                                     onChangeSong={(e) => setNewSong(e.target.value)}
                                     onChangeArtist={(e) => setNewArtist(e.target.value)}
