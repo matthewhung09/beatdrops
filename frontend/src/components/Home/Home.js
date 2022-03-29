@@ -131,6 +131,25 @@ function Home() {
         return success;
     }
 
+    // Called when users attempt to create a new post
+    // async function postFormHandler(close, postType) {
+    //     let manualInput = (await onSubmitPostClick()) && postType === "manual";
+    //     let cpInput =
+    //         (await onSubmitPostClick(
+    //             currentlyPlaying.name,
+    //             currentlyPlaying.artists[0].name
+    //         )) && postType === "currently-playing";
+
+    //     if (manualInput || cpInput) {
+    //         setNewSong("");
+    //         setNewArtist("");
+    //         setPostError("");
+    //         close();
+    //     } else {
+    //         setPostError("Could not find specified song, please check your spelling.");
+    //     }
+    // }
+
     async function makePostCall(song, artist) {
         const location = await getPostPosition();
         // getPostPosition(lat, long);
@@ -179,16 +198,34 @@ function Home() {
         });
     }
 
-    async function postFormOnClick(close) {
-        if (await onSubmitPostClick()) {
-            setNewSong("");
-            setNewArtist("");
-            setPostError("");
-            close();
-        } else {
-            setPostError("Could not find specified song, please check your spelling.");
-        }
-    }
+    // async function postFormClickHandler(close) {
+    //     if (await onSubmitPostClick()) {
+    //         setNewSong("");
+    //         setNewArtist("");
+    //         setPostError("");
+    //         close();
+    //     } else {
+    //         setPostError("Could not find specified song, please check your spelling.");
+    //     }
+    // }
+
+    // async function postCurrentHandler(close) {
+    //     setNewSong(currentlyPlaying.name);
+    //     setNewArtist(currentlyPlaying.artists[0].name);
+    //     if (
+    //         await onSubmitPostClick(
+    //             currentlyPlaying.name,
+    //             currentlyPlaying.artists[0].name
+    //         )
+    //     ) {
+    //         setNewSong("");
+    //         setNewArtist("");
+    //         setPostError("");
+    //         close();
+    //     } else {
+    //         setPostError("Could not find specified song, please check your spelling.");
+    //     }
+    // };
 
     /* ------ logout ------ */
 
