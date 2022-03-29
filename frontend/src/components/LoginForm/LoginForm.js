@@ -120,9 +120,9 @@ function LoginForm() {
                             {" "}
                             <b>♬ beatdrops </b>{" "}
                         </div>
-                        <button className="close" onClick={close}>
+                        {/* <button className="close" onClick={close}>
                             &times;
-                        </button>
+                        </button> */}
                         <PopupWrapper>
                             <PopupTitle> Login to your account.</PopupTitle>
                             <form
