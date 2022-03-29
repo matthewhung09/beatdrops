@@ -9,7 +9,6 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import Header from "./Header";
 
 function Home() {
     /* ------ useState setup ------ */
@@ -259,7 +258,10 @@ function Home() {
                     purpose="user"
                 />
             </div>
-            <Header />
+            <div className="header">
+                <h1>beatdrops</h1>
+                <h2>YikYak meets Spotify</h2>
+            </div>
             <div className="home-actions">
                 <Dropdown
                     selected={`Filtered by: ${selected}`}
