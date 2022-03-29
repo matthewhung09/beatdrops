@@ -14,7 +14,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
 import rateLimit from "axios-rate-limit";
-import Dashboard from './Dashboard'
 
 const Header = styled.div`
     text-align: center;
