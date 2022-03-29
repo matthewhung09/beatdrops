@@ -8,13 +8,6 @@
     align-items: center;
 }
 
-.title {
-    margin-top: -0.5em;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    font-family: "Poppins", sans-serif;
-}
-
 /* ---- modal ---- */
 
 .modal {
@@ -91,6 +84,21 @@
 .button {
     background-color: black;
     cursor: pointer;
+}
+
+/* ---- header ---- */
+
+.header {
+    text-align: center;
+    margin-top: 2em;
+    line-height: 1.5em;
+}
+
+.title {
+    margin-top: -0.5em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-family: "Poppins", sans-serif;
 }
 
 /* ---- home ---- */
