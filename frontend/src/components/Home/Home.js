@@ -41,7 +41,9 @@ function Home() {
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
-        const url = `http://localhost:5000/posts?lat=${lat}&long=${long}`;
+        navigator.geolocation.getCurrentPosition((position) => {
+
+        const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
         axios
             .get(url, {withCredentials: true})
             .then((response) => {
@@ -56,7 +58,8 @@ function Home() {
                 //     window.location.assign('/');
                 // }
             });
-    }, [lat, long]);
+        });
+    }, []);
 
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token");
