@@ -63,8 +63,10 @@ const handleErrors = (err) => {
 // Called on initial load
 // checkUser validates the jwt, sets req.user to the user
 app.get("/posts", checkUser, async (req, res) => {
+    const lat = parseFloat(req.query.lat);
+    const long = parseFloat(req.query.long);
     try {
-        const posts = await postServices.getPosts();
+        const posts = await postServices.getPostsByLocation(lat, long);
         res.status(201).json({ posts: posts, user: req.user });
     } catch (error) {
         res.status(500).send(error.message);

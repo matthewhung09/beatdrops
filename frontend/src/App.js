@@ -51,9 +51,16 @@ function App() {
     // Gets all posts
     // withCredentials : true allows us to send the cookie
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
+
     useEffect(() => {
+        let l1;
+        let l2;
+        navigator.geolocation.getCurrentPosition((position) => {
+            l1 = position.coords.latitude;
+            l2 = position.coords.longitude;
+        const url = `http://localhost:5000/posts?lat=${l1}&long=${l2}`;
         axios
-            .get("http://localhost:5000/posts", { withCredentials: true })
+            .get(url, {withCredentials: true})
             .then((response) => {
                 setPosts(response.data.posts);
                 setUser(response.data.user);
@@ -66,6 +73,7 @@ function App() {
                 //     window.location.assign('/');
                 // }
             });
+        });
     }, []);
 
     useEffect(() => {
@@ -150,7 +158,7 @@ function App() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: song,
                     artist: artist,
-                    location: location,
+                    location: {name: location, lat: lat, long: long},
                 });
                 return response;
             } catch (error) {
@@ -162,7 +170,7 @@ function App() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: newSong,
                     artist: newArtist,
-                    location: location,
+                    location: {name: location, lat: lat, long: long},
                 });
                 return response;
             } catch (error) {
@@ -218,7 +226,7 @@ function App() {
 
     /* ------ geolocation ------ */
 
-    // get coordinates from navigator API
+    //get coordinates from navigator API
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.permissions.query({ name: "geolocation" }).then(function (result) {
@@ -371,7 +379,7 @@ function App() {
                                                 liked={user.liked.includes(post._id)}
                                                 url={post.url}
                                                 updateLikes={() => updateLikes(post._id)}
-                                                location={post.location}
+                                                location={post.location.name}
                                             />
                                         ))}
                                     </div>
