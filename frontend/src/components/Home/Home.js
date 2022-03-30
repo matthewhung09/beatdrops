@@ -345,7 +345,7 @@ function Home() {
                             liked={user.liked.includes(post._id)}
                             url={post.url}
                             updateLikes={() => updateLikes(post._id)}
-                            location={post.location}
+                            location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
                         />
                     ))}
