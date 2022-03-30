@@ -53,12 +53,7 @@ function App() {
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
 
     useEffect(() => {
-        let l1;
-        let l2;
-        navigator.geolocation.getCurrentPosition((position) => {
-            l1 = position.coords.latitude;
-            l2 = position.coords.longitude;
-        const url = `http://localhost:5000/posts?lat=${l1}&long=${l2}`;
+        const url = `http://localhost:5000/posts?lat=${lat}&long=${long}`;
         axios
             .get(url, {withCredentials: true})
             .then((response) => {
@@ -73,8 +68,7 @@ function App() {
                 //     window.location.assign('/');
                 // }
             });
-        });
-    }, []);
+    }, [lat, long]);
 
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token");
