@@ -150,7 +150,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: song,
                     artist: artist,
-                    location: location,
+                    location: {name: location, lat: lat, long: long},
                 });
                 return response;
             } catch (error) {
@@ -161,7 +161,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: newSong,
                     artist: newArtist,
-                    location: location,
+                    location: {name: location, lat: lat, long: long},
                 });
                 return response;
             } catch (error) {
