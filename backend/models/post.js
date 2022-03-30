@@ -13,7 +13,11 @@ const PostSchema = new mongoose.Schema(
             trim: true,
         },
         likes: { type: Number },
-        location: { type: String },
+        location: {
+            name: String,
+            lat: Number,
+            long: Number 
+        },
         url: {
             type: String,
             required: true,

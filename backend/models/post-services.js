@@ -18,6 +18,13 @@ function getDbConnection() {
     return dbConnection;
   }
 
+  async function getPostsByLocation(lat, long){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    const result = await postModel.find({'location.lat': {$lte: (lat + 0.0145), $gte: (lat - 0.0145)}, 
+                                        'location.long': {$lte: (long + 0.0183), $gte: (long - 0.0183)}});
+    return result;
+}
+
   async function getPosts(title, artist){
     const postModel = getDbConnection().model("Post", PostSchema);
     let result;
@@ -84,6 +91,7 @@ async function findPostByArtist(artist){
 }
 
 exports.getPosts = getPosts;
+exports.getPostsByLocation = getPostsByLocation;
 exports.addPost = addPost;
 exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
