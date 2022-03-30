@@ -22,6 +22,7 @@ function Home() {
     const [postList, setPosts] = useState([]);
     const [currentlyPlaying, setCurrentlyPlaying] = useState("");
     const postErrMsg = "Could not find specified song, please check your spelling.";
+    const [playlists, setPlaylists] = useState({});
 
     // dropdowns
     const [selected, setSelected] = useState("Default"); // post filtering
@@ -69,6 +70,7 @@ function Home() {
             return;
         }
         getCurrentSong();
+        getPlaylists();
         // .then(console.log(currentlyPlaying));
     }, [token]);
 
@@ -77,7 +79,24 @@ function Home() {
             .post("http://localhost:5000/current", { token })
             .then((res) => {
                 if (res) {
+                    console.log("res getcurrentsong: ", res);
                     setCurrentlyPlaying(res.data.song);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    async function getPlaylists() {
+        // console.log("in getplaylists");
+        await axios
+            .post("http://localhost:5000/playlists", { token })
+            .then((res) => {
+                if (res) {
+                    // console.log(playlists);
+                    console.log("res getplaylists: ", res);
+                    setPlaylists(res.data.playlists);
                 }
             })
             .catch((error) => {
@@ -261,6 +280,10 @@ function Home() {
             <div className="header">
                 <h1>beatdrops</h1>
                 <h2>YikYak meets Spotify</h2>
+            </div>
+            <div className="playlist-stuff">
+                these are the playlists:
+                {/* {playlists} */}
             </div>
             <div className="home-actions">
                 <Dropdown
