@@ -74,11 +74,6 @@ app.get("/posts", checkUser, async (req, res) => {
 
 // Creates a new post and adds it to the database
 app.post("/create", async (req, res) => {
-    // const new_post = await getPostData(
-    //     req.body.title,
-    //     req.body.artist,
-    //     req.body.location
-    // );
     const new_post = await limiter.schedule(() =>
         getPostData(req.body.title, req.body.artist, req.body.location)
     );
@@ -128,6 +123,7 @@ async function getPostData(song, artist, location) {
         // Get actual song name and artist in case of mispellings/typos
         const song_name = response.data.tracks.items[0].name;
         const song_artist = response.data.tracks.items[0].artists[0].name;
+        const spotify_id = response.data.tracks.items[0].id;
 
         const new_post = {
             title: song_name,
@@ -135,6 +131,7 @@ async function getPostData(song, artist, location) {
             likes: 0,
             url: song_url,
             location: location,
+            spotify_id: spotify_id 
         };
         return new_post;
     } catch (error) {

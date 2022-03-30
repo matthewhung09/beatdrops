@@ -186,6 +186,25 @@ function Home() {
         });
     }
 
+    async function spotifyLike(spotify_id) {
+        console.log(spotify_id);
+        const data = {
+            ids: [spotify_id]
+        }
+        try {
+            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log(response);
+            return response;
+        } catch (error) {
+            return false;
+        }
+    }
+
     /* ------ logout ------ */
 
     useEffect(() => {
@@ -326,6 +345,7 @@ function Home() {
                             url={post.url}
                             updateLikes={() => updateLikes(post._id)}
                             location={post.location}
+                            spotifyLike={() => spotifyLike(post.spotify_id)}
                         />
                     ))}
                 </div>
