@@ -1,6 +1,8 @@
 import React from "react";
-import Dropdown from "../Dropdown/Dropdown";
 import "./PostForm.css";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 function PostForm({
     playlists,
@@ -14,30 +16,13 @@ function PostForm({
     postFromPlaylist,
     postError,
 }) {
+    const handleChange = (e) => {
+        postFromPlaylist(e.target.value);
+    };
+
     return (
         <div className="form-container">
-            {playlists &&
-                playlists.map((playlist, index) => (
-                    <div key={index}>
-                        {playlist.tracks.length > 0 && <b>{playlist.name}:</b>}
-                        {playlist.tracks.map((song, index) => (
-                            <div key={index}>
-                                <button
-                                    onClick={postFromPlaylist(song.title, song.artist)}
-                                    style={{ color: "black" }}
-                                >
-                                    {song.title} by {song.artist}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                ))}
             <h1 className="header"> Post a song </h1>
-            {/* <Dropdown
-                selected={userSetting}
-                setSelected={setUserSetting}
-                purpose="user"
-            /> */}
             {currentlyPlaying && (
                 <div>
                     <h2 className="current-song">
@@ -61,6 +46,33 @@ function PostForm({
                 </button>
             </div>
             <br />
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel htmlFor="grouped-native-select">
+                    Select from my playlists
+                </InputLabel>
+                <Select
+                    onChange={handleChange}
+                    native
+                    defaultValue=""
+                    id="grouped-native-select"
+                    // label="grouping"
+                >
+                    <option aria-label="None" value="" />
+                    {playlists &&
+                        playlists.map((playlist, index) => (
+                            <optgroup key={index} label={playlist.name}>
+                                {playlist.tracks.map((song, index) => (
+                                    <option
+                                        key={index}
+                                        value={`${song.title}, ${song.artist}`}
+                                    >
+                                        {song.title} by {song.artist}
+                                    </option>
+                                ))}
+                            </optgroup>
+                        ))}
+                </Select>
+            </FormControl>
         </div>
     );
 }

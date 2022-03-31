@@ -358,13 +358,13 @@ function Home() {
                                             ? resetPostForm(close)
                                             : setPostError(postErrMsg);
                                     }}
-                                    postFromPlaylist={async () => {
-                                        setNewSong(currentlyPlaying.name);
-                                        setNewArtist(currentlyPlaying.artists[0].name);
-                                        (await onSubmitPostClick(
-                                            currentlyPlaying.name,
-                                            currentlyPlaying.artists[0].name
-                                        ))
+                                    postFromPlaylist={async (value) => {
+                                        let songInfo = value.split(",");
+                                        let title = songInfo[0];
+                                        let artist = songInfo[1];
+                                        setNewSong(title);
+                                        setNewArtist(artist);
+                                        (await onSubmitPostClick(title, artist))
                                             ? resetPostForm(close)
                                             : setPostError(postErrMsg);
                                     }}

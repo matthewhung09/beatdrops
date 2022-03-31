@@ -327,8 +327,9 @@ app.post("/playlists", async (req, res) => {
                 tracks: await getTracks(response.data.items[i].id),
             });
         }
+        let result = playlists.filter((playlist) => playlist.tracks.length > 0);
         res.json({
-            playlists: playlists,
+            playlists: result,
         });
     } catch (error) {
         res.status(500).send(error);
