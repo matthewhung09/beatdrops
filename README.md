@@ -22,7 +22,7 @@ by Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
 ### To Merge Branches:
 Only do this if we have already discussed, otherwise create a pull request.
-1. Make sure all your code is pushed to your branch\
+1. Make sure all your code is pushed to your branch
 2. `git checkout main`
 3. `git merge branch-name`
 
