@@ -74,6 +74,7 @@ function Home() {
         getCurrentSong();
         getPlaylists();
         getUsersPlaylist();
+        findPlaylistSong();
     }, [token]);
 
     async function getCurrentSong() {
@@ -362,7 +363,6 @@ function Home() {
                             <div className="content">
                                 <PostForm
                                     playlists={playlists}
-                                    allPlaylists={allPlaylists}
                                     currentlyPlaying={currentlyPlaying}
                                     newSong={newSong}
                                     newArtist={newArtist}
@@ -414,6 +414,8 @@ function Home() {
                             updateLikes={() => updateLikes(post._id)}
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
+                            allPlaylists={allPlaylists}
+                            setAllPlaylist={setAllPlaylist}
                         />
                     ))}
                 </div>

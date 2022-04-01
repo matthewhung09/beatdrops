@@ -2,11 +2,27 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import "reactjs-popup/dist/index.css";
 import Spotify from "react-spotify-embed";
+
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
 
-function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike, playlists}) {
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+
+function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike, allPlaylists, setAllPlaylist}) {
     // first part of location message based on post time
     let message = "Streamed less than an hour ago at";
     if (timePosted) {
@@ -20,6 +36,22 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
             message = `Streamed ${Math.ceil(parseInt(timePosted) / 24)} days ago at`;
         }
     }
+
+   // const handleChange = (e) => {
+     //  setAllPlaylist(e.target.value);
+    //};
+
+   // const [allPlaylist, setPersonName] = useState("");
+      
+    const handleChange = (event) => {
+        const {
+          target: { value },
+        } = event;
+        setAllPlaylist(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
 
     return (
         <div className="card">
@@ -58,33 +90,29 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
                     {"Like on Spotify"}
                 </button>
 
-                <FormControl sx={{ m: 1, minWidth: 200 }}>
-                <InputLabel htmlFor="grouped-native-select">
-                    Add Song to Playlist
-                </InputLabel>
-                <Select
-                    
-                    native
-                    defaultValue=""
-                    id="grouped-native-select"
-                    // label="grouping"
-                >
-                    <option aria-label="None" value="" />
-                    {playlists &&
-                        playlists.map((playlist, index) => (
-                            <optgroup key={index} label={playlist.name}>
-                                {playlist.tracks.map((song, index) => (
-                                    <option
-                                        key={index}
-                                        value={`${song.title}, ${song.artist}`}
-                                    >
-                                        {song.title} by {song.artist}
-                                    </option>
-                                ))}
-                            </optgroup>
+                <FormControl sx={{ m: 1, width: 300 }}>
+                    <InputLabel id="demo-multiple-name-label">Add to Playlist(s)</InputLabel>
+                    <Select
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
+                        multiple
+                        value={allPlaylists}
+                        onChange={handleChange}
+                        input={<OutlinedInput label="Name" />}
+                        MenuProps={MenuProps}
+                    >
+                        {allPlaylists &&
+                            allPlaylists.map((playlist) => (
+                            <MenuItem
+                                key={playlist.name}
+                                value={playlist.name}
+                                //style={getStyles(name, personName, theme)}
+                            >
+                        {playlist.name}
+                        </MenuItem>
                         ))}
-                </Select>
-            </FormControl>
+                    </Select>
+                </FormControl>
 
             </div>
         </div>
