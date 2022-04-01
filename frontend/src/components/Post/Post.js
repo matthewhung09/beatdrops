@@ -1,3 +1,4 @@
+import {React, useState} from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import "reactjs-popup/dist/index.css";
@@ -22,7 +23,7 @@ const MenuProps = {
 };
 
 
-function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike, allPlaylists, setAllPlaylist}) {
+function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike, allPlaylists}) {
     // first part of location message based on post time
     let message = "Streamed less than an hour ago at";
     if (timePosted) {
@@ -41,13 +42,13 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
      //  setAllPlaylist(e.target.value);
     //};
 
-   // const [allPlaylist, setPersonName] = useState("");
-      
+    const [selectedPlaylist, setSelectedPlaylist] = useState([]);
+    
     const handleChange = (event) => {
         const {
           target: { value },
         } = event;
-        setAllPlaylist(
+        setSelectedPlaylist(
           // On autofill we get a stringified value.
           typeof value === 'string' ? value.split(',') : value,
         );
@@ -90,21 +91,21 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
                     {"Like on Spotify"}
                 </button>
 
-                <FormControl sx={{ m: 1, width: 300 }}>
+                <FormControl sx={{ m: 1, width: 180 }}>
                     <InputLabel id="demo-multiple-name-label">Add to Playlist(s)</InputLabel>
                     <Select
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         multiple
-                        value={allPlaylists}
+                        value={selectedPlaylist}
                         onChange={handleChange}
                         input={<OutlinedInput label="Name" />}
                         MenuProps={MenuProps}
                     >
                         {allPlaylists &&
-                            allPlaylists.map((playlist) => (
+                            allPlaylists.map((playlist, index) => (
                             <MenuItem
-                                key={playlist.name}
+                                key={index}
                                 value={playlist.name}
                                 //style={getStyles(name, personName, theme)}
                             >

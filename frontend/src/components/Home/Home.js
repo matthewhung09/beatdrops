@@ -415,7 +415,7 @@ function Home() {
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
                             allPlaylists={allPlaylists}
-                            setAllPlaylist={setAllPlaylist}
+                            //setAllPlaylist={setAllPlaylist}
                         />
                     ))}
                 </div>
