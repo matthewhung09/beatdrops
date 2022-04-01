@@ -14,9 +14,57 @@ import useAuth from "./useAuth";
 const code = new URLSearchParams(window.location.search).get("code")
 
 function Home() {
-    let accessToken = useAuth(code);
+    const [accessToken, setAccessToken] = useState();
+    const [refreshToken, setRefreshToken] = useState();
+    const [expiresIn, setExpiresIn] = useState();
 
+    useEffect(() => {
+        if(!code){
+          return;
+        }
+        axios
+          .post("http://localhost:5000/auth/callback", {
+            auth_code: code,
+          })
+          .then(res => {
+            console.log(res.data);
+            setAccessToken(res.data.accessToken)
+            setRefreshToken(res.data.refreshToken)
+            setExpiresIn(res.data.expiresIn)
+            window.history.pushState({}, null, "/home")
+            return res.data.refreshToken
+          })
+          .then((r) => {
+              axios.post("http://localhost:5000/update", {refreshToken: r}, {withCredentials: true});
+          })
+          .catch((error) => {
+              console.log(error);
+            // window.location = "/spotify"
+          })
+      }, [code])
 
+    useEffect(() => {
+        console.log("refresh effect");
+        console.log(refreshToken);
+        console.log(expiresIn);
+        if (!refreshToken) return
+        const interval = setInterval(() => {
+          axios
+            .post("http://localhost:5000/auth/refresh", {
+              refreshToken,
+            })
+            .then(res => {
+              setAccessToken(res.data.accessToken)
+              setExpiresIn(res.data.expiresIn)
+            })
+            .catch((error) => {
+                console.log(error);
+            //   window.location = "/spotify"
+            })
+        }, (expiresIn - 60) * 1000)
+    
+        return () => clearInterval(interval)
+    }, [refreshToken, expiresIn])
 
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
@@ -56,6 +104,7 @@ function Home() {
             .then((response) => {
                 setPosts(response.data.posts);
                 setUser(response.data.user);
+                setRefreshToken(response.data.user.refresh_token);
                 setUserSetting(response.data.user.username);
             })
             // Occurs when either invalid token or no token

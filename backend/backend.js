@@ -283,6 +283,7 @@ app.post("/auth/callback", async (req, res) => {
 
 app.post("/auth/refresh", async (req, res) => {
     const refreshToken = req.body.refreshToken
+    console.log("hello");
     let response;
 
     try {
@@ -332,6 +333,14 @@ app.post("/current", async (req, res) => {
     }
     
 });
+
+app.post("/update", checkUser, async (req, res) => {
+    console.log('here');
+    const refreshToken = req.body.refreshToken;
+    const user_id = req.user._id;
+    const user = await userServices.updateRefresh(user_id, refreshToken);
+
+})
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);

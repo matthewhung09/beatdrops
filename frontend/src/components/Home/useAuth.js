@@ -7,6 +7,10 @@ export default function useAuth(code) {
   const [expiresIn, setExpiresIn] = useState()
 
   useEffect(() => {
+    // if(!code){
+    //   setRefreshToken(rToken);
+    //   return;
+    // }
     axios
       .post("http://localhost:5000/auth/callback", {
         auth_code: code,
@@ -17,12 +21,14 @@ export default function useAuth(code) {
         setExpiresIn(res.data.expiresIn)
         window.history.pushState({}, null, "/home")
       })
-      .catch(() => {
-        window.location = "/spotify"
+      .catch((error) => {
+        console.log(error);
+        //window.location = "/spotify"
       })
   }, [code])
 
   useEffect(() => {
+    console.log("refresh effect");
     if (!refreshToken || !expiresIn) return
     const interval = setInterval(() => {
       axios
@@ -34,7 +40,8 @@ export default function useAuth(code) {
           setExpiresIn(res.data.expiresIn)
         })
         .catch((error) => {
-          window.location = "/spotify"
+          console.log(error);
+          //window.location = "/spotify"
         })
     }, (expiresIn - 60) * 1000)
 
