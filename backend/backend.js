@@ -361,6 +361,50 @@ async function getTracks(id) {
     }
 }
 
+app.post("/playlistNames", async(req, res) => {
+
+    const accessToken = req.body.token;
+
+    if (accessToken === undefined) {
+        return;
+    }
+
+
+    try {
+
+            let response = await axios.get(
+                "https://api.spotify.com/v1/me/playlists",
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            let userPlaylists = [];
+
+        for (let i = 0; i < response.data.items.length; i++) {
+            userPlaylists.push({
+                name: response.data.items[i].name,
+                id: response.data.items[i].id,
+                
+            });
+        }
+        
+        res.json({
+            allPlaylists: userPlaylists,
+        });
+
+    } catch (error) {
+        res.status(500).send(error);
+        console.log(error);
+    }
+
+
+});
+
+
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
 });

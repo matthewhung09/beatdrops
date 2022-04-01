@@ -73,6 +73,7 @@ function Home() {
         }
         getCurrentSong();
         getPlaylists();
+        getUsersPlaylist();
     }, [token]);
 
     async function getCurrentSong() {
@@ -80,7 +81,10 @@ function Home() {
             .post("http://localhost:5000/current", { token })
             .then((res) => {
                 if (res) {
+                    // console.log("hello");
+                    // console.log("Before: " + currentlyPlaying);
                     setCurrentlyPlaying(res.data.song);
+                    // console.log("After: " + currentlyPlaying);
                 }
             })
             .catch((error) => {
@@ -96,12 +100,32 @@ function Home() {
             .post("http://localhost:5000/playlists", { token })
             .then((res) => {
                 if (res) {
+                    console.log("res: " + JSON.stringify(res.data.playlists));
                     setPlaylists(res.data.playlists);
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
+    }
+
+    const [allPlaylists, setAllPlaylist] = useState([]);
+
+    async function getUsersPlaylist() {
+
+        await axios
+            .post("http://localhost:5000/playlistNames", { token })
+            .then((res) => {
+                if(res) {
+                    console.log("info: " + JSON.stringify(res.data.allPlaylists));
+                    setAllPlaylist(res.data.allPlaylists);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+
     }
 
     function findPlaylistSong(artist, title) {
@@ -338,6 +362,7 @@ function Home() {
                             <div className="content">
                                 <PostForm
                                     playlists={playlists}
+                                    allPlaylists={allPlaylists}
                                     currentlyPlaying={currentlyPlaying}
                                     newSong={newSong}
                                     newArtist={newArtist}
