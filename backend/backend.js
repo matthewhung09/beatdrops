@@ -404,6 +404,28 @@ app.post("/playlistNames", async(req, res) => {
 
 });
 
+async function saveToPlaylist(id) {
+
+    const accessToken = await getAccessToken();
+    const baseURI = "https://api.spotify.com/v1";
+
+    try {
+        let response = await axios.post(`${baseURI}/playlists/${id}/tracks`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+       
+    }
+
+    catch (error) {
+        res.status(500).send(error);
+        console.log(error);
+    }
+
+}
+
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
