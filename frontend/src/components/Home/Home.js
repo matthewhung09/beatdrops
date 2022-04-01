@@ -9,11 +9,18 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
+import useAuth from "./useAuth";
+
+const code = new URLSearchParams(window.location.search).get("code")
 
 function Home() {
+    let accessToken = useAuth(code);
+
+
+
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
-    const [token, setToken] = useState("");
+    //const [token, setToken] = useState("");
     const [postError, setPostError] = useState("");
 
     // post creation
@@ -61,24 +68,23 @@ function Home() {
         });
     }, []);
 
-    useEffect(() => {
-        const token = new URLSearchParams(window.location.search).get("token");
-        if (token) {
-            setToken(token);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const token = new URLSearchParams(window.location.search).get("token");
+    //     if (token) {
+    //         setToken(token);
+    //     }
+    // }, []);
 
     useEffect(() => {
-        if (token === "") {
+        if (!accessToken) {
             return;
         }
         getCurrentSong();
-        // .then(console.log(currentlyPlaying));
-    }, [token]);
+    }, [accessToken]);
 
     async function getCurrentSong() {
         await axios
-            .post("http://localhost:5000/current", { token })
+            .post("http://localhost:5000/current", { accessToken })
             .then((res) => {
                 if (res) {
                     setCurrentlyPlaying(res.data.song);
@@ -191,22 +197,22 @@ function Home() {
     }
 
     async function spotifyLike(spotify_id) {
-        console.log(spotify_id);
-        const data = {
-            ids: [spotify_id]
-        }
-        try {
-            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            console.log(response);
-            return response;
-        } catch (error) {
-            return false;
-        }
+        // console.log(spotify_id);
+        // const data = {
+        //     ids: [spotify_id]
+        // }
+        // try {
+        //     const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+        //         headers: {
+        //             Authorization: `Bearer ${token}`,
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     console.log(response);
+        //     return response;
+        // } catch (error) {
+        //     return false;
+        // }
     }
 
     /* ------ logout ------ */
@@ -217,7 +223,7 @@ function Home() {
         if (userSetting === "Logout") {
             logout();
         } else if (userSetting === "Spotify") {
-            window.location.assign(AUTH_URL);
+            //window.location.assign(AUTH_URL);
         }
     }, [userSetting]);
 

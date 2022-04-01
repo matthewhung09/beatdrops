@@ -65,7 +65,7 @@ function SpotifyLogin() {
                                 >
                                     Go Back
                                 </StyledButton>
-                                <a href="http://localhost:5000/auth/login">
+                                <a href='https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state'>
                                     <StyledButton
                                         fullWidth
                                         type="submit"
