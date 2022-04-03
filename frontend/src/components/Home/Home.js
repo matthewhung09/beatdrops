@@ -43,28 +43,47 @@ function Home() {
           })
       }, [code])
 
+    // useEffect(() => {
+    //     console.log("refresh effect");
+    //     console.log(refreshToken);
+    //     console.log(expiresIn);
+    //     if (!refreshToken) return
+    //     const interval = setInterval(() => {
+    //       axios
+    //         .post("http://localhost:5000/auth/refresh", {
+    //           refreshToken,
+    //         })
+    //         .then(res => {
+    //           setAccessToken(res.data.accessToken)
+    //           setExpiresIn(res.data.expiresIn)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         //   window.location = "/spotify"
+    //         })
+    //     }, (expiresIn - 60) * 1000)
+    
+    //     return () => clearInterval(interval)
+    // }, [refreshToken])
+
     useEffect(() => {
         console.log("refresh effect");
         console.log(refreshToken);
         console.log(expiresIn);
         if (!refreshToken) return
-        const interval = setInterval(() => {
-          axios
-            .post("http://localhost:5000/auth/refresh", {
-              refreshToken,
-            })
-            .then(res => {
-              setAccessToken(res.data.accessToken)
-              setExpiresIn(res.data.expiresIn)
-            })
-            .catch((error) => {
-                console.log(error);
-            //   window.location = "/spotify"
-            })
-        }, (expiresIn - 60) * 1000)
-    
-        return () => clearInterval(interval)
-    }, [refreshToken, expiresIn])
+        axios
+        .post("http://localhost:5000/auth/refresh", {
+            refreshToken,
+        })
+        .then(res => {
+            setAccessToken(res.data.accessToken)
+            setExpiresIn(res.data.expiresIn)
+        })
+        .catch((error) => {
+            console.log(error);
+        //   window.location = "/spotify"
+        });
+    }, [refreshToken])
 
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
@@ -246,33 +265,31 @@ function Home() {
     }
 
     async function spotifyLike(spotify_id) {
-        // console.log(spotify_id);
-        // const data = {
-        //     ids: [spotify_id]
-        // }
-        // try {
-        //     const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`,
-        //             "Content-Type": "application/json",
-        //         },
-        //     });
-        //     console.log(response);
-        //     return response;
-        // } catch (error) {
-        //     return false;
-        // }
+        const data = {
+            ids: [spotify_id]
+        }
+        try {
+            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            return response;
+        } catch (error) {
+            return false;
+        }
     }
 
     /* ------ logout ------ */
 
     useEffect(() => {
         const AUTH_URL =
-            "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:5000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
+            "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
         if (userSetting === "Logout") {
             logout();
         } else if (userSetting === "Spotify") {
-            //window.location.assign(AUTH_URL);
+            window.location.assign(AUTH_URL);
         }
     }, [userSetting]);
 
