@@ -14,6 +14,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 5000;
 
+const baseURI = "https://api.spotify.com/v1";
+
 // import Bottleneck from "bottleneck";
 // Note: To support older browsers and Node <6.0, you must import the ES5 bundle instead.
 var Bottleneck = require("bottleneck/es5");
@@ -112,7 +114,7 @@ async function getPostData(song, artist, location) {
 
     try {
         const response = await axios.get(
-            "https://api.spotify.com/v1/search?" + queryparam,
+            `${baseURI}/search?` + queryparam,
             {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
@@ -287,9 +289,7 @@ app.post("/current", async (req, res) => {
     }
     let response;
     try {
-        response = await axios.get(
-            "https://api.spotify.com/v1/me/player/currently-playing",
-            {
+        response = await axios.get(`${baseURI}/me/player/currently-playing`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
@@ -308,7 +308,6 @@ app.post("/current", async (req, res) => {
 // Gets users' playlists
 app.post("/playlists", async (req, res) => {
     const accessToken = req.body.token;
-    const baseURI = "https://api.spotify.com/v1";
     if (accessToken === undefined) {
         return;
     }
@@ -339,7 +338,6 @@ app.post("/playlists", async (req, res) => {
 
 async function getTracks(id) {
     const accessToken = await getAccessToken();
-    const baseURI = "https://api.spotify.com/v1";
     try {
         let response = await axios.get(`${baseURI}/playlists/${id}/tracks`, {
             headers: {
@@ -364,7 +362,6 @@ async function getTracks(id) {
 app.post("/playlistNames", async(req, res) => {
 
     const accessToken = req.body.token;
-
     if (accessToken === undefined) {
         return;
     }
@@ -373,7 +370,7 @@ app.post("/playlistNames", async(req, res) => {
     try {
 
             let response = await axios.get(
-                "https://api.spotify.com/v1/me/playlists",
+                `${baseURI}/me/playlists`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -407,7 +404,7 @@ app.post("/playlistNames", async(req, res) => {
 async function saveToPlaylist(id) {
 
     const accessToken = await getAccessToken();
-    const baseURI = "https://api.spotify.com/v1";
+    
 
     try {
         let response = await axios.post(`${baseURI}/playlists/${id}/tracks`, {
