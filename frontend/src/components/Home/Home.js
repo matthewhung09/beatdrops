@@ -42,22 +42,21 @@ function Home() {
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-
-        const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
-        axios
-            .get(url, {withCredentials: true})
-            .then((response) => {
-                setPosts(response.data.posts);
-                setUser(response.data.user);
-                setUserSetting(response.data.user.username);
-            })
-            // Occurs when either invalid token or no token
-            .catch((error) => {
-                console.log(error.response.data);
-                // if (error.response.status === 401) {
-                //     window.location.assign('/');
-                // }
-            });
+            const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+            axios
+                .get(url, { withCredentials: true })
+                .then((response) => {
+                    setPosts(response.data.posts);
+                    setUser(response.data.user);
+                    setUserSetting(response.data.user.username);
+                })
+                // Occurs when either invalid token or no token
+                .catch((error) => {
+                    console.log(error.response.data);
+                    // if (error.response.status === 401) {
+                    //     window.location.assign('/');
+                    // }
+                });
         });
     }, []);
 
@@ -73,7 +72,7 @@ function Home() {
             return;
         }
         getCurrentSong();
-        // .then(console.log(currentlyPlaying));
+        getPlaylists();
     }, [token]);
 
     async function getCurrentSong() {
@@ -87,6 +86,31 @@ function Home() {
             .catch((error) => {
                 console.log(error);
             });
+    }
+
+    const [playlists, setPlaylists] = useState([]);
+
+    async function getPlaylists() {
+        // console.log("in getplaylists");
+        await axios
+            .post("http://localhost:5000/playlists", { token })
+            .then((res) => {
+                if (res) {
+                    setPlaylists(res.data.playlists);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    function findPlaylistSong(artist, title) {
+        for (let i = 0; i < playlists.length; i++) {
+            let song = playlists[0].tracks.find(
+                (item) => item.artist === artist && item.title === title
+            );
+            if (song) return song;
+        }
     }
 
     /* ------ post filtering ------ */
@@ -150,7 +174,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: song,
                     artist: artist,
-                    location: {name: location, lat: lat, long: long},
+                    location: { name: location, lat: lat, long: long },
                 });
                 return response;
             } catch (error) {
@@ -161,7 +185,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: newSong,
                     artist: newArtist,
-                    location: {name: location, lat: lat, long: long},
+                    location: { name: location, lat: lat, long: long },
                 });
                 return response;
             } catch (error) {
@@ -193,15 +217,19 @@ function Home() {
     async function spotifyLike(spotify_id) {
         console.log(spotify_id);
         const data = {
-            ids: [spotify_id]
-        }
+            ids: [spotify_id],
+        };
         try {
-            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await axios.put(
+                "https://api.spotify.com/v1/me/tracks",
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
             console.log(response);
             return response;
         } catch (error) {
@@ -309,9 +337,12 @@ function Home() {
                             </button>
                             <div className="content">
                                 <PostForm
+                                    playlists={playlists}
                                     currentlyPlaying={currentlyPlaying}
                                     newSong={newSong}
                                     newArtist={newArtist}
+                                    onChangeSong={(e) => setNewSong(e.target.value)}
+                                    onChangeArtist={(e) => setNewArtist(e.target.value)}
                                     onClick={async () => {
                                         (await onSubmitPostClick())
                                             ? resetPostForm(close)
@@ -327,8 +358,16 @@ function Home() {
                                             ? resetPostForm(close)
                                             : setPostError(postErrMsg);
                                     }}
-                                    onChangeSong={(e) => setNewSong(e.target.value)}
-                                    onChangeArtist={(e) => setNewArtist(e.target.value)}
+                                    postFromPlaylist={async (value) => {
+                                        let songInfo = value.split(",");
+                                        let title = songInfo[0];
+                                        let artist = songInfo[1];
+                                        setNewSong(title);
+                                        setNewArtist(artist);
+                                        (await onSubmitPostClick(title, artist))
+                                            ? resetPostForm(close)
+                                            : setPostError(postErrMsg);
+                                    }}
                                     postError={postError}
                                 />
                             </div>
