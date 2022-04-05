@@ -64,8 +64,8 @@ function Post({
         if (selectedPlaylist !== "") {
             const id = findPlaylistId();
             const data = {
-                uris: uri,
-                position: 0,
+                uris: [uri]
+                // position: 0,
             };
             console.log("data: ", data);
             console.log("id: ", id);
