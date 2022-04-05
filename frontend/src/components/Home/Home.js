@@ -74,7 +74,7 @@ function Home() {
         getCurrentSong();
         getPlaylists();
         getUsersPlaylist();
-        findPlaylistSong();
+        // findPlaylistSong();
     }, [token]);
 
     async function getCurrentSong() {
@@ -101,7 +101,7 @@ function Home() {
             .post("http://localhost:5000/playlists", { token })
             .then((res) => {
                 if (res) {
-                    console.log("res: " + JSON.stringify(res.data.playlists));
+                    // console.log("res: " + JSON.stringify(res.data.playlists));
                     setPlaylists(res.data.playlists);
                 }
             })
@@ -113,30 +113,28 @@ function Home() {
     const [allPlaylists, setAllPlaylist] = useState([]);
 
     async function getUsersPlaylist() {
-
         await axios
             .post("http://localhost:5000/playlistNames", { token })
             .then((res) => {
-                if(res) {
-                    console.log("info: " + JSON.stringify(res.data.allPlaylists));
+                if (res) {
+                    // console.log("info: " + JSON.stringify(res.data.allPlaylists));
+                    // console.log("info: " + res.data.allPlaylists);
                     setAllPlaylist(res.data.allPlaylists);
                 }
             })
             .catch((error) => {
                 console.log(error);
-            })
-
-
+            });
     }
 
-    function findPlaylistSong(artist, title) {
-        for (let i = 0; i < playlists.length; i++) {
-            let song = playlists[0].tracks.find(
-                (item) => item.artist === artist && item.title === title
-            );
-            if (song) return song;
-        }
-    }
+    // function findPlaylistSong(artist, title) {
+    //     for (let i = 0; i < playlists.length; i++) {
+    //         let song = playlists[0].tracks.find(
+    //             (item) => item.artist === artist && item.title === title
+    //         );
+    //         if (song) return song;
+    //     }
+    // }
 
     /* ------ post filtering ------ */
 
@@ -410,11 +408,13 @@ function Home() {
                             )}
                             likes={post.likes}
                             liked={user.liked.includes(post._id)}
+                            uri={post.spotify_uri}
                             url={post.url}
                             updateLikes={() => updateLikes(post._id)}
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
                             allPlaylists={allPlaylists}
+                            token={token}
                             //setAllPlaylist={setAllPlaylist}
                         />
                     ))}

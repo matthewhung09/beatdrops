@@ -1,29 +1,38 @@
-import {React, useState} from "react";
+import { React, useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "./Post.css";
 import "reactjs-popup/dist/index.css";
 import Spotify from "react-spotify-embed";
-
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import MenuItem from '@mui/material/MenuItem';
-
+import axios from "axios";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
     },
-  },
 };
 
-
-function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLike, allPlaylists}) {
+function Post({
+    timePosted,
+    likes,
+    liked,
+    uri,
+    url,
+    updateLikes,
+    location,
+    spotifyLike,
+    allPlaylists,
+    token,
+}) {
     // first part of location message based on post time
     let message = "Streamed less than an hour ago at";
     if (timePosted) {
@@ -38,21 +47,56 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
         }
     }
 
-   // const handleChange = (e) => {
-     //  setAllPlaylist(e.target.value);
-    //};
+    const [selectedPlaylist, setSelectedPlaylist] = useState("");
 
-    const [selectedPlaylist, setSelectedPlaylist] = useState([]);
-    
-    const handleChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        setSelectedPlaylist(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
-        );
-      };
+    const handleChange = (e) => {
+        setSelectedPlaylist(e.target.value);
+        console.log(selectedPlaylist);
+    };
+
+    useEffect(() => {
+        // console.log("should be in here");
+        addToPlaylist();
+    }, [selectedPlaylist]);
+
+    async function addToPlaylist() {
+        // takes care of undefined id on first render of useEffect
+        if (selectedPlaylist !== "") {
+            const id = findPlaylistId();
+            const data = {
+                uris: uri,
+                position: 0,
+            };
+            console.log("data: ", data);
+            console.log("id: ", id);
+            try {
+                const response = await axios.post(
+                    `https://api.spotify.com/v1/playlists/${id}/tracks`,
+                    data,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                console.log("response: ", response);
+                return response;
+            } catch (error) {
+                console.log("error message: ", error.message);
+                return false;
+            }
+        }
+    }
+
+    function findPlaylistId() {
+        // console.log(allPlaylists);
+
+        for (let i = 0; i < allPlaylists.length; i++) {
+            let playlist = allPlaylists.find((item) => item.name === selectedPlaylist);
+            if (playlist) return playlist.id;
+        }
+    }
 
     return (
         <div className="card">
@@ -92,11 +136,12 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
                 </button>
 
                 <FormControl sx={{ m: 1, width: 180 }}>
-                    <InputLabel id="demo-multiple-name-label">Add to Playlist(s)</InputLabel>
+                    <InputLabel id="demo-multiple-name-label">
+                        Add to Playlist(s)
+                    </InputLabel>
                     <Select
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
-                        multiple
                         value={selectedPlaylist}
                         onChange={handleChange}
                         input={<OutlinedInput label="Name" />}
@@ -104,21 +149,19 @@ function Post({ timePosted, likes, liked, url, updateLikes, location, spotifyLik
                     >
                         {allPlaylists &&
                             allPlaylists.map((playlist, index) => (
-                            <MenuItem
-                                key={index}
-                                value={playlist.name}
-                                //style={getStyles(name, personName, theme)}
-                            >
-                        {playlist.name}
-                        </MenuItem>
-                        ))}
+                                <MenuItem
+                                    key={index}
+                                    value={playlist.name}
+                                    //style={getStyles(name, personName, theme)}
+                                >
+                                    {playlist.name}
+                                </MenuItem>
+                            ))}
                     </Select>
                 </FormControl>
-
             </div>
         </div>
     );
 }
-
 
 export default Post;

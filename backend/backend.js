@@ -87,6 +87,7 @@ app.post("/create", async (req, res) => {
     } else {
         let post = await postServices.addPost(new_post);
         if (post) {
+            console.log(post);
             res.status(201).json(post);
         } else {
             res.status(500).end();
@@ -113,20 +114,18 @@ async function getPostData(song, artist, location) {
     // const access_token = await limiter.schedule(() => getAccessToken());
 
     try {
-        const response = await axios.get(
-            `${baseURI}/search?` + queryparam,
-            {
-                headers: {
-                    Authorization: `Bearer ${access_token}`,
-                },
-            }
-        );
+        const response = await axios.get(`${baseURI}/search?` + queryparam, {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        });
         const song_url = response.data.tracks.items[0].external_urls.spotify;
 
         // Get actual song name and artist in case of mispellings/typos
         const song_name = response.data.tracks.items[0].name;
         const song_artist = response.data.tracks.items[0].artists[0].name;
         const spotify_id = response.data.tracks.items[0].id;
+        const spotify_uri = response.data.tracks.items[0].uri;
 
         const new_post = {
             title: song_name,
@@ -135,6 +134,7 @@ async function getPostData(song, artist, location) {
             url: song_url,
             location: location,
             spotify_id: spotify_id,
+            spotify_uri: spotify_uri,
         };
         return new_post;
     } catch (error) {
@@ -249,7 +249,7 @@ app.get("/user/:id/liked", async (req, res) => {
 
 // Handles user login - gets access token and reroutes them to redirect_uri
 app.get("/auth/login", async (req, res) => {
-    const auth_url = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
+    const auth_url = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20playlist-modify-public`;
     res.redirect(auth_url);
 });
 
@@ -290,12 +290,11 @@ app.post("/current", async (req, res) => {
     let response;
     try {
         response = await axios.get(`${baseURI}/me/player/currently-playing`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
         res.json({
             song: response.data.item,
         });
@@ -359,70 +358,37 @@ async function getTracks(id) {
     }
 }
 
-app.post("/playlistNames", async(req, res) => {
-
+app.post("/playlistNames", async (req, res) => {
     const accessToken = req.body.token;
     if (accessToken === undefined) {
         return;
     }
 
-
     try {
-
-            let response = await axios.get(
-                `${baseURI}/me/playlists`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            let userPlaylists = [];
-
-        for (let i = 0; i < response.data.items.length; i++) {
-            userPlaylists.push({
-                name: response.data.items[i].name,
-                id: response.data.items[i].id,
-                
-            });
-        }
-        
-        res.json({
-            allPlaylists: userPlaylists,
-        });
-
-    } catch (error) {
-        res.status(500).send(error);
-        console.log(error);
-    }
-
-
-});
-
-async function saveToPlaylist(id) {
-
-    const accessToken = await getAccessToken();
-    
-
-    try {
-        let response = await axios.post(`${baseURI}/playlists/${id}/tracks`, {
+        let response = await axios.get(`${baseURI}/me/playlists`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
         });
-       
-    }
 
-    catch (error) {
+        let userPlaylists = [];
+
+        for (let i = 0; i < response.data.items.length; i++) {
+            userPlaylists.push({
+                name: response.data.items[i].name,
+                id: response.data.items[i].id,
+            });
+        }
+
+        res.json({
+            allPlaylists: userPlaylists,
+        });
+    } catch (error) {
         res.status(500).send(error);
         console.log(error);
     }
-
-}
-
+});
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
