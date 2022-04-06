@@ -99,7 +99,7 @@ function Home() {
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-
+          
         const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
         axios
             .get(url, {withCredentials: true})
@@ -125,6 +125,8 @@ function Home() {
             return;
         }
         getCurrentSong();
+        getPlaylists();
+        getUsersPlaylist();
     }, [accessToken]);
 
     async function getCurrentSong() {
@@ -132,13 +134,59 @@ function Home() {
             .post("http://localhost:5000/current", { accessToken })
             .then((res) => {
                 if (res) {
+                    // console.log("hello");
+                    // console.log("Before: " + currentlyPlaying);
                     setCurrentlyPlaying(res.data.song);
+                    // console.log("After: " + currentlyPlaying);
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
     }
+
+    const [playlists, setPlaylists] = useState([]);
+
+    async function getPlaylists() {
+        // console.log("in getplaylists");
+        await axios
+            .post("http://localhost:5000/playlists", { token })
+            .then((res) => {
+                if (res) {
+                    // console.log("res: " + JSON.stringify(res.data.playlists));
+                    setPlaylists(res.data.playlists);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    const [allPlaylists, setAllPlaylist] = useState([]);
+
+    async function getUsersPlaylist() {
+        await axios
+            .post("http://localhost:5000/playlistNames", { token })
+            .then((res) => {
+                if (res) {
+                    // console.log("info: " + JSON.stringify(res.data.allPlaylists));
+                    // console.log("info: " + res.data.allPlaylists);
+                    setAllPlaylist(res.data.allPlaylists);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    // function findPlaylistSong(artist, title) {
+    //     for (let i = 0; i < playlists.length; i++) {
+    //         let song = playlists[0].tracks.find(
+    //             (item) => item.artist === artist && item.title === title
+    //         );
+    //         if (song) return song;
+    //     }
+    // }
 
     /* ------ post filtering ------ */
 
@@ -201,7 +249,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: song,
                     artist: artist,
-                    location: {name: location, lat: lat, long: long},
+                    location: { name: location, lat: lat, long: long },
                 });
                 return response;
             } catch (error) {
@@ -212,7 +260,7 @@ function Home() {
                 const response = await axios.post("http://localhost:5000/create", {
                     title: newSong,
                     artist: newArtist,
-                    location: {name: location, lat: lat, long: long},
+                    location: { name: location, lat: lat, long: long },
                 });
                 return response;
             } catch (error) {
@@ -243,8 +291,8 @@ function Home() {
 
     async function spotifyLike(spotify_id) {
         const data = {
-            ids: [spotify_id]
-        }
+            ids: [spotify_id],
+        };
         try {
             const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
                 headers: {
@@ -252,6 +300,7 @@ function Home() {
                     "Content-Type": "application/json",
                 },
             });
+
             return response;
         } catch (error) {
             return false;
@@ -358,9 +407,12 @@ function Home() {
                             </button>
                             <div className="content">
                                 <PostForm
+                                    playlists={playlists}
                                     currentlyPlaying={currentlyPlaying}
                                     newSong={newSong}
                                     newArtist={newArtist}
+                                    onChangeSong={(e) => setNewSong(e.target.value)}
+                                    onChangeArtist={(e) => setNewArtist(e.target.value)}
                                     onClick={async () => {
                                         (await onSubmitPostClick())
                                             ? resetPostForm(close)
@@ -376,8 +428,16 @@ function Home() {
                                             ? resetPostForm(close)
                                             : setPostError(postErrMsg);
                                     }}
-                                    onChangeSong={(e) => setNewSong(e.target.value)}
-                                    onChangeArtist={(e) => setNewArtist(e.target.value)}
+                                    postFromPlaylist={async (value) => {
+                                        let songInfo = value.split(",");
+                                        let title = songInfo[0];
+                                        let artist = songInfo[1];
+                                        setNewSong(title);
+                                        setNewArtist(artist);
+                                        (await onSubmitPostClick(title, artist))
+                                            ? resetPostForm(close)
+                                            : setPostError(postErrMsg);
+                                    }}
                                     postError={postError}
                                 />
                             </div>
@@ -395,10 +455,14 @@ function Home() {
                             )}
                             likes={post.likes}
                             liked={user.liked.includes(post._id)}
+                            uri={post.spotify_uri}
                             url={post.url}
                             updateLikes={() => updateLikes(post._id)}
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
+                            allPlaylists={allPlaylists}
+                            token={token}
+                            //setAllPlaylist={setAllPlaylist}
                         />
                     ))}
                 </div>

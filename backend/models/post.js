@@ -16,7 +16,7 @@ const PostSchema = new mongoose.Schema(
         location: {
             name: String,
             lat: Number,
-            long: Number 
+            long: Number,
         },
         url: {
             type: String,
@@ -25,7 +25,10 @@ const PostSchema = new mongoose.Schema(
         },
         spotify_id: {
             type: String,
-            trim: true
+            trim: true,
+        },
+        spotify_uri: {
+            type: String,
         },
     },
     { collection: "Posts", timestamps: true }
