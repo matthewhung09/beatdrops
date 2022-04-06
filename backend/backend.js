@@ -283,7 +283,6 @@ app.post("/auth/callback", async (req, res) => {
 
 app.post("/auth/refresh", async (req, res) => {
     const refreshToken = req.body.refreshToken
-    console.log("hello");
     let response;
 
     try {

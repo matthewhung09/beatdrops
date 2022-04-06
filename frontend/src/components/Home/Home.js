@@ -1,7 +1,7 @@
 import * as React from "react";
 import "reactjs-popup/dist/index.css";
 import "./Home.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import Popup from "reactjs-popup";
 import Post from "../Post/Post";
@@ -17,73 +17,56 @@ function Home() {
     const [accessToken, setAccessToken] = useState();
     const [refreshToken, setRefreshToken] = useState();
     const [expiresIn, setExpiresIn] = useState();
-
-    useEffect(() => {
-        if(!code){
-          return;
-        }
-        axios
-          .post("http://localhost:5000/auth/callback", {
-            auth_code: code,
-          })
-          .then(res => {
-            console.log(res.data);
-            setAccessToken(res.data.accessToken)
-            setRefreshToken(res.data.refreshToken)
-            setExpiresIn(res.data.expiresIn)
-            window.history.pushState({}, null, "/home")
-            return res.data.refreshToken
-          })
-          .then((r) => {
-              axios.post("http://localhost:5000/update", {refreshToken: r}, {withCredentials: true});
-          })
-          .catch((error) => {
-              console.log(error);
-            // window.location = "/spotify"
-          })
-      }, [code])
-
-    // useEffect(() => {
-    //     console.log("refresh effect");
-    //     console.log(refreshToken);
-    //     console.log(expiresIn);
-    //     if (!refreshToken) return
-    //     const interval = setInterval(() => {
-    //       axios
-    //         .post("http://localhost:5000/auth/refresh", {
-    //           refreshToken,
-    //         })
-    //         .then(res => {
-    //           setAccessToken(res.data.accessToken)
-    //           setExpiresIn(res.data.expiresIn)
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         //   window.location = "/spotify"
-    //         })
-    //     }, (expiresIn - 60) * 1000)
+    const isMounted = useRef(false);
     
-    //     return () => clearInterval(interval)
-    // }, [refreshToken])
+    useEffect(() => {
+        if(!code) return;
+        axios
+            .post("http://localhost:5000/auth/callback", {
+                auth_code: code,
+            })
+            .then(res => {
+                console.log(res.data);
+                setAccessToken(res.data.accessToken);
+                setRefreshToken(res.data.refreshToken);
+                setExpiresIn(res.data.expiresIn);
+                window.history.pushState({}, null, "/home");
+                return res.data.refreshToken;
+          })
+            .then((r) => {
+                axios.post("http://localhost:5000/update", {refreshToken: r}, {withCredentials: true});
+            })
+            .catch((error) => {
+                console.log(error);
+                // window.location = "/spotify"
+            })
+        }, [code]);
 
     useEffect(() => {
-        console.log("refresh effect");
-        console.log(refreshToken);
-        console.log(expiresIn);
-        if (!refreshToken) return
+        if (isMounted.current) {
+            if (!refreshToken) return;
+            refresh();
+            const interval = setInterval(refresh, (expiresIn - 60) * 1000);
+        }
+        else {
+            isMounted.current = true;
+        }    
+    }, [refreshToken]);
+
+    function refresh() {
         axios
-        .post("http://localhost:5000/auth/refresh", {
-            refreshToken,
-        })
-        .then(res => {
-            setAccessToken(res.data.accessToken)
-            setExpiresIn(res.data.expiresIn)
-        })
-        .catch((error) => {
-            console.log(error);
-        //   window.location = "/spotify"
-        });
-    }, [refreshToken])
+            .post("http://localhost:5000/auth/refresh", {
+                refreshToken,
+            })
+            .then(res => {
+                console.log(res);
+                setAccessToken(res.data.accessToken);
+                setExpiresIn(res.data.expiresIn);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
@@ -123,25 +106,19 @@ function Home() {
             .then((response) => {
                 setPosts(response.data.posts);
                 setUser(response.data.user);
+                setExpiresIn(3600);
                 setRefreshToken(response.data.user.refresh_token);
                 setUserSetting(response.data.user.username);
             })
-            // Occurs when either invalid token or no token
+            // Occurs when either invalid token or no token - redirects user back to login screen
             .catch((error) => {
                 console.log(error.response.data);
-                // if (error.response.status === 401) {
-                //     window.location.assign('/');
-                // }
+                if (error.response.status === 401) {
+                    window.location.assign('/');
+                }
             });
         });
     }, []);
-
-    // useEffect(() => {
-    //     const token = new URLSearchParams(window.location.search).get("token");
-    //     if (token) {
-    //         setToken(token);
-    //     }
-    // }, []);
 
     useEffect(() => {
         if (!accessToken) {
