@@ -247,12 +247,6 @@ app.get("/user/:id/liked", async (req, res) => {
     }
 });
 
-// Handles user login - gets access token and reroutes them to redirect_uri
-app.get("/auth/login", async (req, res) => {
-    const auth_url = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20playlist-modify-public`;
-    res.redirect(auth_url);
-});
-
 app.post("/auth/callback", async (req, res) => {
     const code = req.body.auth_code;
     let response;
@@ -261,7 +255,7 @@ app.post("/auth/callback", async (req, res) => {
         const data = qs.stringify({
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:3000/home"
+            redirect_uri: redirect_uri
         });
         response = await axios.post("https://accounts.spotify.com/api/token", data, {
             headers: {
@@ -278,7 +272,6 @@ app.post("/auth/callback", async (req, res) => {
         console.log(error);
         res.sendStatus(400);
     }
-    //res.redirect("http://localhost:3000/home/?token=" + response.data.access_token);
 });
 
 app.post("/auth/refresh", async (req, res) => {
@@ -331,7 +324,7 @@ app.post("/current", async (req, res) => {
 
 // Gets users' playlists
 app.post("/playlists", async (req, res) => {
-    const accessToken = req.body.token;
+    const accessToken = req.body.accessToken;
     if (accessToken === undefined) {
         return;
     }
@@ -384,7 +377,7 @@ async function getTracks(id) {
 }
 
 app.post("/playlistNames", async (req, res) => {
-    const accessToken = req.body.token;
+    const accessToken = req.body.accessToken;
     if (accessToken === undefined) {
         return;
     }
@@ -420,7 +413,6 @@ app.post("/update", checkUser, async (req, res) => {
     const refreshToken = req.body.refreshToken;
     const user_id = req.user._id;
     const user = await userServices.updateRefresh(user_id, refreshToken);
-
 })
 
 app.listen(port, () => {

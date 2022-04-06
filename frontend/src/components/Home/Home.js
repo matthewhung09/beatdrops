@@ -9,7 +9,6 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import useAuth from "./useAuth";
 
 const code = new URLSearchParams(window.location.search).get("code")
 
@@ -26,7 +25,6 @@ function Home() {
                 auth_code: code,
             })
             .then(res => {
-                console.log(res.data);
                 setAccessToken(res.data.accessToken);
                 setRefreshToken(res.data.refreshToken);
                 setExpiresIn(res.data.expiresIn);
@@ -59,7 +57,6 @@ function Home() {
                 refreshToken,
             })
             .then(res => {
-                console.log(res);
                 setAccessToken(res.data.accessToken);
                 setExpiresIn(res.data.expiresIn);
             })
@@ -148,9 +145,8 @@ function Home() {
     const [playlists, setPlaylists] = useState([]);
 
     async function getPlaylists() {
-        // console.log("in getplaylists");
         await axios
-            .post("http://localhost:5000/playlists", { token })
+            .post("http://localhost:5000/playlists", { accessToken })
             .then((res) => {
                 if (res) {
                     // console.log("res: " + JSON.stringify(res.data.playlists));
@@ -166,7 +162,7 @@ function Home() {
 
     async function getUsersPlaylist() {
         await axios
-            .post("http://localhost:5000/playlistNames", { token })
+            .post("http://localhost:5000/playlistNames", { accessToken })
             .then((res) => {
                 if (res) {
                     // console.log("info: " + JSON.stringify(res.data.allPlaylists));
@@ -461,7 +457,7 @@ function Home() {
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
                             allPlaylists={allPlaylists}
-                            token={token}
+                            token={accessToken}
                             //setAllPlaylist={setAllPlaylist}
                         />
                     ))}
