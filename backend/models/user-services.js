@@ -42,6 +42,17 @@ async function findUserById(id){
     }
 }
 
+async function updateRefresh(id, r){
+    console.log(r);
+    const userModel = getDbConnection().model("User", UserSchema);
+    try{
+        return await userModel.findByIdAndUpdate(id, { $set: {refresh_token: r}});
+    }catch(error) {
+        console.log('error in db');
+        return undefined;
+    }
+}
+
 async function getUserLiked(id){
     const userModel = getDbConnection().model("User", UserSchema);    
     try{
@@ -89,3 +100,4 @@ exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
 exports.setConnection = setConnection;
+exports.updateRefresh = updateRefresh;

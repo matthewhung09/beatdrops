@@ -1,7 +1,7 @@
 import * as React from "react";
 import "reactjs-popup/dist/index.css";
 import "./Home.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import Popup from "reactjs-popup";
 import Post from "../Post/Post";
@@ -9,11 +9,68 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
+import useAuth from "./useAuth";
+
+const code = new URLSearchParams(window.location.search).get("code")
 
 function Home() {
+    const [accessToken, setAccessToken] = useState();
+    const [refreshToken, setRefreshToken] = useState();
+    const [expiresIn, setExpiresIn] = useState();
+    const isMounted = useRef(false);
+    
+    useEffect(() => {
+        if(!code) return;
+        axios
+            .post("http://localhost:5000/auth/callback", {
+                auth_code: code,
+            })
+            .then(res => {
+                console.log(res.data);
+                setAccessToken(res.data.accessToken);
+                setRefreshToken(res.data.refreshToken);
+                setExpiresIn(res.data.expiresIn);
+                window.history.pushState({}, null, "/home");
+                return res.data.refreshToken;
+          })
+            .then((r) => {
+                axios.post("http://localhost:5000/update", {refreshToken: r}, {withCredentials: true});
+            })
+            .catch((error) => {
+                console.log(error);
+                // window.location = "/spotify"
+            })
+        }, [code]);
+
+    useEffect(() => {
+        if (isMounted.current) {
+            if (!refreshToken) return;
+            refresh();
+            const interval = setInterval(refresh, (expiresIn - 60) * 1000);
+        }
+        else {
+            isMounted.current = true;
+        }    
+    }, [refreshToken]);
+
+    function refresh() {
+        axios
+            .post("http://localhost:5000/auth/refresh", {
+                refreshToken,
+            })
+            .then(res => {
+                console.log(res);
+                setAccessToken(res.data.accessToken);
+                setExpiresIn(res.data.expiresIn);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
     /* ------ useState setup ------ */
     const [user, setUser] = useState();
-    const [token, setToken] = useState("");
+    //const [token, setToken] = useState("");
     const [postError, setPostError] = useState("");
 
     // post creation
@@ -42,44 +99,39 @@ function Home() {
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-            const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
-            axios
-                .get(url, { withCredentials: true })
-                .then((response) => {
-                    setPosts(response.data.posts);
-                    setUser(response.data.user);
-                    setUserSetting(response.data.user.username);
-                })
-                // Occurs when either invalid token or no token
-                .catch((error) => {
-                    console.log(error.response.data);
-                    // if (error.response.status === 401) {
-                    //     window.location.assign('/');
-                    // }
-                });
+          
+        const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+        axios
+            .get(url, {withCredentials: true})
+            .then((response) => {
+                setPosts(response.data.posts);
+                setUser(response.data.user);
+                setExpiresIn(3600);
+                setRefreshToken(response.data.user.refresh_token);
+                setUserSetting(response.data.user.username);
+            })
+            // Occurs when either invalid token or no token - redirects user back to login screen
+            .catch((error) => {
+                console.log(error.response.data);
+                if (error.response.status === 401) {
+                    window.location.assign('/');
+                }
+            });
         });
     }, []);
 
     useEffect(() => {
-        const token = new URLSearchParams(window.location.search).get("token");
-        if (token) {
-            setToken(token);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (token === "") {
+        if (!accessToken) {
             return;
         }
         getCurrentSong();
         getPlaylists();
         getUsersPlaylist();
-        // findPlaylistSong();
-    }, [token]);
+    }, [accessToken]);
 
     async function getCurrentSong() {
         await axios
-            .post("http://localhost:5000/current", { token })
+            .post("http://localhost:5000/current", { accessToken })
             .then((res) => {
                 if (res) {
                     // console.log("hello");
@@ -238,22 +290,17 @@ function Home() {
     }
 
     async function spotifyLike(spotify_id) {
-        console.log(spotify_id);
         const data = {
             ids: [spotify_id],
         };
         try {
-            const response = await axios.put(
-                "https://api.spotify.com/v1/me/tracks",
-                data,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            console.log(response);
+            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
             return response;
         } catch (error) {
             return false;
@@ -264,7 +311,7 @@ function Home() {
 
     useEffect(() => {
         const AUTH_URL =
-            "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:5000/auth/callback&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20playlist-modify-public";
+            "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
         if (userSetting === "Logout") {
             logout();
         } else if (userSetting === "Spotify") {

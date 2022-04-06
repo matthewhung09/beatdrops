@@ -22,6 +22,7 @@ const UserSchema = new mongoose.Schema(
             lowercase: true,
         },
         liked: [mongoose.ObjectId],
+        refresh_token: {type: String},
     },
     { collection: "Users", timestamps: true }
 );
