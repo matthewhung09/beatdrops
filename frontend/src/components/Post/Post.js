@@ -50,13 +50,16 @@ function Post({
     const [selectedPlaylist, setSelectedPlaylist] = useState("");
 
     const handleChange = (e) => {
+
         setSelectedPlaylist(e.target.value);
         console.log(selectedPlaylist);
+        
     };
 
     useEffect(() => {
         // console.log("should be in here");
         addToPlaylist();
+        removeOptions();
     }, [selectedPlaylist]);
 
     async function addToPlaylist() {
@@ -64,9 +67,10 @@ function Post({
         if (selectedPlaylist !== "") {
             const id = findPlaylistId();
             const data = {
-                uris: [uri]
+                uris: [uri],
                 // position: 0,
             };
+    
             console.log("data: ", data);
             console.log("id: ", id);
             try {
@@ -81,6 +85,7 @@ function Post({
                     }
                 );
                 console.log("response: ", response);
+                window.alert("Song added to " + selectedPlaylist);
                 return response;
             } catch (error) {
                 console.log("error message: ", error.message);
@@ -90,13 +95,15 @@ function Post({
     }
 
     function findPlaylistId() {
-        // console.log(allPlaylists);
-
         for (let i = 0; i < allPlaylists.length; i++) {
             let playlist = allPlaylists.find((item) => item.name === selectedPlaylist);
             if (playlist) return playlist.id;
         }
     }
+
+    function removeOptions() {
+        setSelectedPlaylist(null);
+     }
 
     return (
         <div className="card">
@@ -137,7 +144,7 @@ function Post({
 
                 <FormControl sx={{ m: 1, width: 180 }}>
                     <InputLabel id="demo-multiple-name-label">
-                        Add to Playlist(s)
+                        Add to Playlist
                     </InputLabel>
                     <Select
                         labelId="demo-multiple-name-label"

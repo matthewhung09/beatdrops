@@ -136,6 +136,7 @@ async function getPostData(song, artist, location) {
             spotify_id: spotify_id,
             spotify_uri: spotify_uri,
         };
+
         return new_post;
     } catch (error) {
         return false;
@@ -314,7 +315,8 @@ app.post("/current", async (req, res) => {
             },
         });
         res.json({
-            song: response.data.item,
+            
+           song : response.data.item,
         });
     } catch (error) {
         // console.log(error);
@@ -369,6 +371,7 @@ async function getTracks(id) {
                 title: response.data.items[i].track.name,
             });
         }
+
         return tracks;
     } catch (error) {
         res.status(500).send(error);
