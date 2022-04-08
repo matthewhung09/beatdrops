@@ -33,22 +33,11 @@ function PostForm({
                     </button>
                 </div>
             )}
-            <input placeholder="Song title" value={newSong} onChange={onChangeSong} />
-            <input
-                placeholder="Artist name"
-                value={newArtist}
-                onChange={onChangeArtist}
-            />
+
             {postError && <p> {postError} </p>}
-            <div className="actions">
-                <button onClick={onClick} className="btn">
-                    Submit
-                </button>
-            </div>
-            <br />
             <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel htmlFor="grouped-native-select">
-                    Select from my playlists
+                    Autofill from my Spotify playlists...
                 </InputLabel>
                 <Select
                     onChange={handleChange}
@@ -61,7 +50,6 @@ function PostForm({
                     {playlists &&
                         playlists.map((playlist, index) => (
                             <optgroup key={index} label={playlist.name}>
-                                
                                 {playlist.tracks.map((song, index) => (
                                     <option
                                         key={index}
@@ -74,6 +62,20 @@ function PostForm({
                         ))}
                 </Select>
             </FormControl>
+            <div className="inputs">
+                <input placeholder="Song title" value={newSong} onChange={onChangeSong} />
+                <input
+                    placeholder="Artist name"
+                    value={newArtist}
+                    onChange={onChangeArtist}
+                />
+            </div>
+            <div className="actions">
+                <button onClick={onClick} className="btn">
+                    Submit
+                </button>
+            </div>
+            <br />
         </div>
     );
 }

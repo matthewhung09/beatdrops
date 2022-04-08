@@ -1,7 +1,7 @@
 import * as React from "react";
 import "reactjs-popup/dist/index.css";
 import "./Home.css";
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import Popup from "reactjs-popup";
 import Post from "../Post/Post";
@@ -10,45 +10,48 @@ import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
 
-const code = new URLSearchParams(window.location.search).get("code")
+const code = new URLSearchParams(window.location.search).get("code");
 
 function Home() {
     const [accessToken, setAccessToken] = useState();
     const [refreshToken, setRefreshToken] = useState();
     const [expiresIn, setExpiresIn] = useState();
     const isMounted = useRef(false);
-    
+
     useEffect(() => {
-        if(!code) return;
+        if (!code) return;
         axios
             .post("http://localhost:5000/auth/callback", {
                 auth_code: code,
             })
-            .then(res => {
+            .then((res) => {
                 setAccessToken(res.data.accessToken);
                 setRefreshToken(res.data.refreshToken);
                 setExpiresIn(res.data.expiresIn);
                 window.history.pushState({}, null, "/home");
                 return res.data.refreshToken;
-          })
+            })
             .then((r) => {
-                axios.post("http://localhost:5000/update", {refreshToken: r}, {withCredentials: true});
+                axios.post(
+                    "http://localhost:5000/update",
+                    { refreshToken: r },
+                    { withCredentials: true }
+                );
             })
             .catch((error) => {
                 console.log(error);
                 // window.location = "/spotify"
-            })
-        }, [code]);
+            });
+    }, [code]);
 
     useEffect(() => {
         if (isMounted.current) {
             if (!refreshToken) return;
             refresh();
             const interval = setInterval(refresh, (expiresIn - 60) * 1000);
-        }
-        else {
+        } else {
             isMounted.current = true;
-        }    
+        }
     }, [refreshToken]);
 
     function refresh() {
@@ -56,7 +59,7 @@ function Home() {
             .post("http://localhost:5000/auth/refresh", {
                 refreshToken,
             })
-            .then(res => {
+            .then((res) => {
                 setAccessToken(res.data.accessToken);
                 setExpiresIn(res.data.expiresIn);
             })
@@ -96,24 +99,23 @@ function Home() {
     // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
-          
-        const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
-        axios
-            .get(url, {withCredentials: true})
-            .then((response) => {
-                setPosts(response.data.posts);
-                setUser(response.data.user);
-                setExpiresIn(3600);
-                setRefreshToken(response.data.user.refresh_token);
-                setUserSetting(response.data.user.username);
-            })
-            // Occurs when either invalid token or no token - redirects user back to login screen
-            .catch((error) => {
-                console.log(error.response.data);
-                if (error.response.status === 401) {
-                    window.location.assign('/');
-                }
-            });
+            const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+            axios
+                .get(url, { withCredentials: true })
+                .then((response) => {
+                    setPosts(response.data.posts);
+                    setUser(response.data.user);
+                    setExpiresIn(3600);
+                    setRefreshToken(response.data.user.refresh_token);
+                    setUserSetting(response.data.user.username);
+                })
+                // Occurs when either invalid token or no token - redirects user back to login screen
+                .catch((error) => {
+                    console.log(error.response.data);
+                    if (error.response.status === 401) {
+                        window.location.assign("/");
+                    }
+                });
         });
     }, []);
 
@@ -290,12 +292,16 @@ function Home() {
             ids: [spotify_id],
         };
         try {
-            const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await axios.put(
+                "https://api.spotify.com/v1/me/tracks",
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
             return response;
         } catch (error) {
@@ -430,9 +436,9 @@ function Home() {
                                         let artist = songInfo[1];
                                         setNewSong(title);
                                         setNewArtist(artist);
-                                        (await onSubmitPostClick(title, artist))
-                                            ? resetPostForm(close)
-                                            : setPostError(postErrMsg);
+                                        // (await onSubmitPostClick(title, artist))
+                                        //     ? resetPostForm(close)
+                                        //     : setPostError(postErrMsg);
                                     }}
                                     postError={postError}
                                 />
