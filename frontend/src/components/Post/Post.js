@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { RiPlayListAddLin, RiPlayListFill, RiUserLocationFill } from "react-icons/ri";
 import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
+import { BsBookmarkHeartFill, BsBookmarkHeart } from "react-icons/bs";
 import { TiLocation } from "react-icons/ti";
 import { GrLocationPin } from "react-icons/gr";
 import "./Post.css";
@@ -161,9 +162,21 @@ function Post({
                 <Spotify wide allowtransparency="false" height="118px" link={url} />
                 <div className="spotify-actions">
                     <button className="webplayer-buttons" onClick={spotifyLike}>
-                        <MdBookmarkAdd />
+                        <BsBookmarkHeart />
                         {'Save to "Liked Songs"'}
                     </button>
+
+                    {/* {liked === false ? (
+                        <button className="webplayer-buttons" onClick={spotifyLike}>
+                            <BsBookmarkHeart />
+                            {'Save to "Liked Songs"'}
+                        </button>
+                    ) : (
+                        <button className="webplayer-buttons" onClick={spotifyLike}>
+                            <BsBookmarkHeartFill />
+                            {'Saved to "Liked Songs"'}
+                        </button>
+                    )} */}
                     <Popup
                         // closeOnDocumentClick
                         modal
