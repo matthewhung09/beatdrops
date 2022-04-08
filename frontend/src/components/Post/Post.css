@@ -159,8 +159,32 @@ button {
     padding-bottom: 0.95em;
     max-width: 43em;
     transform: scale(1.05);
-    /* background-color: aliceblue; */
 }
+
+/* .card {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1em;
+    width: 80%;
+    margin-top: 2.5em;
+    padding-left: 1em;
+    padding-top: 1em;
+    padding-bottom: 0.7em;
+    max-width: 43em;
+    transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+    border-radius: 10px;
+}
+
+.card:first-child {
+    margin-top: 1em;
+}
+
+.card:last-child {
+    margin-bottom: 5em;
+} */
 
 .card:last-child {
     border-bottom: 1px solid rgb(233, 233, 233);
