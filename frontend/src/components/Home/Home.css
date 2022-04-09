@@ -45,6 +45,7 @@
 }
 
 .create-btn {
+    transform: scale(1.1);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -81,6 +82,7 @@
 /* ---- header ---- */
 
 .header {
+    font-family: "Poppins", sans-serif;
     text-align: center;
     margin-top: 2em;
     line-height: 1.5em;
@@ -90,7 +92,6 @@
     margin-top: -0.5em;
     font-weight: 600;
     letter-spacing: -0.02em;
-    font-family: "Poppins", sans-serif;
     font-size: xx-large;
 }
 
@@ -102,6 +103,7 @@
 /* ---- home ---- */
 
 .home {
+    font-family: "Karla", sans-serif;
     display: flex;
     flex-direction: column;
     width: 85%;
@@ -116,6 +118,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    column-gap: 1em;
     margin-bottom: 2em;
     margin-top: 1.2em;
 }
