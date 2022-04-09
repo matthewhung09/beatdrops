@@ -10,12 +10,12 @@ const postServices = require("./models/post-services");
 const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
 const bodyParser = require("body-parser");
+const backEndServices = require("./backend-services");
 
 const app = express();
 const port = 5000;
 
 const baseURI = "https://api.spotify.com/v1";
-
 // import Bottleneck from "bottleneck";
 // Note: To support older browsers and Node <6.0, you must import the ES5 bundle instead.
 var Bottleneck = require("bottleneck/es5");
@@ -95,6 +95,30 @@ app.post("/create", async (req, res) => {
     }
 });
 
+// Get access token in order to use Spotify API
+// This is different from /auth/login - here we use our developer credentials
+// to get access token to make requests to API
+async function getAccessToken() {
+    try {
+        const data = qs.stringify({
+            grant_type: "client_credentials",
+        });
+        const response = await axios.post(
+            "https://accounts.spotify.com/api/token",
+            data,
+            {
+                headers: {
+                    Authorization: `Basic ${auth_token}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            }
+        );
+        return response.data.access_token;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // Queries Spotify API to get song information
 async function getPostData(song, artist, location) {
     const data = {
@@ -143,29 +167,8 @@ async function getPostData(song, artist, location) {
     }
 }
 
-// Get access token in order to use Spotify API
-// This is different from /auth/login - here we use our developer credentials
-// to get access token to make requests to API
-async function getAccessToken() {
-    try {
-        const data = qs.stringify({
-            grant_type: "client_credentials",
-        });
-        const response = await axios.post(
-            "https://accounts.spotify.com/api/token",
-            data,
-            {
-                headers: {
-                    Authorization: `Basic ${auth_token}`,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-            }
-        );
-        return response.data.access_token;
-    } catch (error) {
-        console.log(error);
-    }
-}
+
+
 
 // Update user array and post and then send back new post and user information
 app.patch("/user/:id/liked", async (req, res) => {
@@ -324,61 +327,32 @@ app.post("/current", async (req, res) => {
     }
 });
 
-// Gets users' playlists
+//Has been refactored to correspond with backend-services.js
+// Gets users' playlists and tracks for posting from 
+// playlist functionality
 app.post("/playlists", async (req, res) => {
+
     const accessToken = req.body.accessToken;
     if (accessToken === undefined) {
         return;
     }
+
     try {
-        let response = await axios.get(`${baseURI}/me/playlists`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
-        let playlists = [];
-        for (let i = 0; i < response.data.items.length; i++) {
-            playlists.push({
-                name: response.data.items[i].name,
-                id: response.data.items[i].id,
-                tracks: await getTracks(response.data.items[i].id),
-            });
-        }
-        let result = playlists.filter((playlist) => playlist.tracks.length > 0);
+      
+        const result = await backEndServices.getPlaylists(accessToken);
+
         res.json({
-            playlists: result,
+            //json object
+            playlists: result
         });
     } catch (error) {
         res.status(500).send(error);
         console.log(error);
     }
+
 });
 
-async function getTracks(id) {
-    const accessToken = await getAccessToken();
-    try {
-        let response = await axios.get(`${baseURI}/playlists/${id}/tracks`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
-        let tracks = [];
-        for (let i = 0; i < response.data.items.length; i++) {
-            tracks.push({
-                artist: response.data.items[i].track.artists[0].name,
-                title: response.data.items[i].track.name,
-            });
-        }
-
-        return tracks;
-    } catch (error) {
-        res.status(500).send(error);
-        console.log(error);
-    }
-}
-
+//Get user's playlist for adding song to playlist functionality
 app.post("/playlistNames", async (req, res) => {
     const accessToken = req.body.accessToken;
     if (accessToken === undefined) {
