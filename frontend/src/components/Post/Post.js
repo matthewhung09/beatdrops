@@ -88,6 +88,7 @@ function Post({
     updateLikes,
     location,
     spotifyLike,
+    spotifyId,
     allPlaylists,
     token,
 }) {
@@ -156,17 +157,48 @@ function Post({
         }
     }
 
+    const [spotifyLikeStatus, setSpotifyLikeStatus] = useState();
+
+    useEffect(() => {
+        if (token === undefined) {
+            return;
+        }
+        getSpotifyLikeStatus();
+    }, [token]);
+
+    async function getSpotifyLikeStatus() {
+        if (spotifyId === undefined) {
+            return;
+        }
+        const queryparam = `ids=${spotifyId}`;
+        try {
+            const status = await axios.get(
+                "https://api.spotify.com/v1/me/tracks/contains?" + queryparam, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            setSpotifyLikeStatus(status.data[0]);
+        } catch (error) {
+            return false;
+        }
+    }
+
     return (
         <div className="card">
             <div className="spotify-div">
                 <Spotify wide allowtransparency="false" height="118px" link={url} />
                 <div className="spotify-actions">
-                    <button className="webplayer-buttons" onClick={spotifyLike}>
+                    {/* <button className="webplayer-buttons" onClick={spotifyLike}>
                         <BsBookmarkHeart />
+                        {spotifyLikeStatus ===}
                         {'Save to "Liked Songs"'}
-                    </button>
+                    </button> */}
 
-                    {/* {liked === false ? (
+                    {spotifyLikeStatus === false ? (
                         <button className="webplayer-buttons" onClick={spotifyLike}>
                             <BsBookmarkHeart />
                             {'Save to "Liked Songs"'}
@@ -176,7 +208,7 @@ function Post({
                             <BsBookmarkHeartFill />
                             {'Saved to "Liked Songs"'}
                         </button>
-                    )} */}
+                    )}
                     <Popup
                         // closeOnDocumentClick
                         modal

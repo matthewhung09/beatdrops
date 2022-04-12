@@ -302,7 +302,6 @@ function Home() {
                     },
                 }
             );
-
             return response;
         } catch (error) {
             return false;
@@ -462,6 +461,7 @@ function Home() {
                             updateLikes={() => updateLikes(post._id)}
                             location={post.location.name}
                             spotifyLike={() => spotifyLike(post.spotify_id)}
+                            spotifyId={post.spotify_id}
                             allPlaylists={allPlaylists}
                             token={accessToken}
                             //setAllPlaylist={setAllPlaylist}
