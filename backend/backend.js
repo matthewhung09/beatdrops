@@ -81,10 +81,11 @@ app.post("/create", async (req, res) => {
     const new_post = await limiter.schedule(() =>
         backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
     );
+    const dup = await postServices.getPosts(new_post.title, new_post.artist);
 
     if (!new_post) {
         res.status(500).end();
-    } else {
+    } else if (dup.length === 0){
         let post = await postServices.addPost(new_post);
         if (post) {
             console.log(post);
@@ -92,6 +93,9 @@ app.post("/create", async (req, res) => {
         } else {
             res.status(500).end();
         }
+    } else {
+        await postServices.updateDuplicate(new_post.title, new_post.artist);
+        res.status(200).end();
     }
 });
 

@@ -71,6 +71,8 @@ async function getPostData(song, artist, location) {
             title: song_name,
             artist: song_artist,
             likes: 0,
+            reposts: 0,
+            //lastPosted: new Date(),
             url: song_url,
             location: location,
             spotify_id: spotify_id,

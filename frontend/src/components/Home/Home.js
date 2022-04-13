@@ -194,7 +194,7 @@ function Home() {
         } else if (selected === "Recent") {
             setPosts(
                 [...postList].sort(
-                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                    (a, b) => new Date(b.lastPosted) - new Date(a.lastPosted)
                 )
             );
         } else {
@@ -224,6 +224,10 @@ function Home() {
         await makePostCall(song, artist).then((result) => {
             if (result && result.status === 201) {
                 setPosts([result.data, ...postList]);
+                success = true;
+            } else if (result.status === 200){
+                console.log("this is so cool");
+                setPosts(postList);
                 success = true;
             } else {
                 success = false;
@@ -262,6 +266,7 @@ function Home() {
                 });
                 return response;
             } catch (error) {
+                console.log("Post failed");
                 return false;
             }
         }
@@ -453,7 +458,7 @@ function Home() {
                         <Post
                             key={index}
                             timePosted={parseInt(
-                                (new Date() - new Date(post.createdAt)) / 3600000
+                                (new Date() - new Date(post.lastPosted)) / 3600000
                             )}
                             likes={post.likes}
                             liked={user.liked.includes(post._id)}

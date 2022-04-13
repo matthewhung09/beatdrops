@@ -37,16 +37,21 @@ function getDbConnection() {
     else if(!title && artist){
         result = findPostByArtist(artist)
     }
+    else if(title && artist){
+        result = findPostByTitleAndArtist(title, artist);
+    }
     return result;  
 }
 
 async function addPost(post){
+    console.log("making post");
     const postModel = getDbConnection().model("Post", PostSchema);
     try{
         const postToAdd = new postModel(post);
         const savedPost = await postToAdd.save()
         return savedPost;
     }catch(error) {
+        console.log("fail");
         return false;
     }   
 }
@@ -90,7 +95,18 @@ async function findPostByArtist(artist){
     return await postModel.find({'artist':artist});
 }
 
+async function findPostByTitleAndArtist(title, artist){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    return await postModel.find({'title':title, 'artist':artist});
+}
+
+async function updateDuplicate(title, artist){
+    const postModel = getDbConnection().model("Post", PostSchema);
+    postModel.findOneAndUpdate({'title':title, 'artist':artist}, {$inc: {reposts: 1}, lastPosted: new Date()})
+}
+
 exports.getPosts = getPosts;
+exports.updateDuplicate = updateDuplicate;
 exports.getPostsByLocation = getPostsByLocation;
 exports.addPost = addPost;
 exports.updateLikeStatus = updateLikeStatus;
