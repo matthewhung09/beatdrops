@@ -1,58 +1,42 @@
-const axios = require("axios");
+const axios = require("axios")
 
-const userPlaylists = require('./backend-services');
+const userPlaylists = require("./backend-services")
 
+jest.mock("axios")
 
-jest.mock('axios'); 
-
-
-test('fetch playlists', () => {
-
-    const mockPlaylists = 
-    [
-        
+test("fetch playlists", () => {
+  const mockPlaylists = [
+    {
+      name: "Playlist #1",
+      id: "7HSBDKNSLJD8dsfhiuvdfkh8w34WpO",
+      tracks: [
         {
-            "name":"Playlist #1",
-            "id":"7HSBDKNSLJD8dsfhiuvdfkh8w34WpO",
-            "tracks":
-            [ 
-                {
-                    "artist": "Anderson .Paak",
-                    "title": "Fire in the Sky"
-                }
-
-            ]
-
+          artist: "Anderson .Paak",
+          title: "Fire in the Sky",
         },
+      ],
+    },
 
+    {
+      name: "Playlist #2",
+      id: "2OSKFHWLENF3yulkpfhunsg5w96Po5",
+      tracks: [
         {
-            "name":"Playlist #2",
-            "id":"2OSKFHWLENF3yulkpfhunsg5w96Po5",
-            "tracks":
-            [ 
-                {
-                    "artist": "Frank Ocean",
-                    "title": "Pink + White"
-                }
+          artist: "Frank Ocean",
+          title: "Pink + White",
+        },
+      ],
+    },
+  ]
 
-            ]
+  const resp = { data: mockPlaylists }
 
-        }
+  axios.get.mockResolvedValue(resp)
 
-    ]
+  // axios.get.mockImplementation( () => Promise.resolve(resp));
 
-    const resp = {data: mockPlaylists};
-
-    axios.get.mockResolvedValue(resp);
-
-   // axios.get.mockImplementation( () => Promise.resolve(resp));
-
-
-    userPlaylists.getPlaylists().then(data => expect(data).toEqual(mockPlaylists))
-    .catch(error => console.log(error));
-
-});
-
-
-
-
+  userPlaylists
+    .getPlaylists()
+    .then((data) => expect(data).toEqual(mockPlaylists))
+    .catch((error) => console.log(error))
+})

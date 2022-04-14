@@ -15,32 +15,32 @@ export default function useAuth(code) {
       .post("http://localhost:5000/auth/callback", {
         auth_code: code,
       })
-      .then(res => {
+      .then((res) => {
         setAccessToken(res.data.accessToken)
         setRefreshToken(res.data.refreshToken)
         setExpiresIn(res.data.expiresIn)
         window.history.pushState({}, null, "/home")
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error)
         //window.location = "/spotify"
       })
   }, [code])
 
   useEffect(() => {
-    console.log("refresh effect");
+    console.log("refresh effect")
     if (!refreshToken || !expiresIn) return
     const interval = setInterval(() => {
       axios
         .post("http://localhost:5000/auth/refresh", {
           refreshToken,
         })
-        .then(res => {
+        .then((res) => {
           setAccessToken(res.data.accessToken)
           setExpiresIn(res.data.expiresIn)
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error)
           //window.location = "/spotify"
         })
     }, (expiresIn - 60) * 1000)
@@ -48,5 +48,5 @@ export default function useAuth(code) {
     return () => clearInterval(interval)
   }, [refreshToken, expiresIn])
 
-  return accessToken;
+  return accessToken
 }

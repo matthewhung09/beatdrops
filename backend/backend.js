@@ -1,325 +1,315 @@
-const express = require("express");
-const res = require("express/lib/response");
-const dotenv = require("dotenv");
-const axios = require("axios");
-const qs = require("qs");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
-const postServices = require("./models/post-services");
-const userServices = require("./models/user-services");
-const checkUser = require("./middleware/authMiddleware");
-const bodyParser = require("body-parser");
-const backEndServices = require("./backend-services");
+const express = require("express")
+const res = require("express/lib/response")
+const dotenv = require("dotenv")
+const axios = require("axios")
+const qs = require("qs")
+const cors = require("cors")
+const jwt = require("jsonwebtoken")
+const cookieParser = require("cookie-parser")
+const postServices = require("./models/post-services")
+const userServices = require("./models/user-services")
+const checkUser = require("./middleware/authMiddleware")
+const bodyParser = require("body-parser")
+const backEndServices = require("./backend-services")
 
-const app = express();
-const port = 5000;
+const app = express()
+const port = 5000
 
-const baseURI = "https://api.spotify.com/v1";
+const baseURI = "https://api.spotify.com/v1"
 // import Bottleneck from "bottleneck";
 // Note: To support older browsers and Node <6.0, you must import the ES5 bundle instead.
-var Bottleneck = require("bottleneck/es5");
+var Bottleneck = require("bottleneck/es5")
 const limiter = new Bottleneck({
-    maxConcurrent: 1,
-    minTime: 333,
-});
+  maxConcurrent: 1,
+  minTime: 333,
+})
 
-dotenv.config();
+dotenv.config()
 
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = process.env.REDIRECT_URI;
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString(
-    "base64"
-);
+const client_id = process.env.CLIENT_ID
+const client_secret = process.env.CLIENT_SECRET
+const redirect_uri = process.env.REDIRECT_URI
+const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64")
 
-app.use(cookieParser());
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(express.json());
-app.use(bodyParser.json());
+app.use(cookieParser())
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }))
+app.use(express.json())
+app.use(bodyParser.json())
 
 const handleErrors = (err) => {
-    let errors = { username: "", email: "", password: "" };
+  let errors = { username: "", email: "", password: "" }
 
-    if (err.message == "incorrect email") {
-        errors.email = "Email is not registered.";
-    }
-    if (err.message == "incorrect password") {
-        errors.password = "Password is incorrect.";
-    }
+  if (err.message == "incorrect email") {
+    errors.email = "Email is not registered."
+  }
+  if (err.message == "incorrect password") {
+    errors.password = "Password is incorrect."
+  }
 
-    // validation errors
-    if (err.message.includes("User validation failed")) {
-        Object.values(err.errors).forEach(({ properties }) => {
-            if (properties.message.includes("expected `email` to be unique")) {
-                errors[properties.path] = "Email already in use.";
-                return;
-            }
-            errors[properties.path] = properties.message;
-        });
-    }
-    return errors;
-};
+  // validation errors
+  if (err.message.includes("User validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      if (properties.message.includes("expected `email` to be unique")) {
+        errors[properties.path] = "Email already in use."
+        return
+      }
+      errors[properties.path] = properties.message
+    })
+  }
+  return errors
+}
 
 // Get all posts from the database
 // Called on initial load
 // checkUser validates the jwt, sets req.user to the user
 app.get("/posts", checkUser, async (req, res) => {
-    const lat = parseFloat(req.query.lat);
-    const long = parseFloat(req.query.long);
-    try {
-        const posts = await postServices.getPostsByLocation(lat, long);
-        res.status(201).json({ posts: posts, user: req.user });
-    } catch (error) {
-        res.status(500).send(error.message);
-        console.log(error);
-    }
-});
+  const lat = parseFloat(req.query.lat)
+  const long = parseFloat(req.query.long)
+  try {
+    const posts = await postServices.getPostsByLocation(lat, long)
+    res.status(201).json({ posts: posts, user: req.user })
+  } catch (error) {
+    res.status(500).send(error.message)
+    console.log(error)
+  }
+})
 
 // Creates a new post and adds it to the database
 app.post("/create", async (req, res) => {
-    const new_post = await limiter.schedule(() =>
-        backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
-    );
-    const dup = await postServices.getPosts(new_post.title, new_post.artist);
+  const new_post = await limiter.schedule(() =>
+    backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
+  )
+  const dup = await postServices.getPosts(new_post.title, new_post.artist)
 
-    if (!new_post) {
-        res.status(500).end();
-    } else if (dup.length === 0){
-        let post = await postServices.addPost(new_post);
-        if (post) {
-            console.log(post);
-            res.status(201).json(post);
-        } else {
-            res.status(500).end();
-        }
+  if (!new_post) {
+    res.status(500).end()
+  } else if (dup.length === 0) {
+    let post = await postServices.addPost(new_post)
+    if (post) {
+      console.log(post)
+      res.status(201).json(post)
     } else {
-        await postServices.updateDuplicate(new_post.title, new_post.artist);
-        res.status(200).end();
+      res.status(500).end()
     }
-});
+  } else {
+    await postServices.updateDuplicate(new_post.title, new_post.artist)
+    res.status(200).end()
+  }
+})
 
 // Update user array and post and then send back new post and user information
 app.patch("/user/:id/liked", async (req, res) => {
-    const id = req.params["id"];
-    const post = req.body.post;
-    const liked = req.body.liked;
-    let updatedUser;
-    let updatedPost = await postServices.updateLikeStatus(post, liked);
-    if (liked) updatedUser = await userServices.removeUserLiked(id, post);
-    else updatedUser = await userServices.addUserLiked(id, post);
+  const id = req.params["id"]
+  const post = req.body.post
+  const liked = req.body.liked
+  let updatedUser
+  let updatedPost = await postServices.updateLikeStatus(post, liked)
+  if (liked) updatedUser = await userServices.removeUserLiked(id, post)
+  else updatedUser = await userServices.addUserLiked(id, post)
 
-    if (updatedUser && updatedPost) {
-        res.status(201).json({
-            post: updatedPost,
-            user: updatedUser,
-        });
-    } else {
-        res.status(404).send("Resource not found.");
-    }
-});
-
-
+  if (updatedUser && updatedPost) {
+    res.status(201).json({
+      post: updatedPost,
+      user: updatedUser,
+    })
+  } else {
+    res.status(404).send("Resource not found.")
+  }
+})
 
 // Adds user to database upon signup
 app.post("/signup", async (req, res) => {
-    const new_user = req.body;
-    try {
-        // log user in instantaneously
-        const user = await userServices.addUser(new_user);
-        const token = backEndServices.createToken(user._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
-        res.status(201).json({ user: user });
-    } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-    }
-});
+  const new_user = req.body
+  try {
+    // log user in instantaneously
+    const user = await userServices.addUser(new_user)
+    const token = backEndServices.createToken(user._id)
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 })
+    res.status(201).json({ user: user })
+  } catch (err) {
+    const errors = handleErrors(err)
+    res.status(400).json({ errors })
+  }
+})
 
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await userServices.login(email, password);
-        const token = backEndServices.createToken(user._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
-        res.status(200).json({ user: user });
-    } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-    }
-});
+  const { email, password } = req.body
+  try {
+    const user = await userServices.login(email, password)
+    const token = backEndServices.createToken(user._id)
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 })
+    res.status(200).json({ user: user })
+  } catch (err) {
+    const errors = handleErrors(err)
+    res.status(400).json({ errors })
+  }
+})
 
 // Delete the cookie
 app.get("/logout", (req, res) => {
-    res.clearCookie("jwt");
-    res.redirect("/");
-});
+  res.clearCookie("jwt")
+  res.redirect("/")
+})
 
 app.get("/user/:id", async (req, res) => {
-    const id = req.params["id"];
-    const result = await userServices.findUserById(id);
-    if (result === undefined || result === null)
-        res.status(404).send("Resource not found.");
-    else {
-        res.send({ user: result });
-    }
-});
+  const id = req.params["id"]
+  const result = await userServices.findUserById(id)
+  if (result === undefined || result === null) res.status(404).send("Resource not found.")
+  else {
+    res.send({ user: result })
+  }
+})
 
 app.get("/user/:id/liked", async (req, res) => {
-    const id = req.params["id"];
-    const result = await userServices.getUserLiked(id);
-    if (result === undefined || result === null)
-        res.status(404).send("Resource not found.");
-    else {
-        res.send(result);
-    }
-});
+  const id = req.params["id"]
+  const result = await userServices.getUserLiked(id)
+  if (result === undefined || result === null) res.status(404).send("Resource not found.")
+  else {
+    res.send(result)
+  }
+})
 
 app.post("/auth/callback", async (req, res) => {
-    const code = req.body.auth_code;
-    let response;
+  const code = req.body.auth_code
+  let response
 
-    try {
-        const data = qs.stringify({
-            grant_type: "authorization_code",
-            code: code,
-            redirect_uri: redirect_uri
-        });
-        response = await axios.post("https://accounts.spotify.com/api/token", data, {
-            headers: {
-                Authorization: `Basic ${auth_token}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        });
-        res.json({
-            accessToken: response.data.access_token,
-            refreshToken: response.data.refresh_token,
-            expiresIn: response.data.expires_in,
-        });
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(400);
-    }
-});
+  try {
+    const data = qs.stringify({
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: redirect_uri,
+    })
+    response = await axios.post("https://accounts.spotify.com/api/token", data, {
+      headers: {
+        Authorization: `Basic ${auth_token}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+    res.json({
+      accessToken: response.data.access_token,
+      refreshToken: response.data.refresh_token,
+      expiresIn: response.data.expires_in,
+    })
+  } catch (error) {
+    console.log(error)
+    res.sendStatus(400)
+  }
+})
 
 app.post("/auth/refresh", async (req, res) => {
-    const refreshToken = req.body.refreshToken
-    let response;
+  const refreshToken = req.body.refreshToken
+  let response
 
-    try {
-        const data = qs.stringify({
-            grant_type: "refresh_token",
-            refresh_token: refreshToken,
-        });
-        response = await axios.post("https://accounts.spotify.com/api/token", data, {
-            headers: {
-                Authorization: `Basic ${auth_token}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        });
-        res.json({
-            accessToken: response.data.access_token,
-            expiresIn: response.data.expires_in,
-        });
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(400);
-    }
-  })
+  try {
+    const data = qs.stringify({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    })
+    response = await axios.post("https://accounts.spotify.com/api/token", data, {
+      headers: {
+        Authorization: `Basic ${auth_token}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+    res.json({
+      accessToken: response.data.access_token,
+      expiresIn: response.data.expires_in,
+    })
+  } catch (error) {
+    console.log(error)
+    res.sendStatus(400)
+  }
+})
 
 // Gets current playing song
 app.post("/current", async (req, res) => {
-    const accessToken = req.body.accessToken;
-    if (accessToken === undefined) {
-        return;
-    }
-    let response;
-    try {
-        response = await axios.get(`${baseURI}/me/player/currently-playing`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
-        res.json({
-            
-           song : response.data.item,
-        });
-    } catch (error) {
-        // console.log(error);
-        return false;
-    }
-});
+  const accessToken = req.body.accessToken
+  if (accessToken === undefined) {
+    return
+  }
+  let response
+  try {
+    response = await axios.get(`${baseURI}/me/player/currently-playing`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+    res.json({
+      song: response.data.item,
+    })
+  } catch (error) {
+    // console.log(error);
+    return false
+  }
+})
 
 //Has been refactored to correspond with backend-services.js
-// Gets users' playlists and tracks for posting from 
+// Gets users' playlists and tracks for posting from
 // playlist functionality
 app.post("/playlists", async (req, res) => {
+  const accessToken = req.body.accessToken
+  if (accessToken === undefined) {
+    return
+  }
 
-    const accessToken = req.body.accessToken;
-    if (accessToken === undefined) {
-        return;
-    }
+  try {
+    const result = await backEndServices.getPlaylists(accessToken)
 
-    try {
-      
-        const result = await backEndServices.getPlaylists(accessToken);
-
-        res.json({
-            //json object
-            playlists: result
-        });
-    } catch (error) {
-        res.status(500).send(error);
-        console.log(error);
-    }
-
-});
+    res.json({
+      //json object
+      playlists: result,
+    })
+  } catch (error) {
+    res.status(500).send(error)
+    console.log(error)
+  }
+})
 
 //Get user's playlist for adding song to playlist functionality
 app.post("/playlistNames", async (req, res) => {
-    const accessToken = req.body.accessToken;
-    if (accessToken === undefined) {
-        return;
+  const accessToken = req.body.accessToken
+  if (accessToken === undefined) {
+    return
+  }
+
+  try {
+    let response = await axios.get(`${baseURI}/me/playlists`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+
+    let userPlaylists = []
+
+    for (let i = 0; i < response.data.items.length; i++) {
+      userPlaylists.push({
+        name: response.data.items[i].name,
+        id: response.data.items[i].id,
+      })
     }
 
-    try {
-        let response = await axios.get(`${baseURI}/me/playlists`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        let userPlaylists = [];
-
-        for (let i = 0; i < response.data.items.length; i++) {
-            userPlaylists.push({
-                name: response.data.items[i].name,
-                id: response.data.items[i].id,
-            });
-        }
-
-        res.json({
-            allPlaylists: userPlaylists,
-        });
-    } catch (error) {
-        res.status(500).send(error);
-        console.log(error);
-    }
-});
+    res.json({
+      allPlaylists: userPlaylists,
+    })
+  } catch (error) {
+    res.status(500).send(error)
+    console.log(error)
+  }
+})
 
 app.post("/update", checkUser, async (req, res) => {
-    console.log('here');
-    const refreshToken = req.body.refreshToken;
-    const user_id = req.user._id;
-    const user = await userServices.updateRefresh(user_id, refreshToken);
+  console.log("here")
+  const refreshToken = req.body.refreshToken
+  const user_id = req.user._id
+  const user = await userServices.updateRefresh(user_id, refreshToken)
 })
 
 app.listen(port, () => {
-    console.log(`listening at http://localhost:${port}`);
-});
+  console.log(`listening at http://localhost:${port}`)
+})
 
 app.get("/", (req, res) => {
-    res.send("Hello, World!");
-});
+  res.send("Hello, World!")
+})

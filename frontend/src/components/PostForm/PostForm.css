@@ -1,33 +1,33 @@
 .actions {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .btn {
-    background-color: black;
-    width: 15em;
-    padding: 0.7em;
-    font-size: 1em;
-    margin-bottom: -1.3em;
-    cursor: pointer;
+  background-color: black;
+  width: 15em;
+  padding: 0.7em;
+  font-size: 1em;
+  margin-bottom: -1.3em;
+  cursor: pointer;
 }
 
 input {
-    margin-bottom: 1em;
-    width: 12em;
-    padding: 0.4em;
+  margin-bottom: 1em;
+  width: 12em;
+  padding: 0.4em;
 }
 
 .form-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0.2em;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 0.2em;
+  align-items: center;
 }
 
 .inputs {
-    display: flex;
-    flex-direction: row;
-    transform: scale(1.1);
-    column-gap: 1em;
+  display: flex;
+  flex-direction: row;
+  transform: scale(1.1);
+  column-gap: 1em;
 }
