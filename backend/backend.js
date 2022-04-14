@@ -78,7 +78,7 @@ app.get("/posts", checkUser, async (req, res) => {
 });
 
 // Creates a new post and adds it to the database
-app.post("/create", async (req, res) => {
+app.post("/create", checkUser, async (req, res) => {
   const new_post = await limiter.schedule(() =>
     backEndServices.getPostData(
       req.body.title,
@@ -101,7 +101,7 @@ app.post("/create", async (req, res) => {
 });
 
 // Update user array and post and then send back new post and user information
-app.patch("/user/:id/liked", async (req, res) => {
+app.patch("/user/:id/liked", checkUser, async (req, res) => {
   const id = req.params["id"];
   const post = req.body.post;
   const liked = req.body.liked;
@@ -152,26 +152,6 @@ app.post("/login", async (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/");
-});
-
-app.get("/user/:id", async (req, res) => {
-  const id = req.params["id"];
-  const result = await userServices.findUserById(id);
-  if (result === undefined || result === null)
-    res.status(404).send("Resource not found.");
-  else {
-    res.send({ user: result });
-  }
-});
-
-app.get("/user/:id/liked", async (req, res) => {
-  const id = req.params["id"];
-  const result = await userServices.getUserLiked(id);
-  if (result === undefined || result === null)
-    res.status(404).send("Resource not found.");
-  else {
-    res.send(result);
-  }
 });
 
 app.post("/auth/callback", async (req, res) => {
@@ -235,7 +215,7 @@ app.post("/auth/refresh", async (req, res) => {
 });
 
 // Gets current playing song
-app.post("/current", async (req, res) => {
+app.post("/current", checkUser, async (req, res) => {
   const accessToken = req.body.accessToken;
   if (accessToken === undefined) {
     return;
@@ -260,7 +240,7 @@ app.post("/current", async (req, res) => {
 //Has been refactored to correspond with backend-services.js
 // Gets users' playlists and tracks for posting from
 // playlist functionality
-app.post("/playlists", async (req, res) => {
+app.post("/playlists", checkUser, async (req, res) => {
   const accessToken = req.body.accessToken;
   if (accessToken === undefined) {
     return;
@@ -280,7 +260,7 @@ app.post("/playlists", async (req, res) => {
 });
 
 //Get user's playlist for adding song to playlist functionality
-app.post("/playlistNames", async (req, res) => {
+app.post("/playlistNames", checkUser, async (req, res) => {
   const accessToken = req.body.accessToken;
   if (accessToken === undefined) {
     return;

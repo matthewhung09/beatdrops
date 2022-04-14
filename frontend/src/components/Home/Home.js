@@ -131,7 +131,11 @@ function Home() {
 
   async function getCurrentSong() {
     await axios
-      .post("http://localhost:5000/current", { accessToken })
+      .post(
+        "http://localhost:5000/current",
+        { accessToken },
+        { withCredentials: true }
+      )
       .then((res) => {
         if (res) {
           // console.log("hello");
@@ -149,7 +153,11 @@ function Home() {
 
   async function getPlaylists() {
     await axios
-      .post("http://localhost:5000/playlists", { accessToken })
+      .post(
+        "http://localhost:5000/playlists",
+        { accessToken },
+        { withCredentials: true }
+      )
       .then((res) => {
         if (res) {
           // console.log("res: " + JSON.stringify(res.data.playlists));
@@ -165,7 +173,11 @@ function Home() {
 
   async function getUsersPlaylist() {
     await axios
-      .post("http://localhost:5000/playlistNames", { accessToken })
+      .post(
+        "http://localhost:5000/playlistNames",
+        { accessToken },
+        { withCredentials: true }
+      )
       .then((res) => {
         if (res) {
           // console.log("info: " + JSON.stringify(res.data.allPlaylists));
@@ -208,7 +220,8 @@ function Home() {
     try {
       const response = await axios.patch(
         "http://localhost:5000/user/" + user._id + "/liked",
-        { post: post_id, liked: liked }
+        { post: post_id, liked: liked },
+        { withCredentials: true }
       );
       return response;
     } catch (error) {
@@ -245,22 +258,30 @@ function Home() {
     // getPostPosition(lat, long);
     if (song && artist) {
       try {
-        const response = await axios.post("http://localhost:5000/create", {
-          title: song,
-          artist: artist,
-          location: { name: location, lat: lat, long: long },
-        });
+        const response = await axios.post(
+          "http://localhost:5000/create",
+          {
+            title: song,
+            artist: artist,
+            location: { name: location, lat: lat, long: long },
+          },
+          { withCredentials: true }
+        );
         return response;
       } catch (error) {
         return false;
       }
     } else {
       try {
-        const response = await axios.post("http://localhost:5000/create", {
-          title: newSong,
-          artist: newArtist,
-          location: { name: location, lat: lat, long: long },
-        });
+        const response = await axios.post(
+          "http://localhost:5000/create",
+          {
+            title: newSong,
+            artist: newArtist,
+            location: { name: location, lat: lat, long: long },
+          },
+          { withCredentials: true }
+        );
         return response;
       } catch (error) {
         return false;
