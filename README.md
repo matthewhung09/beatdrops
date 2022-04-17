@@ -33,6 +33,9 @@ Only do this if we have already discussed, otherwise create a pull request.
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
+![alt text](https://user-images.githubusercontent.com/36245167/163697875-20d9901e-bcf0-4c5d-8224-976619fb0b18.png)
+
+
 ## Style Checker 
 
 Prettier: Style checker that auto-formats your code and allows you to toggle specific formatting rules. Command-line interface and IDE plugins available.
