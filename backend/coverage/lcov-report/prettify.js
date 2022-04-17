@@ -1,106 +1,106 @@
 /* eslint-disable */
-window.PR_SHOULD_USE_CONTINUATION = true
-;(function () {
-  var h = ["break,continue,do,else,for,if,return,while"]
+window.PR_SHOULD_USE_CONTINUATION = true;
+(function () {
+  var h = ["break,continue,do,else,for,if,return,while"];
   var u = [
     h,
     "auto,case,char,const,default,double,enum,extern,float,goto,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile",
-  ]
+  ];
   var p = [
     u,
     "catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof",
-  ]
+  ];
   var l = [
     p,
     "alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,dynamic_cast,explicit,export,friend,inline,late_check,mutable,namespace,nullptr,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where",
-  ]
+  ];
   var x = [
     p,
     "abstract,boolean,byte,extends,final,finally,implements,import,instanceof,null,native,package,strictfp,super,synchronized,throws,transient",
-  ]
+  ];
   var R = [
     x,
     "as,base,by,checked,decimal,delegate,descending,dynamic,event,fixed,foreach,from,group,implicit,in,interface,internal,into,is,lock,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var",
-  ]
+  ];
   var r =
-    "all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,true,try,unless,until,when,while,yes"
-  var w = [p, "debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"]
+    "all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,true,try,unless,until,when,while,yes";
+  var w = [p, "debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"];
   var s =
-    "caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END"
+    "caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END";
   var I = [
     h,
     "and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None",
-  ]
+  ];
   var f = [
     h,
     "alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END",
-  ]
-  var H = [h, "case,done,elif,esac,eval,fi,function,in,local,set,then,until"]
-  var A = [l, R, w, s + I, f, H]
+  ];
+  var H = [h, "case,done,elif,esac,eval,fi,function,in,local,set,then,until"];
+  var A = [l, R, w, s + I, f, H];
   var e =
-    /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)/
-  var C = "str"
-  var z = "kwd"
-  var j = "com"
-  var O = "typ"
-  var G = "lit"
-  var L = "pun"
-  var F = "pln"
-  var m = "tag"
-  var E = "dec"
-  var J = "src"
-  var P = "atn"
-  var n = "atv"
-  var N = "nocode"
+    /^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)/;
+  var C = "str";
+  var z = "kwd";
+  var j = "com";
+  var O = "typ";
+  var G = "lit";
+  var L = "pun";
+  var F = "pln";
+  var m = "tag";
+  var E = "dec";
+  var J = "src";
+  var P = "atn";
+  var n = "atv";
+  var N = "nocode";
   var M =
-    "(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&&=|&=|\\(|\\*|\\*=|\\+=|\\,|\\-=|\\->|\\/|\\/=|:|::|\\;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\@|\\[|\\^|\\^=|\\^\\^|\\^\\^=|\\{|\\||\\|=|\\|\\||\\|\\|=|\\~|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*"
+    "(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&&=|&=|\\(|\\*|\\*=|\\+=|\\,|\\-=|\\->|\\/|\\/=|:|::|\\;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\@|\\[|\\^|\\^=|\\^\\^|\\^\\^=|\\{|\\||\\|=|\\|\\||\\|\\|=|\\~|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*";
   function k(Z) {
-    var ad = 0
-    var S = false
-    var ac = false
+    var ad = 0;
+    var S = false;
+    var ac = false;
     for (var V = 0, U = Z.length; V < U; ++V) {
-      var ae = Z[V]
+      var ae = Z[V];
       if (ae.ignoreCase) {
-        ac = true
+        ac = true;
       } else {
         if (/[a-z]/i.test(ae.source.replace(/\\u[0-9a-f]{4}|\\x[0-9a-f]{2}|\\[^ux]/gi, ""))) {
-          S = true
-          ac = false
-          break
+          S = true;
+          ac = false;
+          break;
         }
       }
     }
-    var Y = { b: 8, t: 9, n: 10, v: 11, f: 12, r: 13 }
+    var Y = { b: 8, t: 9, n: 10, v: 11, f: 12, r: 13 };
     function ab(ah) {
-      var ag = ah.charCodeAt(0)
+      var ag = ah.charCodeAt(0);
       if (ag !== 92) {
-        return ag
+        return ag;
       }
-      var af = ah.charAt(1)
-      ag = Y[af]
+      var af = ah.charAt(1);
+      ag = Y[af];
       if (ag) {
-        return ag
+        return ag;
       } else {
         if ("0" <= af && af <= "7") {
-          return parseInt(ah.substring(1), 8)
+          return parseInt(ah.substring(1), 8);
         } else {
           if (af === "u" || af === "x") {
-            return parseInt(ah.substring(2), 16)
+            return parseInt(ah.substring(2), 16);
           } else {
-            return ah.charCodeAt(1)
+            return ah.charCodeAt(1);
           }
         }
       }
     }
     function T(af) {
       if (af < 32) {
-        return (af < 16 ? "\\x0" : "\\x") + af.toString(16)
+        return (af < 16 ? "\\x0" : "\\x") + af.toString(16);
       }
-      var ag = String.fromCharCode(af)
+      var ag = String.fromCharCode(af);
       if (ag === "\\" || ag === "-" || ag === "[" || ag === "]") {
-        ag = "\\" + ag
+        ag = "\\" + ag;
       }
-      return ag
+      return ag;
     }
     function X(am) {
       var aq = am
@@ -110,64 +110,64 @@ window.PR_SHOULD_USE_CONTINUATION = true
             "\\\\u[0-9A-Fa-f]{4}|\\\\x[0-9A-Fa-f]{2}|\\\\[0-3][0-7]{0,2}|\\\\[0-7]{1,2}|\\\\[\\s\\S]|-|[^-\\\\]",
             "g"
           )
-        )
-      var ak = []
-      var af = []
-      var ao = aq[0] === "^"
+        );
+      var ak = [];
+      var af = [];
+      var ao = aq[0] === "^";
       for (var ar = ao ? 1 : 0, aj = aq.length; ar < aj; ++ar) {
-        var ah = aq[ar]
+        var ah = aq[ar];
         if (/\\[bdsw]/i.test(ah)) {
-          ak.push(ah)
+          ak.push(ah);
         } else {
-          var ag = ab(ah)
-          var al
+          var ag = ab(ah);
+          var al;
           if (ar + 2 < aj && "-" === aq[ar + 1]) {
-            al = ab(aq[ar + 2])
-            ar += 2
+            al = ab(aq[ar + 2]);
+            ar += 2;
           } else {
-            al = ag
+            al = ag;
           }
-          af.push([ag, al])
+          af.push([ag, al]);
           if (!(al < 65 || ag > 122)) {
             if (!(al < 65 || ag > 90)) {
-              af.push([Math.max(65, ag) | 32, Math.min(al, 90) | 32])
+              af.push([Math.max(65, ag) | 32, Math.min(al, 90) | 32]);
             }
             if (!(al < 97 || ag > 122)) {
-              af.push([Math.max(97, ag) & ~32, Math.min(al, 122) & ~32])
+              af.push([Math.max(97, ag) & ~32, Math.min(al, 122) & ~32]);
             }
           }
         }
       }
       af.sort(function (av, au) {
-        return av[0] - au[0] || au[1] - av[1]
-      })
-      var ai = []
-      var ap = [NaN, NaN]
+        return av[0] - au[0] || au[1] - av[1];
+      });
+      var ai = [];
+      var ap = [NaN, NaN];
       for (var ar = 0; ar < af.length; ++ar) {
-        var at = af[ar]
+        var at = af[ar];
         if (at[0] <= ap[1] + 1) {
-          ap[1] = Math.max(ap[1], at[1])
+          ap[1] = Math.max(ap[1], at[1]);
         } else {
-          ai.push((ap = at))
+          ai.push((ap = at));
         }
       }
-      var an = ["["]
+      var an = ["["];
       if (ao) {
-        an.push("^")
+        an.push("^");
       }
-      an.push.apply(an, ak)
+      an.push.apply(an, ak);
       for (var ar = 0; ar < ai.length; ++ar) {
-        var at = ai[ar]
-        an.push(T(at[0]))
+        var at = ai[ar];
+        an.push(T(at[0]));
         if (at[1] > at[0]) {
           if (at[1] + 1 > at[0]) {
-            an.push("-")
+            an.push("-");
           }
-          an.push(T(at[1]))
+          an.push(T(at[1]));
         }
       }
-      an.push("]")
-      return an.join("")
+      an.push("]");
+      return an.join("");
     }
     function W(al) {
       var aj = al.source.match(
@@ -175,243 +175,243 @@ window.PR_SHOULD_USE_CONTINUATION = true
           "(?:\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]|\\\\u[A-Fa-f0-9]{4}|\\\\x[A-Fa-f0-9]{2}|\\\\[0-9]+|\\\\[^ux0-9]|\\(\\?[:!=]|[\\(\\)\\^]|[^\\x5B\\x5C\\(\\)\\^]+)",
           "g"
         )
-      )
-      var ah = aj.length
-      var an = []
+      );
+      var ah = aj.length;
+      var an = [];
       for (var ak = 0, am = 0; ak < ah; ++ak) {
-        var ag = aj[ak]
+        var ag = aj[ak];
         if (ag === "(") {
-          ++am
+          ++am;
         } else {
           if ("\\" === ag.charAt(0)) {
-            var af = +ag.substring(1)
+            var af = +ag.substring(1);
             if (af && af <= am) {
-              an[af] = -1
+              an[af] = -1;
             }
           }
         }
       }
       for (var ak = 1; ak < an.length; ++ak) {
         if (-1 === an[ak]) {
-          an[ak] = ++ad
+          an[ak] = ++ad;
         }
       }
       for (var ak = 0, am = 0; ak < ah; ++ak) {
-        var ag = aj[ak]
+        var ag = aj[ak];
         if (ag === "(") {
-          ++am
+          ++am;
           if (an[am] === undefined) {
-            aj[ak] = "(?:"
+            aj[ak] = "(?:";
           }
         } else {
           if ("\\" === ag.charAt(0)) {
-            var af = +ag.substring(1)
+            var af = +ag.substring(1);
             if (af && af <= am) {
-              aj[ak] = "\\" + an[am]
+              aj[ak] = "\\" + an[am];
             }
           }
         }
       }
       for (var ak = 0, am = 0; ak < ah; ++ak) {
         if ("^" === aj[ak] && "^" !== aj[ak + 1]) {
-          aj[ak] = ""
+          aj[ak] = "";
         }
       }
       if (al.ignoreCase && S) {
         for (var ak = 0; ak < ah; ++ak) {
-          var ag = aj[ak]
-          var ai = ag.charAt(0)
+          var ag = aj[ak];
+          var ai = ag.charAt(0);
           if (ag.length >= 2 && ai === "[") {
-            aj[ak] = X(ag)
+            aj[ak] = X(ag);
           } else {
             if (ai !== "\\") {
               aj[ak] = ag.replace(/[a-zA-Z]/g, function (ao) {
-                var ap = ao.charCodeAt(0)
-                return "[" + String.fromCharCode(ap & ~32, ap | 32) + "]"
-              })
+                var ap = ao.charCodeAt(0);
+                return "[" + String.fromCharCode(ap & ~32, ap | 32) + "]";
+              });
             }
           }
         }
       }
-      return aj.join("")
+      return aj.join("");
     }
-    var aa = []
+    var aa = [];
     for (var V = 0, U = Z.length; V < U; ++V) {
-      var ae = Z[V]
+      var ae = Z[V];
       if (ae.global || ae.multiline) {
-        throw new Error("" + ae)
+        throw new Error("" + ae);
       }
-      aa.push("(?:" + W(ae) + ")")
+      aa.push("(?:" + W(ae) + ")");
     }
-    return new RegExp(aa.join("|"), ac ? "gi" : "g")
+    return new RegExp(aa.join("|"), ac ? "gi" : "g");
   }
   function a(V) {
-    var U = /(?:^|\s)nocode(?:\s|$)/
-    var X = []
-    var T = 0
-    var Z = []
-    var W = 0
-    var S
+    var U = /(?:^|\s)nocode(?:\s|$)/;
+    var X = [];
+    var T = 0;
+    var Z = [];
+    var W = 0;
+    var S;
     if (V.currentStyle) {
-      S = V.currentStyle.whiteSpace
+      S = V.currentStyle.whiteSpace;
     } else {
       if (window.getComputedStyle) {
-        S = document.defaultView.getComputedStyle(V, null).getPropertyValue("white-space")
+        S = document.defaultView.getComputedStyle(V, null).getPropertyValue("white-space");
       }
     }
-    var Y = S && "pre" === S.substring(0, 3)
+    var Y = S && "pre" === S.substring(0, 3);
     function aa(ab) {
       switch (ab.nodeType) {
         case 1:
           if (U.test(ab.className)) {
-            return
+            return;
           }
           for (var ae = ab.firstChild; ae; ae = ae.nextSibling) {
-            aa(ae)
+            aa(ae);
           }
-          var ad = ab.nodeName
+          var ad = ab.nodeName;
           if ("BR" === ad || "LI" === ad) {
-            X[W] = "\n"
-            Z[W << 1] = T++
-            Z[(W++ << 1) | 1] = ab
+            X[W] = "\n";
+            Z[W << 1] = T++;
+            Z[(W++ << 1) | 1] = ab;
           }
-          break
+          break;
         case 3:
         case 4:
-          var ac = ab.nodeValue
+          var ac = ab.nodeValue;
           if (ac.length) {
             if (!Y) {
-              ac = ac.replace(/[ \t\r\n]+/g, " ")
+              ac = ac.replace(/[ \t\r\n]+/g, " ");
             } else {
-              ac = ac.replace(/\r\n?/g, "\n")
+              ac = ac.replace(/\r\n?/g, "\n");
             }
-            X[W] = ac
-            Z[W << 1] = T
-            T += ac.length
-            Z[(W++ << 1) | 1] = ab
+            X[W] = ac;
+            Z[W << 1] = T;
+            T += ac.length;
+            Z[(W++ << 1) | 1] = ab;
           }
-          break
+          break;
       }
     }
-    aa(V)
-    return { sourceCode: X.join("").replace(/\n$/, ""), spans: Z }
+    aa(V);
+    return { sourceCode: X.join("").replace(/\n$/, ""), spans: Z };
   }
   function B(S, U, W, T) {
     if (!U) {
-      return
+      return;
     }
-    var V = { sourceCode: U, basePos: S }
-    W(V)
-    T.push.apply(T, V.decorations)
+    var V = { sourceCode: U, basePos: S };
+    W(V);
+    T.push.apply(T, V.decorations);
   }
-  var v = /\S/
+  var v = /\S/;
   function o(S) {
-    var V = undefined
+    var V = undefined;
     for (var U = S.firstChild; U; U = U.nextSibling) {
-      var T = U.nodeType
-      V = T === 1 ? (V ? S : U) : T === 3 ? (v.test(U.nodeValue) ? S : V) : V
+      var T = U.nodeType;
+      V = T === 1 ? (V ? S : U) : T === 3 ? (v.test(U.nodeValue) ? S : V) : V;
     }
-    return V === S ? undefined : V
+    return V === S ? undefined : V;
   }
   function g(U, T) {
-    var S = {}
-    var V
-    ;(function () {
-      var ad = U.concat(T)
-      var ah = []
-      var ag = {}
+    var S = {};
+    var V;
+    (function () {
+      var ad = U.concat(T);
+      var ah = [];
+      var ag = {};
       for (var ab = 0, Z = ad.length; ab < Z; ++ab) {
-        var Y = ad[ab]
-        var ac = Y[3]
+        var Y = ad[ab];
+        var ac = Y[3];
         if (ac) {
           for (var ae = ac.length; --ae >= 0; ) {
-            S[ac.charAt(ae)] = Y
+            S[ac.charAt(ae)] = Y;
           }
         }
-        var af = Y[1]
-        var aa = "" + af
+        var af = Y[1];
+        var aa = "" + af;
         if (!ag.hasOwnProperty(aa)) {
-          ah.push(af)
-          ag[aa] = null
+          ah.push(af);
+          ag[aa] = null;
         }
       }
-      ah.push(/[\0-\uffff]/)
-      V = k(ah)
-    })()
-    var X = T.length
+      ah.push(/[\0-\uffff]/);
+      V = k(ah);
+    })();
+    var X = T.length;
     var W = function (ah) {
       var Z = ah.sourceCode,
-        Y = ah.basePos
-      var ad = [Y, F]
-      var af = 0
-      var an = Z.match(V) || []
-      var aj = {}
+        Y = ah.basePos;
+      var ad = [Y, F];
+      var af = 0;
+      var an = Z.match(V) || [];
+      var aj = {};
       for (var ae = 0, aq = an.length; ae < aq; ++ae) {
-        var ag = an[ae]
-        var ap = aj[ag]
-        var ai = void 0
-        var am
+        var ag = an[ae];
+        var ap = aj[ag];
+        var ai = void 0;
+        var am;
         if (typeof ap === "string") {
-          am = false
+          am = false;
         } else {
-          var aa = S[ag.charAt(0)]
+          var aa = S[ag.charAt(0)];
           if (aa) {
-            ai = ag.match(aa[1])
-            ap = aa[0]
+            ai = ag.match(aa[1]);
+            ap = aa[0];
           } else {
             for (var ao = 0; ao < X; ++ao) {
-              aa = T[ao]
-              ai = ag.match(aa[1])
+              aa = T[ao];
+              ai = ag.match(aa[1]);
               if (ai) {
-                ap = aa[0]
-                break
+                ap = aa[0];
+                break;
               }
             }
             if (!ai) {
-              ap = F
+              ap = F;
             }
           }
-          am = ap.length >= 5 && "lang-" === ap.substring(0, 5)
+          am = ap.length >= 5 && "lang-" === ap.substring(0, 5);
           if (am && !(ai && typeof ai[1] === "string")) {
-            am = false
-            ap = J
+            am = false;
+            ap = J;
           }
           if (!am) {
-            aj[ag] = ap
+            aj[ag] = ap;
           }
         }
-        var ab = af
-        af += ag.length
+        var ab = af;
+        af += ag.length;
         if (!am) {
-          ad.push(Y + ab, ap)
+          ad.push(Y + ab, ap);
         } else {
-          var al = ai[1]
-          var ak = ag.indexOf(al)
-          var ac = ak + al.length
+          var al = ai[1];
+          var ak = ag.indexOf(al);
+          var ac = ak + al.length;
           if (ai[2]) {
-            ac = ag.length - ai[2].length
-            ak = ac - al.length
+            ac = ag.length - ai[2].length;
+            ak = ac - al.length;
           }
-          var ar = ap.substring(5)
-          B(Y + ab, ag.substring(0, ak), W, ad)
-          B(Y + ab + ak, al, q(ar, al), ad)
-          B(Y + ab + ac, ag.substring(ac), W, ad)
+          var ar = ap.substring(5);
+          B(Y + ab, ag.substring(0, ak), W, ad);
+          B(Y + ab + ak, al, q(ar, al), ad);
+          B(Y + ab + ac, ag.substring(ac), W, ad);
         }
       }
-      ah.decorations = ad
-    }
-    return W
+      ah.decorations = ad;
+    };
+    return W;
   }
   function i(T) {
     var W = [],
-      S = []
+      S = [];
     if (T.tripleQuotedStrings) {
       W.push([
         C,
         /^(?:\'\'\'(?:[^\'\\]|\\[\s\S]|\'{1,2}(?=[^\']))*(?:\'\'\'|$)|\"\"\"(?:[^\"\\]|\\[\s\S]|\"{1,2}(?=[^\"]))*(?:\"\"\"|$)|\'(?:[^\\\']|\\[\s\S])*(?:\'|$)|\"(?:[^\\\"]|\\[\s\S])*(?:\"|$))/,
         null,
         "'\"",
-      ])
+      ]);
     } else {
       if (T.multiLineStrings) {
         W.push([
@@ -419,55 +419,55 @@ window.PR_SHOULD_USE_CONTINUATION = true
           /^(?:\'(?:[^\\\']|\\[\s\S])*(?:\'|$)|\"(?:[^\\\"]|\\[\s\S])*(?:\"|$)|\`(?:[^\\\`]|\\[\s\S])*(?:\`|$))/,
           null,
           "'\"`",
-        ])
+        ]);
       } else {
         W.push([
           C,
           /^(?:\'(?:[^\\\'\r\n]|\\.)*(?:\'|$)|\"(?:[^\\\"\r\n]|\\.)*(?:\"|$))/,
           null,
           "\"'",
-        ])
+        ]);
       }
     }
     if (T.verbatimStrings) {
-      S.push([C, /^@\"(?:[^\"]|\"\")*(?:\"|$)/, null])
+      S.push([C, /^@\"(?:[^\"]|\"\")*(?:\"|$)/, null]);
     }
-    var Y = T.hashComments
+    var Y = T.hashComments;
     if (Y) {
       if (T.cStyleComments) {
         if (Y > 1) {
-          W.push([j, /^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/, null, "#"])
+          W.push([j, /^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/, null, "#"]);
         } else {
           W.push([
             j,
             /^#(?:(?:define|elif|else|endif|error|ifdef|include|ifndef|line|pragma|undef|warning)\b|[^\r\n]*)/,
             null,
             "#",
-          ])
+          ]);
         }
-        S.push([C, /^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h|[a-z]\w*)>/, null])
+        S.push([C, /^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h|[a-z]\w*)>/, null]);
       } else {
-        W.push([j, /^#[^\r\n]*/, null, "#"])
+        W.push([j, /^#[^\r\n]*/, null, "#"]);
       }
     }
     if (T.cStyleComments) {
-      S.push([j, /^\/\/[^\r\n]*/, null])
-      S.push([j, /^\/\*[\s\S]*?(?:\*\/|$)/, null])
+      S.push([j, /^\/\/[^\r\n]*/, null]);
+      S.push([j, /^\/\*[\s\S]*?(?:\*\/|$)/, null]);
     }
     if (T.regexLiterals) {
       var X =
-        "/(?=[^/*])(?:[^/\\x5B\\x5C]|\\x5C[\\s\\S]|\\x5B(?:[^\\x5C\\x5D]|\\x5C[\\s\\S])*(?:\\x5D|$))+/"
-      S.push(["lang-regex", new RegExp("^" + M + "(" + X + ")")])
+        "/(?=[^/*])(?:[^/\\x5B\\x5C]|\\x5C[\\s\\S]|\\x5B(?:[^\\x5C\\x5D]|\\x5C[\\s\\S])*(?:\\x5D|$))+/";
+      S.push(["lang-regex", new RegExp("^" + M + "(" + X + ")")]);
     }
-    var V = T.types
+    var V = T.types;
     if (V) {
-      S.push([O, V])
+      S.push([O, V]);
     }
-    var U = ("" + T.keywords).replace(/^ | $/g, "")
+    var U = ("" + T.keywords).replace(/^ | $/g, "");
     if (U.length) {
-      S.push([z, new RegExp("^(?:" + U.replace(/[\s,]+/g, "|") + ")\\b"), null])
+      S.push([z, new RegExp("^(?:" + U.replace(/[\s,]+/g, "|") + ")\\b"), null]);
     }
-    W.push([F, /^\s+/, null, " \r\n\t\xA0"])
+    W.push([F, /^\s+/, null, " \r\n\t\xA0"]);
     S.push(
       [G, /^@[a-z_$][a-z_$@0-9]*/i, null],
       [O, /^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_t\b)/, null],
@@ -483,8 +483,8 @@ window.PR_SHOULD_USE_CONTINUATION = true
       ],
       [F, /^\\[\s\S]?/, null],
       [L, /^.[^\s\w\.$@\'\"\`\/\#\\]*/, null]
-    )
-    return g(W, S)
+    );
+    return g(W, S);
   }
   var K = i({
     keywords: A,
@@ -492,199 +492,199 @@ window.PR_SHOULD_USE_CONTINUATION = true
     cStyleComments: true,
     multiLineStrings: true,
     regexLiterals: true,
-  })
+  });
   function Q(V, ag) {
-    var U = /(?:^|\s)nocode(?:\s|$)/
-    var ab = /\r\n?|\n/
-    var ac = V.ownerDocument
-    var S
+    var U = /(?:^|\s)nocode(?:\s|$)/;
+    var ab = /\r\n?|\n/;
+    var ac = V.ownerDocument;
+    var S;
     if (V.currentStyle) {
-      S = V.currentStyle.whiteSpace
+      S = V.currentStyle.whiteSpace;
     } else {
       if (window.getComputedStyle) {
-        S = ac.defaultView.getComputedStyle(V, null).getPropertyValue("white-space")
+        S = ac.defaultView.getComputedStyle(V, null).getPropertyValue("white-space");
       }
     }
-    var Z = S && "pre" === S.substring(0, 3)
-    var af = ac.createElement("LI")
+    var Z = S && "pre" === S.substring(0, 3);
+    var af = ac.createElement("LI");
     while (V.firstChild) {
-      af.appendChild(V.firstChild)
+      af.appendChild(V.firstChild);
     }
-    var W = [af]
+    var W = [af];
     function ae(al) {
       switch (al.nodeType) {
         case 1:
           if (U.test(al.className)) {
-            break
+            break;
           }
           if ("BR" === al.nodeName) {
-            ad(al)
+            ad(al);
             if (al.parentNode) {
-              al.parentNode.removeChild(al)
+              al.parentNode.removeChild(al);
             }
           } else {
             for (var an = al.firstChild; an; an = an.nextSibling) {
-              ae(an)
+              ae(an);
             }
           }
-          break
+          break;
         case 3:
         case 4:
           if (Z) {
-            var am = al.nodeValue
-            var aj = am.match(ab)
+            var am = al.nodeValue;
+            var aj = am.match(ab);
             if (aj) {
-              var ai = am.substring(0, aj.index)
-              al.nodeValue = ai
-              var ah = am.substring(aj.index + aj[0].length)
+              var ai = am.substring(0, aj.index);
+              al.nodeValue = ai;
+              var ah = am.substring(aj.index + aj[0].length);
               if (ah) {
-                var ak = al.parentNode
-                ak.insertBefore(ac.createTextNode(ah), al.nextSibling)
+                var ak = al.parentNode;
+                ak.insertBefore(ac.createTextNode(ah), al.nextSibling);
               }
-              ad(al)
+              ad(al);
               if (!ai) {
-                al.parentNode.removeChild(al)
+                al.parentNode.removeChild(al);
               }
             }
           }
-          break
+          break;
       }
     }
     function ad(ak) {
       while (!ak.nextSibling) {
-        ak = ak.parentNode
+        ak = ak.parentNode;
         if (!ak) {
-          return
+          return;
         }
       }
       function ai(al, ar) {
-        var aq = ar ? al.cloneNode(false) : al
-        var ao = al.parentNode
+        var aq = ar ? al.cloneNode(false) : al;
+        var ao = al.parentNode;
         if (ao) {
-          var ap = ai(ao, 1)
-          var an = al.nextSibling
-          ap.appendChild(aq)
+          var ap = ai(ao, 1);
+          var an = al.nextSibling;
+          ap.appendChild(aq);
           for (var am = an; am; am = an) {
-            an = am.nextSibling
-            ap.appendChild(am)
+            an = am.nextSibling;
+            ap.appendChild(am);
           }
         }
-        return aq
+        return aq;
       }
-      var ah = ai(ak.nextSibling, 0)
+      var ah = ai(ak.nextSibling, 0);
       for (var aj; (aj = ah.parentNode) && aj.nodeType === 1; ) {
-        ah = aj
+        ah = aj;
       }
-      W.push(ah)
+      W.push(ah);
     }
     for (var Y = 0; Y < W.length; ++Y) {
-      ae(W[Y])
+      ae(W[Y]);
     }
     if (ag === (ag | 0)) {
-      W[0].setAttribute("value", ag)
+      W[0].setAttribute("value", ag);
     }
-    var aa = ac.createElement("OL")
-    aa.className = "linenums"
-    var X = Math.max(0, (ag - 1) | 0) || 0
+    var aa = ac.createElement("OL");
+    aa.className = "linenums";
+    var X = Math.max(0, (ag - 1) | 0) || 0;
     for (var Y = 0, T = W.length; Y < T; ++Y) {
-      af = W[Y]
-      af.className = "L" + ((Y + X) % 10)
+      af = W[Y];
+      af.className = "L" + ((Y + X) % 10);
       if (!af.firstChild) {
-        af.appendChild(ac.createTextNode("\xA0"))
+        af.appendChild(ac.createTextNode("\xA0"));
       }
-      aa.appendChild(af)
+      aa.appendChild(af);
     }
-    V.appendChild(aa)
+    V.appendChild(aa);
   }
   function D(ac) {
-    var aj = /\bMSIE\b/.test(navigator.userAgent)
-    var am = /\n/g
-    var al = ac.sourceCode
-    var an = al.length
-    var V = 0
-    var aa = ac.spans
-    var T = aa.length
-    var ah = 0
-    var X = ac.decorations
-    var Y = X.length
-    var Z = 0
-    X[Y] = an
-    var ar, aq
+    var aj = /\bMSIE\b/.test(navigator.userAgent);
+    var am = /\n/g;
+    var al = ac.sourceCode;
+    var an = al.length;
+    var V = 0;
+    var aa = ac.spans;
+    var T = aa.length;
+    var ah = 0;
+    var X = ac.decorations;
+    var Y = X.length;
+    var Z = 0;
+    X[Y] = an;
+    var ar, aq;
     for (aq = ar = 0; aq < Y; ) {
       if (X[aq] !== X[aq + 2]) {
-        X[ar++] = X[aq++]
-        X[ar++] = X[aq++]
+        X[ar++] = X[aq++];
+        X[ar++] = X[aq++];
       } else {
-        aq += 2
+        aq += 2;
       }
     }
-    Y = ar
+    Y = ar;
     for (aq = ar = 0; aq < Y; ) {
-      var at = X[aq]
-      var ab = X[aq + 1]
-      var W = aq + 2
+      var at = X[aq];
+      var ab = X[aq + 1];
+      var W = aq + 2;
       while (W + 2 <= Y && X[W + 1] === ab) {
-        W += 2
+        W += 2;
       }
-      X[ar++] = at
-      X[ar++] = ab
-      aq = W
+      X[ar++] = at;
+      X[ar++] = ab;
+      aq = W;
     }
-    Y = X.length = ar
-    var ae = null
+    Y = X.length = ar;
+    var ae = null;
     while (ah < T) {
-      var af = aa[ah]
-      var S = aa[ah + 2] || an
-      var ag = X[Z]
-      var ap = X[Z + 2] || an
-      var W = Math.min(S, ap)
-      var ak = aa[ah + 1]
-      var U
+      var af = aa[ah];
+      var S = aa[ah + 2] || an;
+      var ag = X[Z];
+      var ap = X[Z + 2] || an;
+      var W = Math.min(S, ap);
+      var ak = aa[ah + 1];
+      var U;
       if (ak.nodeType !== 1 && (U = al.substring(V, W))) {
         if (aj) {
-          U = U.replace(am, "\r")
+          U = U.replace(am, "\r");
         }
-        ak.nodeValue = U
-        var ai = ak.ownerDocument
-        var ao = ai.createElement("SPAN")
-        ao.className = X[Z + 1]
-        var ad = ak.parentNode
-        ad.replaceChild(ao, ak)
-        ao.appendChild(ak)
+        ak.nodeValue = U;
+        var ai = ak.ownerDocument;
+        var ao = ai.createElement("SPAN");
+        ao.className = X[Z + 1];
+        var ad = ak.parentNode;
+        ad.replaceChild(ao, ak);
+        ao.appendChild(ak);
         if (V < S) {
-          aa[ah + 1] = ak = ai.createTextNode(al.substring(W, S))
-          ad.insertBefore(ak, ao.nextSibling)
+          aa[ah + 1] = ak = ai.createTextNode(al.substring(W, S));
+          ad.insertBefore(ak, ao.nextSibling);
         }
       }
-      V = W
+      V = W;
       if (V >= S) {
-        ah += 2
+        ah += 2;
       }
       if (V >= ap) {
-        Z += 2
+        Z += 2;
       }
     }
   }
-  var t = {}
+  var t = {};
   function c(U, V) {
     for (var S = V.length; --S >= 0; ) {
-      var T = V[S]
+      var T = V[S];
       if (!t.hasOwnProperty(T)) {
-        t[T] = U
+        t[T] = U;
       } else {
         if (window.console) {
-          console.warn("cannot override language handler %s", T)
+          console.warn("cannot override language handler %s", T);
         }
       }
     }
   }
   function q(T, S) {
     if (!(T && t.hasOwnProperty(T))) {
-      T = /^\s*</.test(S) ? "default-markup" : "default-code"
+      T = /^\s*</.test(S) ? "default-markup" : "default-code";
     }
-    return t[T]
+    return t[T];
   }
-  c(K, ["default-code"])
+  c(K, ["default-code"]);
   c(
     g(
       [],
@@ -702,7 +702,7 @@ window.PR_SHOULD_USE_CONTINUATION = true
       ]
     ),
     ["default-markup", "htm", "html", "mxml", "xhtml", "xml", "xsl"]
-  )
+  );
   c(
     g(
       [
@@ -723,8 +723,8 @@ window.PR_SHOULD_USE_CONTINUATION = true
       ]
     ),
     ["in.tag"]
-  )
-  c(g([], [[n, /^[\s\S]+/]]), ["uq.val"])
+  );
+  c(g([], [[n, /^[\s\S]+/]]), ["uq.val"]);
   c(i({ keywords: l, hashComments: true, cStyleComments: true, types: e }), [
     "c",
     "cc",
@@ -732,8 +732,8 @@ window.PR_SHOULD_USE_CONTINUATION = true
     "cxx",
     "cyc",
     "m",
-  ])
-  c(i({ keywords: "null,true,false" }), ["json"])
+  ]);
+  c(i({ keywords: "null,true,false" }), ["json"]);
   c(
     i({
       keywords: R,
@@ -743,20 +743,20 @@ window.PR_SHOULD_USE_CONTINUATION = true
       types: e,
     }),
     ["cs"]
-  )
-  c(i({ keywords: x, cStyleComments: true }), ["java"])
-  c(i({ keywords: H, hashComments: true, multiLineStrings: true }), ["bsh", "csh", "sh"])
+  );
+  c(i({ keywords: x, cStyleComments: true }), ["java"]);
+  c(i({ keywords: H, hashComments: true, multiLineStrings: true }), ["bsh", "csh", "sh"]);
   c(i({ keywords: I, hashComments: true, multiLineStrings: true, tripleQuotedStrings: true }), [
     "cv",
     "py",
-  ])
+  ]);
   c(i({ keywords: s, hashComments: true, multiLineStrings: true, regexLiterals: true }), [
     "perl",
     "pl",
     "pm",
-  ])
-  c(i({ keywords: f, hashComments: true, multiLineStrings: true, regexLiterals: true }), ["rb"])
-  c(i({ keywords: w, cStyleComments: true, regexLiterals: true }), ["js"])
+  ]);
+  c(i({ keywords: f, hashComments: true, multiLineStrings: true, regexLiterals: true }), ["rb"]);
+  c(i({ keywords: w, cStyleComments: true, regexLiterals: true }), ["js"]);
   c(
     i({
       keywords: r,
@@ -767,106 +767,106 @@ window.PR_SHOULD_USE_CONTINUATION = true
       regexLiterals: true,
     }),
     ["coffee"]
-  )
-  c(g([], [[C, /^[\s\S]+/]]), ["regex"])
+  );
+  c(g([], [[C, /^[\s\S]+/]]), ["regex"]);
   function d(V) {
-    var U = V.langExtension
+    var U = V.langExtension;
     try {
-      var S = a(V.sourceNode)
-      var T = S.sourceCode
-      V.sourceCode = T
-      V.spans = S.spans
-      V.basePos = 0
-      q(U, T)(V)
-      D(V)
+      var S = a(V.sourceNode);
+      var T = S.sourceCode;
+      V.sourceCode = T;
+      V.spans = S.spans;
+      V.basePos = 0;
+      q(U, T)(V);
+      D(V);
     } catch (W) {
       if ("console" in window) {
-        console.log(W && W.stack ? W.stack : W)
+        console.log(W && W.stack ? W.stack : W);
       }
     }
   }
   function y(W, V, U) {
-    var S = document.createElement("PRE")
-    S.innerHTML = W
+    var S = document.createElement("PRE");
+    S.innerHTML = W;
     if (U) {
-      Q(S, U)
+      Q(S, U);
     }
-    var T = { langExtension: V, numberLines: U, sourceNode: S }
-    d(T)
-    return S.innerHTML
+    var T = { langExtension: V, numberLines: U, sourceNode: S };
+    d(T);
+    return S.innerHTML;
   }
   function b(ad) {
     function Y(af) {
-      return document.getElementsByTagName(af)
+      return document.getElementsByTagName(af);
     }
-    var ac = [Y("pre"), Y("code"), Y("xmp")]
-    var T = []
+    var ac = [Y("pre"), Y("code"), Y("xmp")];
+    var T = [];
     for (var aa = 0; aa < ac.length; ++aa) {
       for (var Z = 0, V = ac[aa].length; Z < V; ++Z) {
-        T.push(ac[aa][Z])
+        T.push(ac[aa][Z]);
       }
     }
-    ac = null
-    var W = Date
+    ac = null;
+    var W = Date;
     if (!W.now) {
       W = {
         now: function () {
-          return +new Date()
+          return +new Date();
         },
-      }
+      };
     }
-    var X = 0
-    var S
-    var ab = /\blang(?:uage)?-([\w.]+)(?!\S)/
-    var ae = /\bprettyprint\b/
+    var X = 0;
+    var S;
+    var ab = /\blang(?:uage)?-([\w.]+)(?!\S)/;
+    var ae = /\bprettyprint\b/;
     function U() {
-      var ag = window.PR_SHOULD_USE_CONTINUATION ? W.now() + 250 : Infinity
+      var ag = window.PR_SHOULD_USE_CONTINUATION ? W.now() + 250 : Infinity;
       for (; X < T.length && W.now() < ag; X++) {
-        var aj = T[X]
-        var ai = aj.className
+        var aj = T[X];
+        var ai = aj.className;
         if (ai.indexOf("prettyprint") >= 0) {
-          var ah = ai.match(ab)
-          var am
+          var ah = ai.match(ab);
+          var am;
           if (!ah && (am = o(aj)) && "CODE" === am.tagName) {
-            ah = am.className.match(ab)
+            ah = am.className.match(ab);
           }
           if (ah) {
-            ah = ah[1]
+            ah = ah[1];
           }
-          var al = false
+          var al = false;
           for (var ak = aj.parentNode; ak; ak = ak.parentNode) {
             if (
               (ak.tagName === "pre" || ak.tagName === "code" || ak.tagName === "xmp") &&
               ak.className &&
               ak.className.indexOf("prettyprint") >= 0
             ) {
-              al = true
-              break
+              al = true;
+              break;
             }
           }
           if (!al) {
-            var af = aj.className.match(/\blinenums\b(?::(\d+))?/)
-            af = af ? (af[1] && af[1].length ? +af[1] : true) : false
+            var af = aj.className.match(/\blinenums\b(?::(\d+))?/);
+            af = af ? (af[1] && af[1].length ? +af[1] : true) : false;
             if (af) {
-              Q(aj, af)
+              Q(aj, af);
             }
-            S = { langExtension: ah, sourceNode: aj, numberLines: af }
-            d(S)
+            S = { langExtension: ah, sourceNode: aj, numberLines: af };
+            d(S);
           }
         }
       }
       if (X < T.length) {
-        setTimeout(U, 250)
+        setTimeout(U, 250);
       } else {
         if (ad) {
-          ad()
+          ad();
         }
       }
     }
-    U()
+    U();
   }
-  window.prettyPrintOne = y
-  window.prettyPrint = b
+  window.prettyPrintOne = y;
+  window.prettyPrint = b;
   window.PR = {
     createSimpleLexer: g,
     registerLangHandler: c,
@@ -884,8 +884,8 @@ window.PR_SHOULD_USE_CONTINUATION = true
     PR_STRING: C,
     PR_TAG: m,
     PR_TYPE: O,
-  }
-})()
+  };
+})();
 PR.registerLangHandler(
   PR.createSimpleLexer(
     [],
@@ -910,7 +910,7 @@ PR.registerLangHandler(
     ]
   ),
   ["handlebars", "hbs"]
-)
+);
 PR.registerLangHandler(
   PR.createSimpleLexer(
     [[PR.PR_PLAIN, /^[ \t\r\n\f]+/, null, " \t\r\n\f"]],
@@ -933,12 +933,12 @@ PR.registerLangHandler(
     ]
   ),
   ["css"]
-)
+);
 PR.registerLangHandler(
   PR.createSimpleLexer(
     [],
     [[PR.PR_KEYWORD, /^-?(?:[_a-z]|(?:\\[\da-f]+ ?))(?:[_a-z\d\-]|\\(?:\\[\da-f]+ ?))*/i]]
   ),
   ["css-kw"]
-)
-PR.registerLangHandler(PR.createSimpleLexer([], [[PR.PR_STRING, /^[^\)\"\']+/]]), ["css-str"])
+);
+PR.registerLangHandler(PR.createSimpleLexer([], [[PR.PR_STRING, /^[^\)\"\']+/]]), ["css-str"]);

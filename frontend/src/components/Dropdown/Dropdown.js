@@ -1,12 +1,12 @@
-import { React, useState } from "react"
-import "../Dropdown/Dropdown.css"
-import { BsFilterCircleFill } from "react-icons/bs"
-import { IoMdArrowDropdownCircle } from "react-icons/io"
+import { React, useState } from "react";
+import "../Dropdown/Dropdown.css";
+import { BsFilterCircleFill } from "react-icons/bs";
+import { IoMdArrowDropdownCircle } from "react-icons/io";
 
 function Dropdown({ selected, setSelected, purpose }) {
-  const [isActive, setIsActive] = useState(false)
-  let options = []
-  purpose === "filter" ? (options = ["Likes", "Recent"]) : (options = ["Spotify", "Logout"])
+  const [isActive, setIsActive] = useState(false);
+  let options = [];
+  purpose === "filter" ? (options = ["Likes", "Recent"]) : (options = ["Spotify", "Logout"]);
 
   return (
     <div className="dropdown">
@@ -42,8 +42,8 @@ function Dropdown({ selected, setSelected, purpose }) {
                 className="dropdown-item"
                 key={index}
                 onClick={() => {
-                  setSelected(option)
-                  setIsActive(false)
+                  setSelected(option);
+                  setIsActive(false);
                 }}
               >
                 {option}
@@ -65,8 +65,8 @@ function Dropdown({ selected, setSelected, purpose }) {
                 className="dropdown-item"
                 key={index}
                 onClick={() => {
-                  setSelected(option)
-                  setIsActive(false)
+                  setSelected(option);
+                  setIsActive(false);
                 }}
               >
                 {option}
@@ -75,7 +75,7 @@ function Dropdown({ selected, setSelected, purpose }) {
           </div>
         ))}
     </div>
-  )
+  );
 }
 
-export default Dropdown
+export default Dropdown;

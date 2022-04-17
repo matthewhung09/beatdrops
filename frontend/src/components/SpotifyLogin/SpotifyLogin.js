@@ -1,10 +1,10 @@
-import { useState, React } from "react"
-import styled from "styled-components"
-import { Button, StylesProvider } from "@material-ui/core"
-import Popup from "reactjs-popup"
-import "../../App.css"
+import { useState, React } from "react";
+import styled from "styled-components";
+import { Button, StylesProvider } from "@material-ui/core";
+import Popup from "reactjs-popup";
+import "../../App.css";
 // import "../SpotifyLogin/SpotifyLogin.css";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const PopupWrapper = styled.div`
   align-items: center;
   padding: 20px;
   width: 85%;
-`
+`;
 
 const PopupTitle = styled.h1`
   font-style: normal;
@@ -23,7 +23,7 @@ const PopupTitle = styled.h1`
   max-width: 85%;
   margin-top: 12px;
   margin-bottom: 10px;
-`
+`;
 
 const StyledButton = styled(Button)`
   background-color: black;
@@ -36,14 +36,14 @@ const StyledButton = styled(Button)`
   font-weight: 600;
   width: 100%;
   cursor: pointer;
-`
+`;
 
 function SpotifyLogin() {
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
   // sets popup to be open when page is first loaded
-  const [open, setOpen] = useState(true)
-  const closeModal = () => setOpen(false)
+  const [open, setOpen] = useState(true);
+  const closeModal = () => setOpen(false);
 
   return (
     <StylesProvider injectFirst>
@@ -82,7 +82,7 @@ function SpotifyLogin() {
         )}
       </Popup>
     </StylesProvider>
-  )
+  );
 }
 
-export default SpotifyLogin
+export default SpotifyLogin;
