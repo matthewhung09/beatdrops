@@ -33,7 +33,8 @@ Only do this if we have already discussed, otherwise create a pull request.
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
-![alt text](https://user-images.githubusercontent.com/36245167/163697875-20d9901e-bcf0-4c5d-8224-976619fb0b18.png)
+![alt text](<img width="100" alt="backendMockTesting" src="https://user-images.githubusercontent.com/36245167/163697904-2c9ad0cd-1d1b-4b6b-a439-58e49f33b41b.png">)
+
 
 
 ## Style Checker 
