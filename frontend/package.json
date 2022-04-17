@@ -28,7 +28,6 @@
     "react-icons": "^4.3.1",
     "react-image-file-resizer": "^0.4.7",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "^5.0.0",
     "react-spotify-embed": "^0.2.3",
     "react-spotify-web-playback": "^0.9.1",
     "reactjs-popup": "^2.0.5",
@@ -64,6 +63,7 @@
     ]
   },
   "devDependencies": {
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "react-scripts": "^5.0.0"
   }
 }

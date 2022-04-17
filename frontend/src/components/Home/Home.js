@@ -1,54 +1,54 @@
-import * as React from "react"
-import "reactjs-popup/dist/index.css"
-import "./Home.css"
-import { useState, useEffect, useRef } from "react"
-import { IoIosAddCircle } from "react-icons/io"
-import Popup from "reactjs-popup"
-import Post from "../Post/Post"
-import PostForm from "../PostForm/PostForm"
-import Dropdown from "../Dropdown/Dropdown"
-import axios from "axios"
-import rateLimit from "axios-rate-limit"
+import * as React from "react";
+import "reactjs-popup/dist/index.css";
+import "./Home.css";
+import { useState, useEffect, useRef } from "react";
+import { IoIosAddCircle } from "react-icons/io";
+import Popup from "reactjs-popup";
+import Post from "../Post/Post";
+import PostForm from "../PostForm/PostForm";
+import Dropdown from "../Dropdown/Dropdown";
+import axios from "axios";
+import rateLimit from "axios-rate-limit";
 
-const code = new URLSearchParams(window.location.search).get("code")
+const code = new URLSearchParams(window.location.search).get("code");
 
 function Home() {
-  const [accessToken, setAccessToken] = useState()
-  const [refreshToken, setRefreshToken] = useState()
-  const [expiresIn, setExpiresIn] = useState()
-  const isMounted = useRef(false)
+  const [accessToken, setAccessToken] = useState();
+  const [refreshToken, setRefreshToken] = useState();
+  const [expiresIn, setExpiresIn] = useState();
+  const isMounted = useRef(false);
 
   useEffect(() => {
-    if (!code) return
+    if (!code) return;
     axios
       .post("http://localhost:5000/auth/callback", {
         auth_code: code,
       })
       .then((res) => {
-        setAccessToken(res.data.accessToken)
-        setRefreshToken(res.data.refreshToken)
-        setExpiresIn(res.data.expiresIn)
-        window.history.pushState({}, null, "/home")
-        return res.data.refreshToken
+        setAccessToken(res.data.accessToken);
+        setRefreshToken(res.data.refreshToken);
+        setExpiresIn(res.data.expiresIn);
+        window.history.pushState({}, null, "/home");
+        return res.data.refreshToken;
       })
       .then((r) => {
-        axios.post("http://localhost:5000/update", { refreshToken: r }, { withCredentials: true })
+        axios.post("http://localhost:5000/update", { refreshToken: r }, { withCredentials: true });
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         // window.location = "/spotify"
-      })
-  }, [code])
+      });
+  }, [code]);
 
   useEffect(() => {
     if (isMounted.current) {
-      if (!refreshToken) return
-      refresh()
-      const interval = setInterval(refresh, (expiresIn - 60) * 1000)
+      if (!refreshToken) return;
+      refresh();
+      const interval = setInterval(refresh, (expiresIn - 60) * 1000);
     } else {
-      isMounted.current = true
+      isMounted.current = true;
     }
-  }, [refreshToken])
+  }, [refreshToken]);
 
   function refresh() {
     axios
@@ -56,73 +56,73 @@ function Home() {
         refreshToken,
       })
       .then((res) => {
-        setAccessToken(res.data.accessToken)
-        setExpiresIn(res.data.expiresIn)
+        setAccessToken(res.data.accessToken);
+        setExpiresIn(res.data.expiresIn);
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
   /* ------ useState setup ------ */
-  const [user, setUser] = useState()
+  const [user, setUser] = useState();
   //const [token, setToken] = useState("");
-  const [postError, setPostError] = useState("")
+  const [postError, setPostError] = useState("");
 
   // post creation
-  const [newSong, setNewSong] = useState("")
-  const [newArtist, setNewArtist] = useState("")
-  const [postList, setPosts] = useState([])
-  const [currentlyPlaying, setCurrentlyPlaying] = useState("")
-  const postErrMsg = "Could not find specified song, please check your spelling."
+  const [newSong, setNewSong] = useState("");
+  const [newArtist, setNewArtist] = useState("");
+  const [postList, setPosts] = useState([]);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState("");
+  const postErrMsg = "Could not find specified song, please check your spelling.";
 
   // dropdowns
-  const [selected, setSelected] = useState("Default") // post filtering
-  const [userSetting, setUserSetting] = useState(user) // logout
+  const [selected, setSelected] = useState("Default"); // post filtering
+  const [userSetting, setUserSetting] = useState(user); // logout
 
   // geolocation
-  const [lat, setLat] = useState()
-  const [long, setLong] = useState()
+  const [lat, setLat] = useState();
+  const [long, setLong] = useState();
 
   // takes care of rate limiting issues
   const http = rateLimit(axios.create(), {
     maxRequests: 5, // 5 requests
     maxRPS: 1000, // per 1000 milliseconds
-  })
+  });
 
   // Gets all posts
   // withCredentials : true allows us to send the cookie
   // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`
+      const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
       axios
         .get(url, { withCredentials: true })
         .then((response) => {
-          setPosts(response.data.posts)
-          setUser(response.data.user)
-          setExpiresIn(3600)
-          setRefreshToken(response.data.user.refresh_token)
-          setUserSetting(response.data.user.username)
+          setPosts(response.data.posts);
+          setUser(response.data.user);
+          setExpiresIn(3600);
+          setRefreshToken(response.data.user.refresh_token);
+          setUserSetting(response.data.user.username);
         })
         // Occurs when either invalid token or no token - redirects user back to login screen
         .catch((error) => {
-          console.log(error.response.data)
+          console.log(error.response.data);
           if (error.response.status === 401) {
-            window.location.assign("/")
+            window.location.assign("/");
           }
-        })
-    })
-  }, [])
+        });
+    });
+  }, []);
 
   useEffect(() => {
     if (!accessToken) {
-      return
+      return;
     }
-    getCurrentSong()
-    getPlaylists()
-    getUsersPlaylist()
-  }, [accessToken])
+    getCurrentSong();
+    getPlaylists();
+    getUsersPlaylist();
+  }, [accessToken]);
 
   async function getCurrentSong() {
     await axios
@@ -131,16 +131,16 @@ function Home() {
         if (res) {
           // console.log("hello");
           // console.log("Before: " + currentlyPlaying);
-          setCurrentlyPlaying(res.data.song)
+          setCurrentlyPlaying(res.data.song);
           // console.log("After: " + currentlyPlaying);
         }
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
-  const [playlists, setPlaylists] = useState([])
+  const [playlists, setPlaylists] = useState([]);
 
   async function getPlaylists() {
     await axios
@@ -148,15 +148,15 @@ function Home() {
       .then((res) => {
         if (res) {
           // console.log("res: " + JSON.stringify(res.data.playlists));
-          setPlaylists(res.data.playlists)
+          setPlaylists(res.data.playlists);
         }
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
-  const [allPlaylists, setAllPlaylist] = useState([])
+  const [allPlaylists, setAllPlaylist] = useState([]);
 
   async function getUsersPlaylist() {
     await axios
@@ -165,12 +165,12 @@ function Home() {
         if (res) {
           // console.log("info: " + JSON.stringify(res.data.allPlaylists));
           // console.log("info: " + res.data.allPlaylists);
-          setAllPlaylist(res.data.allPlaylists)
+          setAllPlaylist(res.data.allPlaylists);
         }
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
   // function findPlaylistSong(artist, title) {
@@ -186,13 +186,13 @@ function Home() {
 
   useEffect(() => {
     if (selected === "Likes") {
-      setPosts([...postList].sort((a, b) => b.likes - a.likes))
+      setPosts([...postList].sort((a, b) => b.likes - a.likes));
     } else if (selected === "Recent") {
-      setPosts([...postList].sort((a, b) => new Date(b.lastPosted) - new Date(a.lastPosted)))
+      setPosts([...postList].sort((a, b) => new Date(b.lastPosted) - new Date(a.lastPosted)));
     } else {
-      setPosts(postList)
+      setPosts(postList);
     }
-  }, [selected])
+  }, [selected]);
 
   // send ID of post and user - add liked post to their array
   async function makeLikeCall(post_id, liked) {
@@ -200,11 +200,11 @@ function Home() {
       const response = await axios.patch("http://localhost:5000/user/" + user._id + "/liked", {
         post: post_id,
         liked: liked,
-      })
-      return response
+      });
+      return response;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
   }
 
@@ -212,31 +212,31 @@ function Home() {
 
   // Submit for making new post
   async function onSubmitPostClick(song, artist) {
-    let success = false
+    let success = false;
     await makePostCall(song, artist).then((result) => {
       if (result && result.status === 201) {
-        setPosts([result.data, ...postList])
-        success = true
+        setPosts([result.data, ...postList]);
+        success = true;
       } else if (result.status === 200) {
-        console.log("this is so cool")
-        setPosts(postList)
-        success = true
+        console.log("this is so cool");
+        setPosts(postList);
+        success = true;
       } else {
-        success = false
+        success = false;
       }
-    })
-    return success
+    });
+    return success;
   }
 
   function resetPostForm(close) {
-    setNewSong("")
-    setNewArtist("")
-    setPostError("")
-    close()
+    setNewSong("");
+    setNewArtist("");
+    setPostError("");
+    close();
   }
 
   async function makePostCall(song, artist) {
-    const location = await getPostPosition()
+    const location = await getPostPosition();
     // getPostPosition(lat, long);
     if (song && artist) {
       try {
@@ -244,10 +244,10 @@ function Home() {
           title: song,
           artist: artist,
           location: { name: location, lat: lat, long: long },
-        })
-        return response
+        });
+        return response;
       } catch (error) {
-        return false
+        return false;
       }
     } else {
       try {
@@ -255,46 +255,46 @@ function Home() {
           title: newSong,
           artist: newArtist,
           location: { name: location, lat: lat, long: long },
-        })
-        return response
+        });
+        return response;
       } catch (error) {
-        console.log("Post failed")
-        return false
+        console.log("Post failed");
+        return false;
       }
     }
   }
 
   // Called when user likes a post
   function updateLikes(post_id) {
-    let objIndex = postList.findIndex((obj) => obj._id === post_id)
-    let elem = postList[objIndex]
-    let liked = user.liked.includes(post_id)
+    let objIndex = postList.findIndex((obj) => obj._id === post_id);
+    let elem = postList[objIndex];
+    let liked = user.liked.includes(post_id);
 
     makeLikeCall(post_id, liked).then((result) => {
       if (result && result.status === 201) {
-        user.liked = result.data.user.liked // Gets updated user liked list
-        elem.likes = result.data.post.likes
-        let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex + 1)]
-        setPosts(newArr)
+        user.liked = result.data.user.liked; // Gets updated user liked list
+        elem.likes = result.data.post.likes;
+        let newArr = [...postList.slice(0, objIndex), elem, ...postList.slice(objIndex + 1)];
+        setPosts(newArr);
       }
-    })
+    });
   }
 
   async function spotifyLike(spotify_id) {
     const data = {
       ids: [spotify_id],
-    }
+    };
     try {
       const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      })
+      });
 
-      return response
+      return response;
     } catch (error) {
-      return false
+      return false;
     }
   }
 
@@ -302,24 +302,24 @@ function Home() {
 
   useEffect(() => {
     const AUTH_URL =
-      "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
+      "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
     if (userSetting === "Logout") {
-      logout()
+      logout();
     } else if (userSetting === "Spotify") {
-      window.location.assign(AUTH_URL)
+      window.location.assign(AUTH_URL);
     }
-  }, [userSetting])
+  }, [userSetting]);
 
   function logout() {
     axios
       .get("http://localhost:5000/logout", { withCredentials: true })
       .then(() => {
-        console.log("here")
-        window.location.assign("/")
+        console.log("here");
+        window.location.assign("/");
       })
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
   /* ------ geolocation ------ */
@@ -330,33 +330,33 @@ function Home() {
       navigator.permissions.query({ name: "geolocation" }).then(function (result) {
         if (result.state !== "denied") {
           navigator.geolocation.getCurrentPosition((position) => {
-            setLat(position.coords.latitude)
-            setLong(position.coords.longitude)
-          })
+            setLat(position.coords.latitude);
+            setLong(position.coords.longitude);
+          });
         }
-      })
+      });
     }
-  }, [lat, long])
+  }, [lat, long]);
 
   // use reverse geocoding API to get location based on coordinates
   async function getPostPosition() {
-    const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`
+    const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=211461662e434824aa8bd651b237c69a`;
 
     try {
-      const response = await http.get(url)
-      let geoData = response.data.features[0].properties
+      const response = await http.get(url);
+      let geoData = response.data.features[0].properties;
 
       // random off campus place
-      if (geoData.name === undefined) return geoData.street
+      if (geoData.name === undefined) return geoData.street;
       // not at a specific campus building
-      else if (geoData.name === "California Polytechnic State University") return geoData.street
+      else if (geoData.name === "California Polytechnic State University") return geoData.street;
       // strip number from on campus buildings
       else if (geoData.name.includes("("))
-        return geoData.name.substring(0, geoData.name.indexOf("("))
+        return geoData.name.substring(0, geoData.name.indexOf("("));
       // by default, return name of place
-      return geoData.properties.name
+      return geoData.properties.name;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -400,24 +400,24 @@ function Home() {
                   onChangeSong={(e) => setNewSong(e.target.value)}
                   onChangeArtist={(e) => setNewArtist(e.target.value)}
                   onClick={async () => {
-                    ;(await onSubmitPostClick()) ? resetPostForm(close) : setPostError(postErrMsg)
+                    (await onSubmitPostClick()) ? resetPostForm(close) : setPostError(postErrMsg);
                   }}
                   postCurrent={async () => {
-                    setNewSong(currentlyPlaying.name)
-                    setNewArtist(currentlyPlaying.artists[0].name)
-                    ;(await onSubmitPostClick(
+                    setNewSong(currentlyPlaying.name);
+                    setNewArtist(currentlyPlaying.artists[0].name);
+                    (await onSubmitPostClick(
                       currentlyPlaying.name,
                       currentlyPlaying.artists[0].name
                     ))
                       ? resetPostForm(close)
-                      : setPostError(postErrMsg)
+                      : setPostError(postErrMsg);
                   }}
                   postFromPlaylist={async (value) => {
-                    let songInfo = value.split(",")
-                    let title = songInfo[0]
-                    let artist = songInfo[1]
-                    setNewSong(title)
-                    setNewArtist(artist)
+                    let songInfo = value.split("by");
+                    let title = songInfo[0];
+                    let artist = songInfo[1];
+                    setNewSong(title);
+                    setNewArtist(artist);
                     // (await onSubmitPostClick(title, artist))
                     //     ? resetPostForm(close)
                     //     : setPostError(postErrMsg);
@@ -452,7 +452,7 @@ function Home() {
         <p>Loading...</p>
       )}
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
