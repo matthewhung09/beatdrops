@@ -224,30 +224,33 @@ app.post("/auth/refresh", async (req, res) => {
   })
 
 // Gets current playing song
+//Has been refactored to correspond with backend-services.js
 app.post("/current", async (req, res) => {
+    
     const accessToken = req.body.accessToken;
+    
     if (accessToken === undefined) {
         return;
-    }
-    let response;
+    } 
+    
     try {
-        response = await axios.get(`${baseURI}/me/player/currently-playing`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
+
+        const result = await backEndServices.getCurrentSong(accessToken);
+
+        console.log(result);
+        
         res.json({
-            
-           song : response.data.item,
+            song: result
         });
-    } catch (error) {
-        // console.log(error);
+
+
+    } catch(error) {
         return false;
     }
+    
 });
 
-//Has been refactored to correspond with backend-services.js
+// Has been refactored to correspond with backend-services.js
 // Gets users' playlists and tracks for posting from 
 // playlist functionality
 app.post("/playlists", async (req, res) => {

@@ -115,11 +115,26 @@ async function getPlaylists(accessToken) {
 
 }
 
-async function getTracks(id, token) {
+async function getCurrentSong(accessToken) {
+
+        let response = await axios.get(`${baseURI}/me/player/currently-playing`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        return response.data.item;   
+        
+        
+
+}
+
+async function getTracks(id, accessToken) {
 
         let response = await axios.get(`${baseURI}/playlists/${id}/tracks`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
         });
@@ -139,4 +154,5 @@ exports.getPlaylists = getPlaylists;
 exports.createToken = createToken;
 exports.getPostData = getPostData;
 exports.getAccessToken = getAccessToken;
+exports.getCurrentSong = getCurrentSong;
 
