@@ -1,130 +1,130 @@
 @import url("https://fonts.googleapis.com/css2?family=Karla:wght@500;700&family=Poppins:wght@500;600;700&display=swap");
 
 h2 {
-    font-size: medium;
-    font-weight: 500;
-    line-height: 0.2em;
+  font-size: medium;
+  font-weight: 500;
+  line-height: 0.2em;
 }
 
 h3 {
-    font-size: small;
-    font-weight: 400;
+  font-size: small;
+  font-weight: 400;
 }
 
 p {
-    font-size: small;
-    color: rgb(134, 134, 134);
+  font-size: small;
+  color: rgb(134, 134, 134);
 }
 
 .title {
-    font-size: 1.2em;
-    font-family: "Karla", sans-serif;
-    font-weight: 600;
-    letter-spacing: -0.6px;
-    margin-bottom: 0.2em;
-    color: rgb(72, 72, 72);
+  font-size: 1.2em;
+  font-family: "Karla", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  margin-bottom: 0.2em;
+  color: rgb(72, 72, 72);
 }
 
 button {
-    font-family: "Karla", sans-serif;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    /* margin-bottom: 0.3em; */
-    padding: 0.7em;
-    padding-right: 1.3em;
-    min-width: fit-content;
-    /* font-size: 85%; */
-    color: white;
-    border-style: none;
-    border-radius: 3px;
-    font-weight: 500;
+  font-family: "Karla", sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* margin-bottom: 0.3em; */
+  padding: 0.7em;
+  padding-right: 1.3em;
+  min-width: fit-content;
+  /* font-size: 85%; */
+  color: white;
+  border-style: none;
+  border-radius: 3px;
+  font-weight: 500;
 }
 
 .spotify-div {
-    width: 90%;
-    min-width: 5em;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* left: 0; */
-    margin-bottom: -0.85em;
+  width: 90%;
+  min-width: 5em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* left: 0; */
+  margin-bottom: -0.85em;
 }
 
 .likes {
-    color: black;
-    background-color: transparent;
-    /* background-color: rgb(238, 238, 238); */
-    /* margin-top: 0.5em 0 0 0.5em; */
-    font-weight: 500;
-    width: 80%;
-    transform: scale(0.8);
-    margin-left: 0em;
+  color: black;
+  background-color: transparent;
+  /* background-color: rgb(238, 238, 238); */
+  /* margin-top: 0.5em 0 0 0.5em; */
+  font-weight: 500;
+  width: 80%;
+  transform: scale(0.8);
+  margin-left: 0em;
 }
 
 .spotify-actions {
-    display: flex;
-    flex-direction: row;
-    height: 20px;
+  display: flex;
+  flex-direction: row;
+  height: 20px;
 }
 
 .webplayer-buttons {
-    display: flex;
-    gap: 0.5em;
-    font-family: Karla, sans-serif;
-    margin-top: -2.7em;
-    color: white;
-    background-color: transparent;
-    font-weight: 500;
-    min-width: fit-content;
-    height: fit-content;
-    transform: scale(0.93);
+  display: flex;
+  gap: 0.5em;
+  font-family: Karla, sans-serif;
+  margin-top: -2.7em;
+  color: white;
+  background-color: transparent;
+  font-weight: 500;
+  min-width: fit-content;
+  height: fit-content;
+  transform: scale(0.93);
 }
 
 .webplayer-buttons:hover {
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
 }
 
 /* --------- actions ---------- */
 
 .action {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.9em;
-    font-family: Karla, sans-serif;
-    padding: 0.5em;
-    line-height: 1em;
-    margin-top: -1.2em;
-    margin-left: 0.5em;
-    margin-right: 0;
-    letter-spacing: -0.2px;
-    text-align: left;
-    min-width: 7.8em;
-    width: 20%;
-    /* background-color: rgba(250, 250, 250, 0.085); */
-    border-radius: 0.4em;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+  font-family: Karla, sans-serif;
+  padding: 0.5em;
+  line-height: 1em;
+  margin-top: -1.2em;
+  margin-left: 0.5em;
+  margin-right: 0;
+  letter-spacing: -0.2px;
+  text-align: left;
+  min-width: 7.8em;
+  width: 20%;
+  /* background-color: rgba(250, 250, 250, 0.085); */
+  border-radius: 0.4em;
 }
 
 .time {
-    color: rgba(161, 161, 161, 0.972);
-    margin-bottom: -0.3em;
-    margin-left: 1em;
+  color: rgba(161, 161, 161, 0.972);
+  margin-bottom: -0.3em;
+  margin-left: 1em;
 }
 
 .location {
-    font-weight: bold;
-    font-style: normal;
-    font-size: 0.95em;
-    color: rgba(45, 45, 45, 0.909);
-    margin-bottom: 0.9em;
-    margin-left: 0.8em;
+  font-weight: bold;
+  font-style: normal;
+  font-size: 0.95em;
+  color: rgba(45, 45, 45, 0.909);
+  margin-bottom: 0.9em;
+  margin-left: 0.8em;
 }
 
 .likes > * {
-    margin: 0 0.5em;
+  margin: 0 0.5em;
 }
 
 /* --------- general card ---------- */
@@ -146,19 +146,19 @@ button {
 } */
 
 .card {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-items: center;
-    font-size: 1em;
-    width: 80%;
-    margin-top: 1.2em;
-    border-top: 1px solid rgb(233, 233, 233);
-    padding-left: 2.8%;
-    padding-top: 1.8em;
-    padding-bottom: 0.95em;
-    max-width: 43em;
-    transform: scale(1.05);
+  display: inline-flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1em;
+  width: 80%;
+  margin-top: 1.2em;
+  border-top: 1px solid rgb(233, 233, 233);
+  padding-left: 2.8%;
+  padding-top: 1.8em;
+  padding-bottom: 0.95em;
+  max-width: 43em;
+  transform: scale(1.05);
 }
 
 /* .card {
@@ -187,12 +187,12 @@ button {
 } */
 
 .card:last-child {
-    border-bottom: 1px solid rgb(233, 233, 233);
-    padding-bottom: 1.5em;
-    margin-bottom: 5em;
+  border-bottom: 1px solid rgb(233, 233, 233);
+  padding-bottom: 1.5em;
+  margin-bottom: 5em;
 }
 
 .likes:hover {
-    cursor: pointer;
-    opacity: 80%;
+  cursor: pointer;
+  opacity: 80%;
 }
