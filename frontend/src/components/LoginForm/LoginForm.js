@@ -1,8 +1,8 @@
-import { useState, React } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as Yup from "yup"
-import styled from "styled-components"
+import { useState, React } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import styled from "styled-components";
 import {
   TextField,
   InputAdornment,
@@ -10,15 +10,15 @@ import {
   Box,
   Button,
   StylesProvider,
-} from "@material-ui/core"
-import Visibility from "@material-ui/icons/Visibility"
-import VisibilityOff from "@material-ui/icons/VisibilityOff"
-import isEmailValidator from "validator/lib/isEmail"
-import Popup from "reactjs-popup"
-import "../../App.css"
-import { useNavigate } from "react-router-dom"
-import "../SignUpForm/SignUpForm.css"
-import axios from "axios"
+} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import isEmailValidator from "validator/lib/isEmail";
+import Popup from "reactjs-popup";
+import "../../App.css";
+import { useNavigate } from "react-router-dom";
+import "../SignUpForm/SignUpForm.css";
+import axios from "axios";
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -26,7 +26,7 @@ const PopupWrapper = styled.div`
   align-items: center;
   padding: 20px;
   width: 85%;
-`
+`;
 
 const PopupTitle = styled.h1`
   font-style: normal;
@@ -37,7 +37,7 @@ const PopupTitle = styled.h1`
   max-width: 85%;
   margin-top: 12px;
   margin-bottom: 10px;
-`
+`;
 
 const StyledButton = styled(Button)`
   background-color: black;
@@ -51,29 +51,29 @@ const StyledButton = styled(Button)`
   width: 100%;
   color: white;
   cursor: pointer;
-`
+`;
 
 function LoginForm() {
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
   // style
-  const variant = "outlined"
+  const variant = "outlined";
 
   // validation
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Please enter your email."),
     password: Yup.string().required("Please enter your password."),
-  })
+  });
   const { handleSubmit, control, reset } = useForm({
     resolver: yupResolver(validationSchema),
-  })
+  });
 
-  const [vErr, setvErr] = useState("")
-  const [cemail, setEmail] = useState("")
-  const [cpassword, setPassword] = useState("")
+  const [vErr, setvErr] = useState("");
+  const [cemail, setEmail] = useState("");
+  const [cpassword, setPassword] = useState("");
 
   const onSubmit = async (values) => {
-    let response
+    let response;
     try {
       response = await axios.post(
         "http://localhost:5000/login",
@@ -82,34 +82,34 @@ function LoginForm() {
           password: values.password,
         },
         { withCredentials: true }
-      )
-      const data = response.data
+      );
+      const data = response.data;
 
       // Route to main page if login info is correct
       if (data.user) {
-        window.location.assign("/home")
+        window.location.assign("/home");
       }
     } catch (error) {
-      setEmail(values.email)
-      setPassword(values.password)
-      setvErr(error.response.data.errors)
+      setEmail(values.email);
+      setPassword(values.password);
+      setvErr(error.response.data.errors);
     }
-  }
+  };
 
   // info for required entries
   const rEntries = [
     { input: "email", label: "Email" },
     { input: "password", label: "Password" },
-  ]
+  ];
 
   // sets popup to be open when page is first loaded
-  const [open, setOpen] = useState(true)
-  const closeModal = () => setOpen(false)
+  const [open, setOpen] = useState(true);
+  const closeModal = () => setOpen(false);
 
   // set password visibility
-  const [showPassword, setShowPassword] = useState(false)
-  const handleClickShowPassword = () => setShowPassword(!showPassword)
-  const handleMouseDownPassword = () => setShowPassword(!showPassword)
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   return (
     <StylesProvider injectFirst>
@@ -237,7 +237,7 @@ function LoginForm() {
         )}
       </Popup>
     </StylesProvider>
-  )
+  );
 }
 
-export default LoginForm
+export default LoginForm;

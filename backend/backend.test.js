@@ -1,7 +1,7 @@
-const axios = require("axios")
+const axios = require("axios");
 
-const userPlaylists = require("./backend-services")
-
+const userPlaylists = require("./backend-services");
+jest.mock("axios");
 const currSongData = require('./currentSongData.json');
 
 
@@ -20,8 +20,6 @@ test('fetch current song', () => {
     .catch(error => console.log(error));
     
 });
-
-
 
 test("fetch playlists", () => {
   
@@ -47,16 +45,16 @@ test("fetch playlists", () => {
         },
       ],
     },
-  ]
+  ];
 
-  const resp = { data: mockPlaylists }
+  const resp = { data: mockPlaylists };
 
-  axios.get.mockResolvedValue(resp)
+  axios.get.mockResolvedValue(resp);
 
   // axios.get.mockImplementation( () => Promise.resolve(resp));
 
   userPlaylists
     .getPlaylists()
     .then((data) => expect(data).toEqual(mockPlaylists))
-    .catch((error) => console.log(error))
-})
+    .catch((error) => console.log(error));
+});

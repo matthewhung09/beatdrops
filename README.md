@@ -33,18 +33,15 @@ Only do this if we have already discussed, otherwise create a pull request.
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
-![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/backendMockTests.png)
-
-
-
 ## Style Checker 
 
 Prettier: Style checker that auto-formats your code and allows you to toggle specific formatting rules. Command-line interface and IDE plugins available.
 
 Configuring "Format on Save" in Visual Studio Code:
-1. File 
-2. Preferences 
-3. Settings 
+
+1. File
+2. Preferences
+3. Settings
 4. Search for "Format On Save" and check the box.
 
 ## External Project Docs
