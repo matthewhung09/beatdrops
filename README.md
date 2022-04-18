@@ -32,7 +32,6 @@ Only do this if we have already discussed, otherwise create a pull request.
 ## Code Coverage
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
-![alt text](https://user-images.githubusercontent.com/36245167/163697904-2c9ad0cd-1d1b-4b6b-a439-58e49f33b41b.png)
 
 ## Style Checker 
 
