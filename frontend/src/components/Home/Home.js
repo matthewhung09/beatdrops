@@ -455,6 +455,7 @@ function Home() {
         <div className="posts">
           {postList.map((post, index) => (
             <Post
+              song={post.title}
               key={index}
               timePosted={parseInt(
                 (new Date() - new Date(post.createdAt)) / 3600000

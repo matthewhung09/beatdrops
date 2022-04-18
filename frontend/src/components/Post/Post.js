@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Post({
+  song,
   timePosted,
   likes,
   liked,
@@ -171,7 +172,7 @@ function Post({
       return;
     }
     getSpotifyLikeStatus();
-  }, [token]);
+  }, [token, spotifyId]);
 
   async function getSpotifyLikeStatus() {
     if (spotifyId === undefined) {
