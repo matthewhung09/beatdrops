@@ -338,11 +338,11 @@ function Home() {
 
             console.log(lat, long);
             
-          })
+          }, (error) => {console.log(error);})
         }
       })
     }
-  }, {enableHighAccuracy:true} [lat, long])
+  }, [lat, long])
 
   // use reverse geocoding API to get location based on coordinates
   async function getPostPosition() {
