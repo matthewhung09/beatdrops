@@ -9,6 +9,7 @@ import PostForm from "../PostForm/PostForm"
 import Dropdown from "../Dropdown/Dropdown"
 import axios from "axios"
 import rateLimit from "axios-rate-limit"
+import { GrSystem } from "react-icons/gr"
 
 const code = new URLSearchParams(window.location.search).get("code")
 
@@ -83,6 +84,7 @@ function Home() {
   // geolocation
   const [lat, setLat] = useState()
   const [long, setLong] = useState()
+  const [accuracy, accurate] = useState()
 
   // takes care of rate limiting issues
   const http = rateLimit(axios.create(), {
@@ -95,7 +97,7 @@ function Home() {
   // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`
+      const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}&accuracy=${position.coords.accuracy}`
       axios
         .get(url, { withCredentials: true })
         .then((response) => {
@@ -332,11 +334,15 @@ function Home() {
           navigator.geolocation.getCurrentPosition((position) => {
             setLat(position.coords.latitude)
             setLong(position.coords.longitude)
+            accurate(position.coords.accuracy)
+
+            console.log(lat, long);
+            
           })
         }
       })
     }
-  }, [lat, long])
+  }, {enableHighAccuracy:true} [lat, long])
 
   // use reverse geocoding API to get location based on coordinates
   async function getPostPosition() {
