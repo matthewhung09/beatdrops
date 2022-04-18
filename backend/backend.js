@@ -222,7 +222,9 @@ app.post("/auth/refresh", async (req, res) => {
 });
 
 // Gets current playing song
+//Has been refactored to correspond with backend-services.js
 app.post("/current", async (req, res) => {
+
   const accessToken = req.body.accessToken;
   if (accessToken === undefined) {
     return;
@@ -244,8 +246,8 @@ app.post("/current", async (req, res) => {
   }
 });
 
-//Has been refactored to correspond with backend-services.js
-// Gets users' playlists and tracks for posting from
+// Has been refactored to correspond with backend-services.js
+// Gets users' playlists and tracks for posting from 
 // playlist functionality
 app.post("/playlists", async (req, res) => {
   const accessToken = req.body.accessToken;

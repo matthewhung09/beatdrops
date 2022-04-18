@@ -83,6 +83,7 @@ function Home() {
   // geolocation
   const [lat, setLat] = useState();
   const [long, setLong] = useState();
+  const [accuracy, accurate] = useState();
 
   // takes care of rate limiting issues
   const http = rateLimit(axios.create(), {
@@ -331,8 +332,8 @@ function Home() {
         if (result.state !== "denied") {
           navigator.geolocation.getCurrentPosition((position) => {
             setLat(position.coords.latitude);
-            setLong(position.coords.longitude);
-          });
+            setLong(position.coords.longitude);      
+          }, (error) => {console.log(error);})
         }
       });
     }
