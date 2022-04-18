@@ -84,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Post({
-  song,
   timePosted,
   likes,
   liked,
@@ -222,12 +221,6 @@ function Post({
       <div className="spotify-div">
         <Spotify wide allowtransparency="false" height="118px" link={url} />
         <div className="spotify-actions">
-          {/* <button className="webplayer-buttons" onClick={spotifyLike}>
-                        <BsBookmarkHeart />
-                        {spotifyLikeStatus ===}
-                        {'Save to "Liked Songs"'}
-                    </button> */}
-
           {spotifyLikeStatus === false ? (
             <button className="webplayer-buttons" onClick={spotifyLike}>
               <BsBookmarkHeart />
