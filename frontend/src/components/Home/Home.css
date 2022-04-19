@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 0.6em;
 }
 
 .modal > .header {
@@ -33,7 +34,9 @@
   cursor: pointer;
   position: absolute;
   display: block;
-  padding: 2px 5px;
+  padding: unset;
+  padding-top: 1px;
+  padding-bottom: 3.1px;
   line-height: 20px;
   right: 4px;
   top: 4px;
@@ -42,6 +45,7 @@
   background: black;
   color: white;
   border: 0.1em solid #fff;
+  border-radius: 10em;
 }
 
 .create-btn {
@@ -71,7 +75,7 @@
   border-radius: 0.3em;
   border: none;
   padding: 1em;
-  max-width: 30em;
+  width: 31em;
 }
 
 .button {
@@ -84,7 +88,7 @@
 .header {
   font-family: "Poppins", sans-serif;
   text-align: center;
-  margin-top: 2em;
+  margin-top: 1em;
   line-height: 1.5em;
 }
 

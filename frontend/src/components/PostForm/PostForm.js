@@ -48,11 +48,13 @@ function PostForm({
       <div className="form-content">
         <div className="inputs">
           <h1 className="header"> Post a song </h1>
-          <h2>Song title</h2>
-          <input value={newSong} onChange={onChangeSong} />
-          <h2>Artist name</h2>
-          <input value={newArtist} onChange={onChangeArtist} />
-          {postError && <p> {postError} </p>}
+          <div className="input-content">
+            <h2>Song title</h2>
+            <input value={newSong} onChange={onChangeSong} />
+            <h2>Artist name</h2>
+            <input value={newArtist} onChange={onChangeArtist} />
+            {postError && <p> {postError} </p>}
+          </div>
           <button onClick={onClick} className="btn">
             Post
           </button>
@@ -62,10 +64,8 @@ function PostForm({
           <div className="current">
             {currentlyPlaying && (
               <div>
-                <h2 className="current">Currently streaming:</h2>
-                <p className="current">
-                  {currentlyPlaying.name} by {currentlyPlaying.artists[0].name}
-                </p>
+                <h2 className="current">Currently streaming</h2>
+                <p className="current">{currentlyPlaying.name}</p>
                 <button onClick={postCurrent} className="btn">
                   Post
                 </button>
@@ -83,13 +83,25 @@ function PostForm({
                 )}
                 groupBy={(song) => song.playlistName}
                 getOptionLabel={(song) => `${song.title} by ${song.artist}`}
+                isOptionEqualToValue={(option, value) =>
+                  option.title === value.title && option.artist === value.artist
+                }
                 sx={{ width: 300 }}
+                placement="bottom-start"
                 renderInput={(params) => (
                   <TextField {...params} label="Search by title or artist..." />
                 )}
                 onChange={handleChange}
                 style={{
                   width: "19em",
+                }}
+                renderOption={(props, song) => {
+                  return (
+                    <li {...props} key={Math.random()}>
+                      {/* {option.name} */}
+                      {song.title} by {song.artist}
+                    </li>
+                  );
                 }}
               />
             )}

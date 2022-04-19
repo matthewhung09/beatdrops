@@ -330,10 +330,15 @@ function Home() {
     if (navigator.geolocation) {
       navigator.permissions.query({ name: "geolocation" }).then(function (result) {
         if (result.state !== "denied") {
-          navigator.geolocation.getCurrentPosition((position) => {
-            setLat(position.coords.latitude);
-            setLong(position.coords.longitude);      
-          }, (error) => {console.log(error);})
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              setLat(position.coords.latitude);
+              setLong(position.coords.longitude);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
         }
       });
     }
@@ -386,6 +391,9 @@ function Home() {
               Post a song <IoIosAddCircle className="circle" />
             </button>
           }
+          style={{
+            minWidth: "40em",
+          }}
         >
           {(close) => (
             <div className="modal">

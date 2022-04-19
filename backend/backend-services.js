@@ -129,4 +129,4 @@ exports.getPlaylists = getPlaylists;
 exports.createToken = createToken;
 exports.getPostData = getPostData;
 exports.getAccessToken = getAccessToken;
-exports.getCurrentSong = getCurrentSong;
+// exports.getCurrentSong = getCurrentSong;s
