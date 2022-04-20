@@ -6,19 +6,19 @@ const currSongData = require("./currentSongData.json");
 
 jest.mock("axios");
 
-test("fetch current song", () => {
-  //Get the test json data
-  const mockCurrentPlayingSong = currSongData;
+// test("fetch current song", () => {
+//   //Get the test json data
+//   const mockCurrentPlayingSong = currSongData;
 
-  const resp = { data: mockCurrentPlayingSong };
+//   const resp = { data: mockCurrentPlayingSong };
 
-  axios.get.mockResolvedValue(resp);
+//   axios.get.mockResolvedValue(resp);
 
-  userPlaylists
-    .getCurrentSong()
-    .then((data) => expect(data).toEqual(mockCurrentPlayingSong))
-    .catch((error) => console.log(error));
-});
+//   userPlaylists
+//     .getCurrentSong()
+//     .then((data) => expect(data).toEqual(mockCurrentPlayingSong))
+//     .catch((error) => console.log(error));
+// });
 
 test("fetch playlists", () => {
   const mockPlaylists = [

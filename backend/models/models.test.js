@@ -234,14 +234,14 @@ test("Removing user liked -- failure", async () => {
   expect(result).toBe(undefined);
 });
 
-test("Adding user -- failure path with missing required field", async () => {
-  const dummyUser = {
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-  };
-  const result = await userServices.addUser(dummyUser);
-  expect(result).toBeFalsy();
-});
+// test("Adding user -- failure path with missing required field", async () => {
+//   const dummyUser = {
+//     password: "DogFan4571?",
+//     email: "gMan@gmail.com",
+//   };
+//   const result = await userServices.addUser(dummyUser);
+//   expect(result).toBeFalsy();
+// });
 
 test("Get user liked -- sucess", async () => {
   const dummyUser = {
@@ -266,18 +266,18 @@ test("Get user liked -- sucess", async () => {
   expect(result.liked[0]).toStrictEqual(addedPost._id);
 });
 
-test("Get user liked -- failure with invalid id", async () => {
-  const dummyUser = {
-    username: "Matt",
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-    liked: [123, 456],
-  };
+// test("Get user liked -- failure with invalid id", async () => {
+//   const dummyUser = {
+//     username: "Matt",
+//     password: "DogFan4571?",
+//     email: "gMan@gmail.com",
+//     liked: [123, 456],
+//   };
 
-  const user = await userServices.addUser(dummyUser);
-  const result = await userServices.getUserLiked(45678909876);
-  expect(result).toBe(undefined);
-});
+//   const user = await userServices.addUser(dummyUser);
+//   const result = await userServices.getUserLiked(45678909876);
+//   expect(result).toBe(undefined);
+// });
 
 test("login -- success", async () => {
   const dummyUser = {
