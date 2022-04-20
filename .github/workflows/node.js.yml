@@ -20,7 +20,6 @@ jobs:
         with:
           node-version: "16"
           cache: "npm"
-          cahche-dependency-path: "**/package-lock.json"
       - name: Backend
         working-directory: ./backend
         run: | 
