@@ -1,124 +1,124 @@
-// const mongoose = require("mongoose");
-// const UserSchema = require("./user");
-// const userServices = require("./user-services");
-// const PostSchema = require("./post");
-// const postServices = require("./post-services");
-// const { MongoMemoryServer } = require("mongodb-memory-server");
+const mongoose = require("mongoose");
+const UserSchema = require("./user");
+const userServices = require("./user-services");
+const PostSchema = require("./post");
+const postServices = require("./post-services");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 
-// let mongoServer;
-// let conn;
-// let userModel;
-// let postModel;
-// let userId;
-// let postId;
+let mongoServer;
+let conn;
+let userModel;
+let postModel;
+let userId;
+let postId;
 
-// beforeAll(async () => {
-//   mongoServer = await MongoMemoryServer.create();
-//   const uri = mongoServer.getUri();
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
 
-//   const mongooseOpts = {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   };
+  const mongooseOpts = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
 
-//   conn = await mongoose.createConnection(uri, mongooseOpts);
+  conn = await mongoose.createConnection(uri, mongooseOpts);
 
-//   userModel = conn.model("User", UserSchema);
-//   postModel = conn.model("Post", PostSchema);
+  userModel = conn.model("User", UserSchema);
+  postModel = conn.model("Post", PostSchema);
 
-//   userServices.setConnection(conn);
-//   postServices.setConnection(conn);
-// });
+  userServices.setConnection(conn);
+  postServices.setConnection(conn);
+});
 
-// afterAll(async () => {
-//   await conn.dropDatabase();
-//   await conn.close();
-//   await mongoServer.stop();
-// });
+afterAll(async () => {
+  await conn.dropDatabase();
+  await conn.close();
+  await mongoServer.stop();
+});
 
-// beforeEach(async () => {
-//   //users---------------------------------------------------
+beforeEach(async () => {
+  //users---------------------------------------------------
 
-//   let dummyUser = {
-//     username: "Chuck Norris",
-//     password: "Password2!",
-//     email: "cNorris@gmail.com",
-//     liked: [],
-//   };
-//   let result = new userModel(dummyUser);
-//   await result.save();
+  let dummyUser = {
+    username: "Chuck Norris",
+    password: "Password2!",
+    email: "cNorris@gmail.com",
+    liked: [],
+  };
+  let result = new userModel(dummyUser);
+  await result.save();
 
-//   dummyUser = {
-//     username: "Michael Eisner",
-//     password: "Di5n3yM4gic!",
-//     email: "disney@gmail.com",
-//     liked: [],
-//   };
-//   result = new userModel(dummyUser);
-//   userId = await result.save().id;
+  dummyUser = {
+    username: "Michael Eisner",
+    password: "Di5n3yM4gic!",
+    email: "disney@gmail.com",
+    liked: [],
+  };
+  result = new userModel(dummyUser);
+  userId = await result.save().id;
 
-//   dummyUser = {
-//     username: "Matt",
-//     password: "Password1!",
-//     email: "r@gmail.com",
-//     liked: [],
-//   };
-//   result = new userModel(dummyUser);
-//   await result.save();
+  dummyUser = {
+    username: "Matt",
+    password: "Password1!",
+    email: "r@gmail.com",
+    liked: [],
+  };
+  result = new userModel(dummyUser);
+  await result.save();
 
-//   //posts--------------------------------------------------------
+  //posts--------------------------------------------------------
 
-//   let dummyPost = {
-//     title: "slow",
-//     artist: "Black Midi",
-//     likes: 27,
-//     location: "Frank E Pilling Bldg",
-//     url: "http://temp.com/not?aReal=url/",
-//   };
-//   result = new postModel(dummyPost);
-//   await result.save();
+  let dummyPost = {
+    title: "slow",
+    artist: "Black Midi",
+    likes: 27,
+    location: "Frank E Pilling Bldg",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  result = new postModel(dummyPost);
+  await result.save();
 
-//   dummyPost = {
-//     title: "western",
-//     artist: "Black Midi",
-//     likes: 9,
-//     location: "Frank E Pilling Bldg",
-//     url: "http://temp.com/not?aReal=url/",
-//   };
-//   result = new postModel(dummyPost);
-//   await result.save();
+  dummyPost = {
+    title: "western",
+    artist: "Black Midi",
+    likes: 9,
+    location: "Frank E Pilling Bldg",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  result = new postModel(dummyPost);
+  await result.save();
 
-//   dummyPost = {
-//     title: "Le Festin",
-//     artist: "Remmy the Rat",
-//     likes: 27,
-//     location: "Kennedy Library",
-//     url: "http://temp.com/not?aReal=url/",
-//   };
-//   result = new postModel(dummyPost);
-//   await result.save();
+  dummyPost = {
+    title: "Le Festin",
+    artist: "Remmy the Rat",
+    likes: 27,
+    location: "Kennedy Library",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  result = new postModel(dummyPost);
+  await result.save();
 
-//   dummyPost = {
-//     title: "Just Friends",
-//     artist: "Potsu",
-//     likes: 27,
-//     location: "Dexter Lawn",
-//     url: "http://temp.com/not?aReal=url/",
-//   };
-//   result = new postModel(dummyPost);
-//   postId = await result.save().id;
-// });
+  dummyPost = {
+    title: "Just Friends",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  result = new postModel(dummyPost);
+  postId = await result.save().id;
+});
 
-// afterEach(async () => {
-//   await userModel.deleteMany();
-//   await postModel.deleteMany();
-// });
+afterEach(async () => {
+  await userModel.deleteMany();
+  await postModel.deleteMany();
+});
 
-// test("Fetching all users", async () => {
-//   const users = await userServices.getUsers();
-//   expect(users).toBeDefined();
-//   expect(users.length).toBeGreaterThan(0);
-// });
+test("Fetching all users", async () => {
+  const users = await userServices.getUsers();
+  expect(users).toBeDefined();
+  expect(users.length).toBeGreaterThan(0);
+});
 
 // test("Fetching by invalid id format", async () => {
 //   const anyId = "123";
