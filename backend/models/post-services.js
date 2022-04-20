@@ -103,7 +103,6 @@ async function findPostByTitleAndArtist(title, artist) {
 }
 
 async function findDuplicates(post) {
-  console.log("looking for duplicates")
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.find(
     {"title": post.title, "artist": post.artist,
@@ -113,7 +112,6 @@ async function findDuplicates(post) {
 }
 
 async function updateDuplicate(post) {
-  console.log("updating duplicates");
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.findOneAndUpdate(
     { "title": post.title, "artist": post.artist,

@@ -219,7 +219,6 @@ function Home() {
         setPosts([result.data, ...postList]);
         success = true;
       } else if (result.status === 200) {
-        console.log("this is so cool");
         setPosts(postList);
         success = true;
       } else {
