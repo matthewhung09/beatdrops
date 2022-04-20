@@ -89,6 +89,7 @@ function Post({
   location,
   spotifyLike,
   allPlaylists,
+  playlists,
   token,
 }) {
   // first part of location message based on post time
@@ -109,7 +110,7 @@ function Post({
 
   const handleChange = (e) => {
     setSelectedPlaylist(e.target.value);
-    console.log(selectedPlaylist);
+    //console.log(selectedPlaylist);
   };
 
   useEffect(() => {
@@ -148,12 +149,43 @@ function Post({
   }
 
   function findPlaylistId() {
-    // console.log(allPlaylists);
+     //console.log(allPlaylists);
+    // console.log(playlists);
 
-    for (let i = 0; i < allPlaylists.length; i++) {
-      let playlist = allPlaylists.find((item) => item.name === selectedPlaylist);
+     for(let i = 0; i < playlists.length; i++) {
+        console.log(playlists[i].name);
+        console.log(playlists[i].id);
+
+     }
+
+    let userPlaylists = [];
+
+   // for (let i = 0; i < response.data.items.length; i++) {
+   //   userPlaylists.push({
+    //    name: response.data.items[i].name,
+    //    id: response.data.items[i].id,
+    //  });
+   // }
+
+    for(let i = 0; i < playlists.length; i++) {
+
+      userPlaylists.push({
+        name: playlists[i].name,
+        id: playlists[i].id
+      });
+     console.log(playlists);
+    }
+  //  }
+  //  for (let i = 0; i < allPlaylists.length; i++) {
+    //  let playlist = allPlaylists.find((item) => item[i].name === selectedPlaylist);
+      //if (playlist) return playlist.id;
+    //}
+
+    for (let i = 0; i < userPlaylists.length; i++) {
+      let playlist = userPlaylists.find((item) => item[i].name === selectedPlaylist);
       if (playlist) return playlist.id;
     }
+    //}
   }
 
   return (
@@ -205,8 +237,8 @@ function Post({
                       input={<OutlinedInput label="Name" />}
                       MenuProps={MenuProps}
                     >
-                      {allPlaylists &&
-                        allPlaylists.map((playlist, index) => (
+                      {playlists &&
+                        playlists.map((playlist, index) => (
                           <MenuItem key={index} value={playlist.name}>
                             {playlist.name}
                           </MenuItem>
