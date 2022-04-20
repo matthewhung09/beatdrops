@@ -79,7 +79,7 @@ app.post("/create", async (req, res) => {
   const new_post = await limiter.schedule(() =>
     backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
   );
-  const dup = await postServices.getPosts(new_post.title, new_post.artist);
+  const dup = await postServices.findDuplicates(new_post);
 
   if (!new_post) {
     res.status(500).end();
@@ -92,7 +92,7 @@ app.post("/create", async (req, res) => {
       res.status(500).end();
     }
   } else {
-    await postServices.updateDuplicate(new_post.title, new_post.artist);
+    await postServices.updateDuplicate(new_post);
     res.status(200).end();
   }
 });
