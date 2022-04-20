@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-backend:
@@ -28,12 +28,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: "npm"
       - name: backend
-      -  run: npm ci
-      -  run: npm run build --if-present
-      -  run: npm test
-        
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+
   build-frontend:
     defaults:
       run:
@@ -52,6 +52,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: "npm"
       - name: backend
       - run: npm ci
