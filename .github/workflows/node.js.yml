@@ -18,8 +18,9 @@ jobs:
       - name: Use Node.js 
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
           cache: "npm"
+          cahche-dependency-path: "**/package-lock.json"
       - name: Backend
         working-directory: ./backend
         run: | 
