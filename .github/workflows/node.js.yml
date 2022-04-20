@@ -25,11 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - name: backend
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
@@ -37,7 +36,7 @@ jobs:
   build-frontend:
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./frontend
 
     runs-on: ubuntu-latest
 
@@ -49,9 +48,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - name: backend
       - run: npm ci
