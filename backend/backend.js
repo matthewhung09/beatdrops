@@ -84,6 +84,7 @@ app.post("/create", async (req, res) => {
   if (!new_post) {
     res.status(500).end();
   } else if (dup.length === 0) {
+    console.log("no dulplicates");
     let post = await postServices.addPost(new_post);
     if (post) {
       console.log(post);
@@ -92,8 +93,14 @@ app.post("/create", async (req, res) => {
       res.status(500).end();
     }
   } else {
-    await postServices.updateDuplicate(new_post);
-    res.status(200).end();
+    console.log("duplicate post");
+    let post = await postServices.updateDuplicate(new_post);
+    if (post){
+      res.status(200).end();
+    }
+    else{
+      res.status(500).end();
+    }
   }
 });
 

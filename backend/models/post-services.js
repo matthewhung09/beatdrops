@@ -103,6 +103,7 @@ async function findPostByTitleAndArtist(title, artist) {
 }
 
 async function findDuplicates(post) {
+  console.log("looking for duplicates")
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.find(
     {"title": post.title, "artist": post.artist,
@@ -112,8 +113,9 @@ async function findDuplicates(post) {
 }
 
 async function updateDuplicate(post) {
+  console.log("updating duplicates");
   const postModel = getDbConnection().model("Post", PostSchema);
-  postModel.findOneAndUpdate(
+  return await postModel.findOneAndUpdate(
     { "title": post.title, "artist": post.artist,
       "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
       "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },},
