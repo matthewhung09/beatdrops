@@ -88,7 +88,6 @@ function Post({
   updateLikes,
   location,
   spotifyLike,
-  allPlaylists,
   playlists,
   token,
 }) {
@@ -148,24 +147,10 @@ function Post({
     }
   }
 
+  //Refactored - parsed name and id of the json playlists endpoint
   function findPlaylistId() {
-     //console.log(allPlaylists);
-    // console.log(playlists);
-
-     for(let i = 0; i < playlists.length; i++) {
-        console.log(playlists[i].name);
-        console.log(playlists[i].id);
-
-     }
 
     let userPlaylists = [];
-
-   // for (let i = 0; i < response.data.items.length; i++) {
-   //   userPlaylists.push({
-    //    name: response.data.items[i].name,
-    //    id: response.data.items[i].id,
-    //  });
-   // }
 
     for(let i = 0; i < playlists.length; i++) {
 
@@ -173,19 +158,12 @@ function Post({
         name: playlists[i].name,
         id: playlists[i].id
       });
-     console.log(playlists);
     }
-  //  }
-  //  for (let i = 0; i < allPlaylists.length; i++) {
-    //  let playlist = allPlaylists.find((item) => item[i].name === selectedPlaylist);
-      //if (playlist) return playlist.id;
-    //}
 
     for (let i = 0; i < userPlaylists.length; i++) {
-      let playlist = userPlaylists.find((item) => item[i].name === selectedPlaylist);
+      let playlist = userPlaylists.find((item) => item.name === selectedPlaylist);
       if (playlist) return playlist.id;
     }
-    //}
   }
 
   return (
