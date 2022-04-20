@@ -331,6 +331,8 @@ function Home() {
         if (result.state !== "denied") {
           navigator.geolocation.getCurrentPosition(
             (position) => {
+              //console.log("lat: " + position.coords.latitude + ", long: " + position.coords.longitude);
+              //console.log("acc: " + position.coords.accuracy);
               setLat(position.coords.latitude);
               setLong(position.coords.longitude);
             },
