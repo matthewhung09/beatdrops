@@ -24,6 +24,7 @@
     "mongodb-memory-server": "^8.4.0",
     "mongoose": "^6.2.1",
     "mongoose-unique-validator": "^3.0.0",
+    "prettier": "^2.6.2",
     "validator": "^13.7.0"
   },
   "devDependencies": {
