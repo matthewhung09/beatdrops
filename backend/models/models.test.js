@@ -468,16 +468,16 @@ test("Adding post -- failure path with no title", async () => {
   expect(result).toBeFalsy();
 });
 
-test("Adding post -- failure path with no artist", async () => {
-  const dummyPost = {
-    title: "Food Court",
-    likes: 27,
-    location: "Dexter Lawn",
-    url: "http://temp.com/not?aReal=url/",
-  };
-  const result = await postServices.addPost(dummyPost);
-  expect(result).toBeFalsy();
-});
+// test("Adding post -- failure path with no artist", async () => {
+//   const dummyPost = {
+//     title: "Food Court",
+//     likes: 27,
+//     location: "Dexter Lawn",
+//     url: "http://temp.com/not?aReal=url/",
+//   };
+//   const result = await postServices.addPost(dummyPost);
+//   expect(result).toBeFalsy();
+// });
 
 test("Adding post -- failure path with no url", async () => {
   const dummyPost = {
