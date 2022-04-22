@@ -79,21 +79,27 @@ app.post("/create", async (req, res) => {
   const new_post = await limiter.schedule(() =>
     backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
   );
-  const dup = await postServices.getPosts(new_post.title, new_post.artist);
-
+  console.log(new_post);
   if (!new_post) {
     res.status(500).end();
-  } else if (dup.length === 0) {
-    let post = await postServices.addPost(new_post);
-    if (post) {
-      console.log(post);
-      res.status(201).json(post);
-    } else {
-      res.status(500).end();
-    }
   } else {
-    await postServices.updateDuplicate(new_post.title, new_post.artist);
-    res.status(200).end();
+    const dup = await postServices.findDuplicates(new_post);
+
+    if (dup.length === 0) {
+      let post = await postServices.addPost(new_post);
+      if (post) {
+        res.status(201).json(post);
+      } else {
+        res.status(500).end();
+      }
+    } else {
+      let post = await postServices.updateDuplicate(new_post);
+      if (post) {
+        res.status(200).end();
+      } else {
+        res.status(500).end();
+      }
+    }
   }
 });
 

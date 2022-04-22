@@ -18,6 +18,7 @@ const PostSchema = new mongoose.Schema(
       type: Date,
       default: new Date(),
       required: true,
+      expires: 259200,
     },
     location: {
       name: String,

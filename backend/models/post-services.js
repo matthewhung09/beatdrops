@@ -102,11 +102,22 @@ async function findPostByTitleAndArtist(title, artist) {
   return await postModel.find({ title: title, artist: artist });
 }
 
-async function updateDuplicate(title, artist) {
+async function findDuplicates(post) {
   const postModel = getDbConnection().model("Post", PostSchema);
-  postModel.findOneAndUpdate(
-    { title: title, artist: artist },
-    { $inc: { reposts: 1 }, lastPosted: new Date() }
+  return await postModel.find(
+    {"title": post.title, "artist": post.artist,
+    "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
+    "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },}
+    );
+}
+
+async function updateDuplicate(post) {
+  const postModel = getDbConnection().model("Post", PostSchema);
+  return await postModel.findOneAndUpdate(
+    { "title": post.title, "artist": post.artist,
+      "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
+      "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },},
+    { $inc: { reposts: 1 }, lastPosted: new Date(), location: post.location }
   );
 }
 
@@ -118,3 +129,4 @@ exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
 exports.findPostById = findPostById;
 exports.setConnection = setConnection;
+exports.findDuplicates = findDuplicates;

@@ -219,7 +219,6 @@ function Home() {
         setPosts([result.data, ...postList]);
         success = true;
       } else if (result.status === 200) {
-        console.log("this is so cool");
         setPosts(postList);
         success = true;
       } else {
@@ -314,6 +313,8 @@ function Home() {
         if (result.state !== "denied") {
           navigator.geolocation.getCurrentPosition(
             (position) => {
+              //console.log("lat: " + position.coords.latitude + ", long: " + position.coords.longitude);
+              //console.log("acc: " + position.coords.accuracy);
               setLat(position.coords.latitude);
               setLong(position.coords.longitude);
             },
