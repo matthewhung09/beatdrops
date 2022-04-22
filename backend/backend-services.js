@@ -50,6 +50,10 @@ async function getPostData(song, artist, location) {
         Authorization: `Bearer ${access_token}`,
       },
     });
+    if (response.data.tracks.items.length === 0) {
+      console.log("her");
+      return false;
+    }
     const song_url = response.data.tracks.items[0].external_urls.spotify;
 
     // Get actual song name and artist in case of mispellings/typos
