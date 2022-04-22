@@ -21,6 +21,7 @@
     "nominatim-client": "^3.2.1",
     "nominatim-geocode": "^1.1.0",
     "nominatim-search": "^1.0.2",
+    "prettier": "^2.6.2",
     "react": "^17.0.2",
     "react-cookie": "^4.1.1",
     "react-dom": "^17.0.2",
@@ -41,7 +42,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "prettier --check .",
+    "test1": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

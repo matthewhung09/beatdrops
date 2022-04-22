@@ -1,6 +1,10 @@
 import { React, useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { RiPlayListAddLin, RiPlayListFill, RiUserLocationFill } from "react-icons/ri";
+import {
+  RiPlayListAddLin,
+  RiPlayListFill,
+  RiUserLocationFill,
+} from "react-icons/ri";
 import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
 import { BsBookmarkHeartFill, BsBookmarkHeart } from "react-icons/bs";
 import { TiLocation } from "react-icons/ti";
@@ -89,6 +93,7 @@ function Post({
   location,
   spotifyLike,
   playlists,
+  spotifyId,
   token,
 }) {
   // first part of location message based on post time
@@ -162,7 +167,60 @@ function Post({
 
     for (let i = 0; i < userPlaylists.length; i++) {
       let playlist = userPlaylists.find((item) => item.name === selectedPlaylist);
+  
       if (playlist) return playlist.id;
+    }
+  }
+
+  const [spotifyLikeStatus, setSpotifyLikeStatus] = useState(false);
+
+  useEffect(() => {
+    if (token === undefined) {
+      return;
+    }
+    getSpotifyLikeStatus();
+  }, [token, spotifyId]);
+
+  async function getSpotifyLikeStatus() {
+    if (spotifyId === undefined) {
+      return;
+    }
+    const queryparam = `ids=${spotifyId}`;
+    try {
+      const status = await axios.get(
+        "https://api.spotify.com/v1/me/tracks/contains?" + queryparam,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setSpotifyLikeStatus(status.data[0]);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async function spotifyLike() {
+    const data = {
+      ids: [spotifyId],
+    };
+    try {
+      const response = await axios.put(
+        "https://api.spotify.com/v1/me/tracks",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setSpotifyLikeStatus(true);
+      return response;
+    } catch (error) {
+      return false;
     }
   }
 
@@ -171,22 +229,17 @@ function Post({
       <div className="spotify-div">
         <Spotify wide allowtransparency="false" height="118px" link={url} />
         <div className="spotify-actions">
-          <button className="webplayer-buttons" onClick={spotifyLike}>
-            <BsBookmarkHeart />
-            {'Save to "Liked Songs"'}
-          </button>
-
-          {/* {liked === false ? (
-                        <button className="webplayer-buttons" onClick={spotifyLike}>
-                            <BsBookmarkHeart />
-                            {'Save to "Liked Songs"'}
-                        </button>
-                    ) : (
-                        <button className="webplayer-buttons" onClick={spotifyLike}>
-                            <BsBookmarkHeartFill />
-                            {'Saved to "Liked Songs"'}
-                        </button>
-                    )} */}
+          {spotifyLikeStatus === false ? (
+            <button className="webplayer-buttons" onClick={spotifyLike}>
+              <BsBookmarkHeart />
+              {'Save to "Liked Songs"'}
+            </button>
+          ) : (
+            <button className="webplayer-buttons">
+              <BsBookmarkHeartFill />
+              {'Saved to "Liked Songs"'}
+            </button>
+          )}
           <Popup
             // closeOnDocumentClick
             modal
@@ -206,7 +259,9 @@ function Post({
                 </button>
                 <div className="content">
                   <FormControl sx={{ m: 1, width: "100%" }}>
-                    <InputLabel id="demo-multiple-name-label">Choose a playlist...</InputLabel>
+                    <InputLabel id="demo-multiple-name-label">
+                      Choose a playlist...
+                    </InputLabel>
                     <Select
                       labelId="demo-multiple-name-label"
                       id="demo-multiple-name"

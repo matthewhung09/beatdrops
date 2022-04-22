@@ -281,24 +281,6 @@ function Home() {
     });
   }
 
-  async function spotifyLike(spotify_id) {
-    const data = {
-      ids: [spotify_id],
-    };
-    try {
-      const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      return response;
-    } catch (error) {
-      return false;
-    }
-  }
-
   /* ------ logout ------ */
 
   useEffect(() => {
@@ -450,7 +432,7 @@ function Home() {
               url={post.url}
               updateLikes={() => updateLikes(post._id)}
               location={post.location.name}
-              spotifyLike={() => spotifyLike(post.spotify_id)}
+              spotifyId={post.spotify_id}
               allPlaylists={allPlaylists}
               playlists={playlists}
               token={accessToken}
