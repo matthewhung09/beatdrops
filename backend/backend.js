@@ -267,39 +267,6 @@ app.post("/playlists", async (req, res) => {
   }
 });
 
-//Get user's playlist for adding song to playlist functionality
-app.post("/playlistNames", async (req, res) => {
-  const accessToken = req.body.accessToken;
-  if (accessToken === undefined) {
-    return;
-  }
-
-  try {
-    let response = await axios.get(`${baseURI}/me/playlists`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    let userPlaylists = [];
-
-    for (let i = 0; i < response.data.items.length; i++) {
-      userPlaylists.push({
-        name: response.data.items[i].name,
-        id: response.data.items[i].id,
-      });
-    }
-
-    res.json({
-      allPlaylists: userPlaylists,
-    });
-  } catch (error) {
-    res.status(500).send(error);
-    console.log(error);
-  }
-});
-
 app.post("/update", checkUser, async (req, res) => {
   console.log("here");
   const refreshToken = req.body.refreshToken;

@@ -434,6 +434,7 @@ function Home() {
               location={post.location.name}
               spotifyId={post.spotify_id}
               allPlaylists={allPlaylists}
+              playlists={playlists}
               token={accessToken}
               //setAllPlaylist={setAllPlaylist}
             />

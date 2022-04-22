@@ -91,8 +91,9 @@ function Post({
   url,
   updateLikes,
   location,
+  spotifyLike,
+  playlists,
   spotifyId,
-  allPlaylists,
   token,
 }) {
   // first part of location message based on post time
@@ -113,7 +114,7 @@ function Post({
 
   const handleChange = (e) => {
     setSelectedPlaylist(e.target.value);
-    console.log(selectedPlaylist);
+    //console.log(selectedPlaylist);
   };
 
   useEffect(() => {
@@ -151,13 +152,22 @@ function Post({
     }
   }
 
+  //Refactored - parsed name and id of the json playlists endpoint
   function findPlaylistId() {
-    // console.log(allPlaylists);
 
-    for (let i = 0; i < allPlaylists.length; i++) {
-      let playlist = allPlaylists.find(
-        (item) => item.name === selectedPlaylist
-      );
+    let userPlaylists = [];
+
+    for(let i = 0; i < playlists.length; i++) {
+
+      userPlaylists.push({
+        name: playlists[i].name,
+        id: playlists[i].id
+      });
+    }
+
+    for (let i = 0; i < userPlaylists.length; i++) {
+      let playlist = userPlaylists.find((item) => item.name === selectedPlaylist);
+  
       if (playlist) return playlist.id;
     }
   }
@@ -260,8 +270,8 @@ function Post({
                       input={<OutlinedInput label="Name" />}
                       MenuProps={MenuProps}
                     >
-                      {allPlaylists &&
-                        allPlaylists.map((playlist, index) => (
+                      {playlists &&
+                        playlists.map((playlist, index) => (
                           <MenuItem key={index} value={playlist.name}>
                             {playlist.name}
                           </MenuItem>
