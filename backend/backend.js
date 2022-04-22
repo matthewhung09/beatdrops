@@ -34,6 +34,7 @@ const auth_token = Buffer.from(
   "utf-8"
 ).toString("base64");
 
+
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
@@ -86,10 +87,11 @@ app.post("/create", checkUser, async (req, res) => {
       req.body.location
     )
   );
+  const dup = await postServices.getPosts(new_post.title, new_post.artist);
 
   if (!new_post) {
     res.status(500).end();
-  } else {
+  } else if (dup.length === 0) {
     let post = await postServices.addPost(new_post);
     if (post) {
       console.log(post);
@@ -97,6 +99,9 @@ app.post("/create", checkUser, async (req, res) => {
     } else {
       res.status(500).end();
     }
+  } else {
+    await postServices.updateDuplicate(new_post.title, new_post.artist);
+    res.status(200).end();
   }
 });
 
@@ -152,6 +157,7 @@ app.post("/login", async (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/");
+
 });
 
 app.post("/auth/callback", async (req, res) => {

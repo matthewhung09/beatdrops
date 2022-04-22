@@ -88,6 +88,8 @@ function Home() {
   // geolocation
   const [lat, setLat] = useState();
   const [long, setLong] = useState();
+  const [accuracy, accurate] = useState();
+
 
   // takes care of rate limiting issues
   const http = rateLimit(axios.create(), {
@@ -168,7 +170,7 @@ function Home() {
         console.log(error);
       });
   }
-
+  
   const [allPlaylists, setAllPlaylist] = useState([]);
 
   async function getUsersPlaylist() {
@@ -183,6 +185,7 @@ function Home() {
           // console.log("info: " + JSON.stringify(res.data.allPlaylists));
           // console.log("info: " + res.data.allPlaylists);
           setAllPlaylist(res.data.allPlaylists);
+
         }
       })
       .catch((error) => {
@@ -238,6 +241,9 @@ function Home() {
     await makePostCall(song, artist).then((result) => {
       if (result && result.status === 201) {
         setPosts([result.data, ...postList]);
+        success = true;
+      } else if (result.status === 200) {
+        setPosts(postList);
         success = true;
       } else {
         success = false;
@@ -304,12 +310,10 @@ function Home() {
           elem,
           ...postList.slice(objIndex + 1),
         ];
-        setPosts(newArr);
       }
     });
   }
 
-  const [isClicked, setIsClicked] = useState(false);
 
   /* ------ logout ------ */
 
@@ -384,6 +388,8 @@ function Home() {
           setSelected={setUserSetting}
           purpose="user"
         />
+
+        <Dropdown selected={userSetting} setSelected={setUserSetting} purpose="user" />
       </div>
       <div className="header">
         <h1>beatdrops</h1>
@@ -405,6 +411,9 @@ function Home() {
               Post a song <IoIosAddCircle className="circle" />
             </button>
           }
+          style={{
+            minWidth: "40em",
+          }}
         >
           {(close) => (
             <div className="modal">
@@ -435,7 +444,7 @@ function Home() {
                       : setPostError(postErrMsg);
                   }}
                   postFromPlaylist={async (value) => {
-                    let songInfo = value.split(",");
+                    let songInfo = value.split("by");
                     let title = songInfo[0];
                     let artist = songInfo[1];
                     setNewSong(title);
@@ -469,7 +478,6 @@ function Home() {
               spotifyId={post.spotify_id}
               allPlaylists={allPlaylists}
               token={accessToken}
-              // isClicked={IsClicked}
               //setAllPlaylist={setAllPlaylist}
             />
           ))}

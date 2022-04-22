@@ -1,52 +1,52 @@
 body {
-    background: #fcfcfc;
+  background: #fcfcfc;
 }
 
 .dropdown {
-    position: relative;
-    z-index: 10;
-    transform: scale(1.1);
+  position: relative;
+  z-index: 10;
+  transform: scale(1.1);
 }
 
 .dropdown .dropdown-btn {
-    padding: 0.8em;
-    background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-    font-weight: bold;
-    color: #333;
-    display: flex;
-    cursor: pointer;
-    justify-content: space-between;
-    font-size: small;
-    width: 13em;
-    padding-left: 0.9em;
-    border-radius: 0.2em;
+  padding: 0.8em;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  cursor: pointer;
+  justify-content: space-between;
+  font-size: small;
+  width: 13em;
+  padding-left: 0.9em;
+  border-radius: 0.2em;
 }
 
 .dropdown .dropdown-content {
-    position: absolute;
-    top: 110%;
-    padding: 0.5em;
-    background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.233) 0px 3px 12px;
-    font-weight: 500;
-    color: #333;
-    width: 13.7em;
-    font-size: small;
-    border-radius: 0.2em;
+  position: absolute;
+  top: 110%;
+  padding: 0.5em;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.233) 0px 3px 12px;
+  font-weight: 500;
+  color: #333;
+  width: 13.7em;
+  font-size: small;
+  border-radius: 0.2em;
 }
 
 .dropdown .dropdown-content .dropdown-item {
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-bottom: 1px solid rgb(230, 230, 230);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 1px solid rgb(230, 230, 230);
 }
 
 .dropdown .dropdown-content .dropdown-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .dropdown .dropdown-content .dropdown-item:hover {
-    font-weight: bold;
+  font-weight: bold;
 }

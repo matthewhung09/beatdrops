@@ -1,33 +1,106 @@
 .actions {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .btn {
-    background-color: black;
-    width: 15em;
-    padding: 0.7em;
-    font-size: 1em;
-    margin-bottom: -1.3em;
-    cursor: pointer;
+  background-color: black;
+  min-width: 10em;
+  width: 100%;
+  padding: 0.7em;
+  font-size: large;
+  cursor: pointer;
+  margin: unset;
 }
 
 input {
-    margin-bottom: 1em;
-    width: 12em;
-    padding: 0.4em;
+  margin-bottom: 1em;
+  padding: 0.4em;
+  /* width: 100%; */
 }
 
 .form-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0.2em;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 10em;
+  padding: 8em 0;
+  padding-right: 2em;
+  /* background-color: azure; */
+}
+
+.form-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transform: scale(0.92);
+  /* border: 1px solid salmon; */
+  width: fit-content;
+  /* background-color: antiquewhite; */
+}
+
+.autofill {
+  display: flex;
+  flex-direction: column;
+  margin-left: 2em;
+  /* justify-content: space-between; */
+  height: 100%;
+}
+
+.divider {
+  width: 0.3em;
+  border-radius: 10em;
+  background-color: rgba(37, 37, 37, 0.164);
+  height: 115%;
+}
+
+.input-content {
+  margin: 2em 0;
 }
 
 .inputs {
-    display: flex;
-    flex-direction: row;
-    transform: scale(1.1);
-    column-gap: 1em;
+  display: flex;
+  flex-direction: column;
+  /* background-color: aliceblue; */
+  height: 100%;
+  align-items: left;
+  margin-right: 4em;
+  min-height: 25em;
+  width: 100%;
+  /* min-width: 13em; */
+  justify-content: space-around;
+  margin-top: -35px;
+  /* border: 4px solid black; */
+}
+
+input {
+  font-size: medium;
+  opacity: 65%;
+  padding: 0.7em 0.7em;
+  /* width: 17em !important; */
+}
+
+h1.header {
+  margin: unset;
+  margin-top: 1.3em;
+  margin-left: -2.2em;
+}
+
+h2 {
+  margin-bottom: 1.5em;
+}
+
+h2.current {
+  line-height: unset;
+  margin-bottom: -0.5em;
+}
+
+p.current {
+  font-size: 2em;
+  font-weight: 600;
+  color: black;
+}
+
+div.current {
+  margin-bottom: 4em;
 }
