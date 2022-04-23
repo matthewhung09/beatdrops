@@ -1,10 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import {
-  RiPlayListAddLin,
-  RiPlayListFill,
-  RiUserLocationFill,
-} from "react-icons/ri";
+import { RiPlayListAddLin, RiPlayListFill, RiUserLocationFill } from "react-icons/ri";
 import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
 import { BsBookmarkHeartFill, BsBookmarkHeart } from "react-icons/bs";
 import { TiLocation } from "react-icons/ti";
@@ -154,20 +150,18 @@ function Post({
 
   //Refactored - parsed name and id of the json playlists endpoint
   function findPlaylistId() {
-
     let userPlaylists = [];
 
-    for(let i = 0; i < playlists.length; i++) {
-
+    for (let i = 0; i < playlists.length; i++) {
       userPlaylists.push({
         name: playlists[i].name,
-        id: playlists[i].id
+        id: playlists[i].id,
       });
     }
 
     for (let i = 0; i < userPlaylists.length; i++) {
       let playlist = userPlaylists.find((item) => item.name === selectedPlaylist);
-  
+
       if (playlist) return playlist.id;
     }
   }
@@ -207,16 +201,12 @@ function Post({
       ids: [spotifyId],
     };
     try {
-      const response = await axios.put(
-        "https://api.spotify.com/v1/me/tracks",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       setSpotifyLikeStatus(true);
       return response;
     } catch (error) {
@@ -259,9 +249,7 @@ function Post({
                 </button>
                 <div className="content">
                   <FormControl sx={{ m: 1, width: "100%" }}>
-                    <InputLabel id="demo-multiple-name-label">
-                      Choose a playlist...
-                    </InputLabel>
+                    <InputLabel id="demo-multiple-name-label">Choose a playlist...</InputLabel>
                     <Select
                       labelId="demo-multiple-name-label"
                       id="demo-multiple-name"
