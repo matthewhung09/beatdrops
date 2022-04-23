@@ -51,7 +51,7 @@ beforeEach(async () => {
   dummyUser = {
     username: "Michael Eisner",
     password: "Di5n3yM4gic!",
-    email: "disney@gmail.com",
+    email: "newemail@gmail.com",
     liked: [],
   };
   result = new userModel(dummyUser);
