@@ -114,12 +114,6 @@ afterEach(async () => {
   await postModel.deleteMany();
 });
 
-test("Fetching all users", async () => {
-  const users = await userServices.getUsers();
-  expect(users).toBeDefined();
-  expect(users.length).toBeGreaterThan(0);
-});
-
 test("Fetching by invalid id format", async () => {
   const anyId = "123";
   const user = await userServices.findUserById(anyId);
@@ -221,18 +215,18 @@ test("Removing user liked -- succuess", async () => {
   expect(result.liked).toStrictEqual([]);
 });
 
-// test("Removing user liked -- failure", async () => {
-//   const dummyPost = {
-//     title: "Food Court",
-//     artist: "Potsu",
-//     likes: 27,
-//     location: "Dexter Lawn",
-//     url: "http://temp.com/not?aReal=url/",
-//   };
-//   const addedPost = await postServices.addPost(dummyPost);
-//   let result = await userServices.removeUserLiked(1234567, addedPost._id);
-//   expect(result).toBe(undefined);
-// });
+test("Removing user liked -- failure", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  const addedPost = await postServices.addPost(dummyPost);
+  let result = await userServices.removeUserLiked(1234567, addedPost._id);
+  expect(result).toBe(undefined);
+});
 
 test("Adding user -- failure path with missing required field", async () => {
   const dummyUser = {
@@ -265,18 +259,26 @@ test("Get user liked -- sucess", async () => {
   expect(result.liked[0]).toStrictEqual(addedPost._id);
 });
 
-// test("Get user liked -- failure with invalid id", async () => {
-//   const dummyUser = {
-//     username: "Matt",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: [123, 456],
-//   };
-
-//   const user = await userServices.addUser(dummyUser);
-//   const result = await userServices.getUserLiked(45678909876);
-//   expect(result).toBe(undefined);
-// });
+test("Get user liked -- failure with invalid id", async () => {
+  const dummyPost = {
+    title: "Food Court",
+    artist: "Potsu",
+    likes: 27,
+    location: "Dexter Lawn",
+    url: "http://temp.com/not?aReal=url/",
+  };
+  const dummyUser = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const addedUser = await userServices.addUser(dummyUser);
+  const addedPost = await postServices.addPost(dummyPost);
+  let res = await userServices.addUserLiked(addedUser._id, addedPost._id);
+  const result = await userServices.getUserLiked(45678909876);
+  expect(result).toBe(undefined);
+});
 
 test("login -- success", async () => {
   const dummyUser = {
@@ -298,7 +300,6 @@ test("login -- failure with invalid password", async () => {
   //   email: "gMan@gmail.com",
   //   liked: []
   // };
-  const all_users = await userServices.getUsers();
   try {
     await userServices.login("cnorris@gmail.com", "hghjhgcghgf");
     fail("error should be thrown");
@@ -353,10 +354,34 @@ test("login -- failure with invalid email", async () => {
 //   await expect(userServices.addUser(anotherDummyUser)).rejects.toThrow();
 // });
 
-test("Fetching all posts", async () => {
-  const posts = await postServices.getPosts();
-  expect(posts).toBeDefined();
-  expect(posts.length).toBeGreaterThan(0);
+test("Refresh token -- sucess", async () => {
+  const dummyUser = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const result = new userModel(dummyUser);
+  const addedUser = await result.save();
+  const refreshToken = "asdfasdfasdfasdfsadf";
+  const user = await userServices.updateRefresh(addedUser.id, refreshToken);
+  console.log(user);
+  expect(user).toBeDefined();
+  expect(user.refresh_token).toBe(refreshToken);
+});
+
+test("Refresh token -- failure", async () => {
+  const dummyUser = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const result = new userModel(dummyUser);
+  const addedUser = await result.save();
+  const refreshToken = "asdfasdfasdfasdfsadf";
+  const user = await userServices.updateRefresh("randomID", refreshToken);
+  expect(user).toBe(undefined);
 });
 
 test("Fetching post by title and artist", async () => {

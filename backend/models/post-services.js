@@ -30,13 +30,7 @@ async function getPostsByLocation(lat, long) {
 async function getPosts(title, artist) {
   const postModel = getDbConnection().model("Post", PostSchema);
   let result;
-  if (title === undefined && artist === undefined) {
-    result = await postModel.find();
-  } else if (title && !artist) {
-    result = findPostByTitle(title);
-  } else if (!title && artist) {
-    result = findPostByArtist(artist);
-  } else if (title && artist) {
+  if (title && artist) {
     result = findPostByTitleAndArtist(title, artist);
   }
   return result;
@@ -78,25 +72,6 @@ async function updateLikeStatus(id, liked_status) {
   }
 }
 
-async function findPostById(id) {
-  const postModel = getDbConnection().model("Post", PostSchema);
-  try {
-    return await postModel.findById(id);
-  } catch (error) {
-    return undefined;
-  }
-}
-
-async function findPostByTitle(title) {
-  const postModel = getDbConnection().model("Post", PostSchema);
-  return await postModel.find({ title: title });
-}
-
-async function findPostByArtist(artist) {
-  const postModel = getDbConnection().model("Post", PostSchema);
-  return await postModel.find({ artist: artist });
-}
-
 async function findPostByTitleAndArtist(title, artist) {
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.find({ title: title, artist: artist });
@@ -104,19 +79,23 @@ async function findPostByTitleAndArtist(title, artist) {
 
 async function findDuplicates(post) {
   const postModel = getDbConnection().model("Post", PostSchema);
-  return await postModel.find(
-    {"title": post.title, "artist": post.artist,
+  return await postModel.find({
+    title: post.title,
+    artist: post.artist,
     "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
-    "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },}
-    );
+    "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },
+  });
 }
 
 async function updateDuplicate(post) {
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.findOneAndUpdate(
-    { "title": post.title, "artist": post.artist,
+    {
+      title: post.title,
+      artist: post.artist,
       "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
-      "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },},
+      "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },
+    },
     { $inc: { reposts: 1 }, lastPosted: new Date(), location: post.location }
   );
 }
@@ -127,6 +106,5 @@ exports.getPostsByLocation = getPostsByLocation;
 exports.addPost = addPost;
 exports.updateLikeStatus = updateLikeStatus;
 // exports.unlikePost = unlikePost;
-exports.findPostById = findPostById;
 exports.setConnection = setConnection;
 exports.findDuplicates = findDuplicates;
