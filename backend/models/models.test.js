@@ -48,23 +48,23 @@ beforeEach(async () => {
   let result = new userModel(dummyUser);
   await result.save();
 
-  dummyUser = {
-    username: "Michael Eisner",
-    password: "Di5n3yM4gic!",
-    email: "newemail@gmail.com",
-    liked: [],
-  };
-  result = new userModel(dummyUser);
-  userId = await result.save().id;
+  // dummyUser = {
+  //   username: "Michael Eisner",
+  //   password: "Di5n3yM4gic!",
+  //   email: "newemail@gmail.com",
+  //   liked: [],
+  // };
+  // result = new userModel(dummyUser);
+  // userId = await result.save().id;
 
-  dummyUser = {
-    username: "Matt",
-    password: "Password1!",
-    email: "r@gmail.com",
-    liked: [],
-  };
-  result = new userModel(dummyUser);
-  await result.save();
+  // dummyUser = {
+  //   username: "Matt",
+  //   password: "Password1!",
+  //   email: "r@gmail.com",
+  //   liked: [],
+  // };
+  // result = new userModel(dummyUser);
+  // await result.save();
 
   //posts--------------------------------------------------------
 
@@ -193,7 +193,7 @@ test("Adding user liked -- failure", async () => {
   expect(result).toBe(undefined);
 });
 
-test("Removing user liked -- succuess", async () => {
+test("Removing user liked -- success", async () => {
   const dummyPost = {
     title: "Food Court",
     artist: "Potsu",
