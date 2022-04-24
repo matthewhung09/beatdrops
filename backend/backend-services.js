@@ -26,6 +26,7 @@ async function getAccessToken() {
     return response.data.access_token;
   } catch (error) {
     console.log(error);
+    return undefined;
   }
 }
 
@@ -94,7 +95,6 @@ async function getPlaylists(accessToken) {
       "Content-Type": "application/json",
     },
   });
-
   let playlists = [];
   for (let i = 0; i < response.data.items.length; i++) {
     playlists.push({
