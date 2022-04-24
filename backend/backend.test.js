@@ -141,41 +141,41 @@ test("Get song data -- no song matches", async () => {
 //     .catch((error) => console.log(error));
 // });
 
-test("fetch playlists", async () => {
-  const mockPlaylists = {
-    data: {
-      items: [
-        {
-          name: "Playlist #1",
-          id: "7HSBDKNSLJD8dsfhiuvdfkh8w34WpO",
-          tracks: [
-            {
-              artist: "Anderson .Paak",
-              title: "Fire in the Sky",
-            },
-          ],
-        },
+// test("fetch playlists", async () => {
+//   const mockPlaylists = {
+//     data: {
+//       items: [
+//         {
+//           name: "Playlist #1",
+//           id: "7HSBDKNSLJD8dsfhiuvdfkh8w34WpO",
+//           tracks: [
+//             {
+//               artist: "Anderson .Paak",
+//               title: "Fire in the Sky",
+//             },
+//           ],
+//         },
 
-        {
-          name: "Playlist #2",
-          id: "2OSKFHWLENF3yulkpfhunsg5w96Po5",
-          tracks: [
-            {
-              artist: "Frank Ocean",
-              title: "Pink + White",
-            },
-          ],
-        },
-      ],
-    },
-  };
+//         {
+//           name: "Playlist #2",
+//           id: "2OSKFHWLENF3yulkpfhunsg5w96Po5",
+//           tracks: [
+//             {
+//               artist: "Frank Ocean",
+//               title: "Pink + White",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//   };
 
-  const resp = mockPlaylists;
+//   const resp = mockPlaylists;
 
-  axios.get.mockResolvedValue(resp);
+//   axios.get.mockResolvedValue(resp);
 
-  // axios.get.mockImplementation( () => Promise.resolve(resp));
+//   // axios.get.mockImplementation( () => Promise.resolve(resp));
 
-  const playlists = await userPlaylists.getPlaylists();
-  expect(playlists.toEqual(mockPlaylists)).catch((error) => console.log(error));
-});
+//   const playlists = await userPlaylists.getPlaylists();
+//   expect(playlists.toEqual(mockPlaylists)).catch((error) => console.log(error));
+// });
