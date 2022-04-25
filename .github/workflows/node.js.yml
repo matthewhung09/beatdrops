@@ -32,3 +32,8 @@ jobs:
         run: |
           npm ci
           npm test
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "beatdrops" #Must be unique on Heroku
+          heroku_email: "csc308.project@gmail.com" #Must be the one you used on Heroku
