@@ -141,7 +141,7 @@ test("Get song data -- no song matches", async () => {
 //     .catch((error) => console.log(error));
 // });
 
-// test("fetch playlists", async () => {
+// test.only("fetch playlists", async () => {
 //   const mockPlaylists = {
 //     data: {
 //       items: [
@@ -150,18 +150,25 @@ test("Get song data -- no song matches", async () => {
 //           id: "7HSBDKNSLJD8dsfhiuvdfkh8w34WpO",
 //           tracks: [
 //             {
-//               artist: "Anderson .Paak",
+//               artist: [
+//                 {
+//                   name: "Anderson .Paak",
+//                 },
+//               ],
 //               title: "Fire in the Sky",
 //             },
 //           ],
 //         },
-
 //         {
 //           name: "Playlist #2",
 //           id: "2OSKFHWLENF3yulkpfhunsg5w96Po5",
 //           tracks: [
 //             {
-//               artist: "Frank Ocean",
+//               artist: [
+//                 {
+//                   name: "Frank Ocean",
+//                 },
+//               ],
 //               title: "Pink + White",
 //             },
 //           ],
@@ -174,6 +181,26 @@ test("Get song data -- no song matches", async () => {
 
 //   axios.get.mockResolvedValue(resp);
 
+//   // tracks.push({
+//   //   artist: response.data.items[i].track.artists[0].name,
+//   //   title: response.data.items[i].track.name,
+//   //   playlistName: playlistName,
+//   // });
+
+//   const tracks = [
+//     {
+//       artist: "Anderson .Paak",
+//       title: "Fire in the Sky",
+//       playlistName: "Playlist #1",
+//     },
+//     {
+//       artist: "Frank Ocean",
+//       title: "Pink + White",
+//       playlistName: "Playlist #2",
+//     },
+//   ];
+
+//   getTracks = jest.fn().mockResolvedValue(tracks);
 //   // axios.get.mockImplementation( () => Promise.resolve(resp));
 
 //   const playlists = await userPlaylists.getPlaylists();
