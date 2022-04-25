@@ -280,7 +280,7 @@ app.post("/update", checkUser, async (req, res) => {
   const user = await userServices.updateRefresh(user_id, refreshToken);
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(`listening at http://localhost:${port}`);
 });
 
