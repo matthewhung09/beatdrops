@@ -27,12 +27,6 @@ async function addUser(user) {
   return savedUser;
 }
 
-async function getUsers() {
-  const userModel = getDbConnection().model("User", UserSchema);
-  const result = await userModel.find();
-  return result;
-}
-
 async function findUserById(id) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
@@ -46,7 +40,7 @@ async function updateRefresh(id, r) {
   console.log(r);
   const userModel = getDbConnection().model("User", UserSchema);
   try {
-    return await userModel.findByIdAndUpdate(id, { $set: { refresh_token: r } });
+    return await userModel.findByIdAndUpdate(id, { $set: { refresh_token: r } }, { new: true });
   } catch (error) {
     console.log("error in db");
     return undefined;
@@ -92,7 +86,6 @@ async function login(email, password) {
   throw Error("incorrect email");
 }
 
-exports.getUsers = getUsers;
 exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.getUserLiked = getUserLiked;

@@ -122,7 +122,7 @@ function Home() {
     }
     getCurrentSong();
     getPlaylists();
-    getUsersPlaylist();
+    // getUsersPlaylist();
   }, [accessToken]);
 
   async function getCurrentSong() {
@@ -150,23 +150,6 @@ function Home() {
         if (res) {
           // console.log("res: " + JSON.stringify(res.data.playlists));
           setPlaylists(res.data.playlists);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  const [allPlaylists, setAllPlaylist] = useState([]);
-
-  async function getUsersPlaylist() {
-    await axios
-      .post("http://localhost:5000/playlistNames", { accessToken })
-      .then((res) => {
-        if (res) {
-          // console.log("info: " + JSON.stringify(res.data.allPlaylists));
-          // console.log("info: " + res.data.allPlaylists);
-          setAllPlaylist(res.data.allPlaylists);
         }
       })
       .catch((error) => {
@@ -434,7 +417,6 @@ function Home() {
               updateLikes={() => updateLikes(post._id)}
               location={post.location.name}
               spotifyId={post.spotify_id}
-              allPlaylists={allPlaylists}
               playlists={playlists}
               token={accessToken}
               //setAllPlaylist={setAllPlaylist}
