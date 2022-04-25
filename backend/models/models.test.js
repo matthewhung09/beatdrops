@@ -114,7 +114,7 @@ afterEach(async () => {
   await postModel.deleteMany();
 });
 
-test("Fetching by invalid id format", async () => {
+test.only("Fetching by invalid id format", async () => {
   const anyId = "123";
   const user = await userServices.findUserById(anyId);
   expect(user).toBeUndefined();
