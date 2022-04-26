@@ -87,7 +87,7 @@ function Post({
   url,
   updateLikes,
   location,
-  spotifyLike,
+  // spotifyLike,
   playlists,
   spotifyId,
   token,
@@ -126,8 +126,8 @@ function Post({
         uris: [uri],
         // position: 0,
       };
-      console.log("data: ", data);
-      console.log("id: ", id);
+      // console.log("data: ", data);
+      // console.log("id: ", id);
       try {
         const response = await axios.post(
           `https://api.spotify.com/v1/playlists/${id}/tracks`,
@@ -139,10 +139,10 @@ function Post({
             },
           }
         );
-        console.log("response: ", response);
+        // console.log("response: ", response);
         return response;
       } catch (error) {
-        console.log("error message: ", error.message);
+        // console.log("error message: ", error.message);
         return false;
       }
     }
@@ -196,20 +196,32 @@ function Post({
     }
   }
 
-  async function spotifyLike() {
+  async function spotifyLikeHandler() {
+    const API_URL = "https://api.spotify.com/v1/me/tracks";
     const data = {
       ids: [spotifyId],
     };
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
     try {
-      const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      setSpotifyLikeStatus(true);
+      let response;
+      // add to "Liked Songs"
+      if (!spotifyLikeStatus) {
+        response = await axios.put(API_URL, data, { headers: headers });
+      }
+      // remove from "Liked Songs"
+      else {
+        response = await axios.delete(API_URL, {
+          headers: headers,
+          data: data,
+        });
+      }
+      setSpotifyLikeStatus(!spotifyLikeStatus);
       return response;
     } catch (error) {
+      console.log(error.status);
       return false;
     }
   }
@@ -220,12 +232,12 @@ function Post({
         <Spotify wide allowtransparency="false" height="118px" link={url} />
         <div className="spotify-actions">
           {spotifyLikeStatus === false ? (
-            <button className="webplayer-buttons" onClick={spotifyLike}>
+            <button className="webplayer-buttons" onClick={spotifyLikeHandler}>
               <BsBookmarkHeart />
               {'Save to "Liked Songs"'}
             </button>
           ) : (
-            <button className="webplayer-buttons">
+            <button className="webplayer-buttons" onClick={spotifyLikeHandler}>
               <BsBookmarkHeartFill />
               {'Saved to "Liked Songs"'}
             </button>
