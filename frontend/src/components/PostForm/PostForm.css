@@ -35,7 +35,7 @@ input {
   align-items: center;
   transform: scale(0.92);
   /* border: 1px solid salmon; */
-  width: fit-content;
+  width: fit-content !important;
   /* background-color: antiquewhite; */
 }
 
