@@ -67,12 +67,12 @@ test("Fetching by valid id and finding", async () => {
 //     liked: [],
 //   };
 //   const toBeAdded = {
-//     username: "sdfg",
-//     password: "sdfgsdfg?",
-//     email: "aaaaaaaaaaaaaaaa.com",
+//     username: "Griffin",
+//     password: "DogFan4571?",
+//     email: "gMan@gmail.com",
 //     liked: [],
 //   };
-//   //userModel.save = jest.fn().mockResolvedValue(addedUser);
+
 //   mockingoose(userModel).toReturn(addedUser, "save");
 //   const result = await userServices.addUser(toBeAdded);
 //   expect(result).toBeTruthy();
@@ -81,7 +81,7 @@ test("Fetching by valid id and finding", async () => {
 //   expect(result).toHaveProperty("updatedAt");
 // });
 
-test("Adding user liked -- succuess", async () => {
+test("Adding user liked -- success", async () => {
   const dummyPost = {
     _id: "123",
     title: "Food Court",

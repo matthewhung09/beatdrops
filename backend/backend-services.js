@@ -52,7 +52,6 @@ async function getPostData(song, artist, location) {
       },
     });
     if (response.data.tracks.items.length === 0) {
-      console.log("her");
       return false;
     }
     const song_url = response.data.tracks.items[0].external_urls.spotify;

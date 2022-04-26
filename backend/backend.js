@@ -157,15 +157,6 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/user/:id", async (req, res) => {
-  const id = req.params["id"];
-  const result = await userServices.findUserById(id);
-  if (result === undefined || result === null) res.status(404).send("Resource not found.");
-  else {
-    res.send({ user: result });
-  }
-});
-
 app.post("/auth/callback", async (req, res) => {
   const code = req.body.auth_code;
   let response;

@@ -36,12 +36,10 @@ async function findUserById(id) {
 }
 
 async function updateRefresh(id, r) {
-  console.log(r);
   const userModel = getDbConnection().model("User", UserSchema);
   try {
     return await userModel.findByIdAndUpdate(id, { $set: { refresh_token: r } }, { new: true });
   } catch (error) {
-    console.log("error in db");
     return undefined;
   }
 }
