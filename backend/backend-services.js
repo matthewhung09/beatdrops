@@ -104,9 +104,7 @@ async function getPlaylists(accessToken) {
     });
   }
 
-  result = playlists.filter((playlist) => playlist.tracks.length > 0);
-
-  return result;
+  return playlists;
 }
 
 async function getTracks(id, token, playlistName) {

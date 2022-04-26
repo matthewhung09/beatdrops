@@ -367,6 +367,7 @@ function Home() {
                 &times;
               </button>
               <div className="content">
+                {console.log(playlists.filter((playlist) => playlist.tracks.length > 0))}
                 <PostForm
                   playlists={playlists}
                   currentlyPlaying={currentlyPlaying}
