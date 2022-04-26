@@ -114,7 +114,7 @@ afterEach(async () => {
   await postModel.deleteMany();
 });
 
-test("Fetching by invalid id format", async () => {
+test.only("Fetching by invalid id format", async () => {
   const anyId = "123";
   const user = await userServices.findUserById(anyId);
   expect(user).toBeUndefined();
@@ -236,50 +236,6 @@ test("Adding user -- failure path with missing required field", async () => {
   await expect(userServices.addUser(dummyUser)).rejects.toThrow();
 });
 
-test("Get user liked -- sucess", async () => {
-  const dummyUser = {
-    username: "Matt",
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-    liked: [],
-  };
-  const dummyPost = {
-    title: "Food Court",
-    artist: "Potsu",
-    likes: 27,
-    location: "Dexter Lawn",
-    url: "http://temp.com/not?aReal=url/",
-  };
-
-  const addedUser = await userServices.addUser(dummyUser);
-  const addedPost = await postServices.addPost(dummyPost);
-
-  const new_user = await userServices.addUserLiked(addedUser._id, addedPost._id);
-  const result = await userServices.getUserLiked(new_user._id);
-  expect(result.liked[0]).toStrictEqual(addedPost._id);
-});
-
-test("Get user liked -- failure with invalid id", async () => {
-  const dummyPost = {
-    title: "Food Court",
-    artist: "Potsu",
-    likes: 27,
-    location: "Dexter Lawn",
-    url: "http://temp.com/not?aReal=url/",
-  };
-  const dummyUser = {
-    username: "Griffin",
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-    liked: [],
-  };
-  const addedUser = await userServices.addUser(dummyUser);
-  const addedPost = await postServices.addPost(dummyPost);
-  let res = await userServices.addUserLiked(addedUser._id, addedPost._id);
-  const result = await userServices.getUserLiked(45678909876);
-  expect(result).toBe(undefined);
-});
-
 test("login -- success", async () => {
   const dummyUser = {
     username: "Matt",
@@ -382,14 +338,6 @@ test("Refresh token -- failure", async () => {
   const refreshToken = "asdfasdfasdfasdfsadf";
   const user = await userServices.updateRefresh("randomID", refreshToken);
   expect(user).toBe(undefined);
-});
-
-test("Fetching post by title and artist", async () => {
-  const title = "slow";
-  const artist = "Black Midi";
-  const posts = await postServices.getPosts(title, artist);
-  expect(posts).toBeDefined();
-  expect(posts.length).toBeGreaterThan(0);
 });
 
 test("Adding post -- successful path", async () => {

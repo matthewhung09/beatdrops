@@ -10,7 +10,7 @@ beforeEach(async () => {
   jest.clearAllMocks();
 });
 
-test("Get access token -- success", async () => {
+test.only("Get access token -- success", async () => {
   //Get the test json data
   const mockAccessToken =
     "AQA9fhv_Z3aaSHGXZ4YtPvb5VbdzXNuYGYFP2--x0uaQI710kFmK7Uxb2rG1X0qMzL9o_JmwHMZGQii7g_x8VOZZHskKH50crghi5daTZq8zXB2IzBNeE2QDxJRvyucwpKg";

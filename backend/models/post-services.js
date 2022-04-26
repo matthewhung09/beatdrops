@@ -27,15 +27,6 @@ async function getPostsByLocation(lat, long) {
   return result;
 }
 
-async function getPosts(title, artist) {
-  const postModel = getDbConnection().model("Post", PostSchema);
-  let result;
-  if (title && artist) {
-    result = findPostByTitleAndArtist(title, artist);
-  }
-  return result;
-}
-
 async function addPost(post) {
   console.log("making post");
   const postModel = getDbConnection().model("Post", PostSchema);
@@ -72,11 +63,6 @@ async function updateLikeStatus(id, liked_status) {
   }
 }
 
-async function findPostByTitleAndArtist(title, artist) {
-  const postModel = getDbConnection().model("Post", PostSchema);
-  return await postModel.find({ title: title, artist: artist });
-}
-
 async function findDuplicates(post) {
   const postModel = getDbConnection().model("Post", PostSchema);
   return await postModel.find({
@@ -100,7 +86,6 @@ async function updateDuplicate(post) {
   );
 }
 
-exports.getPosts = getPosts;
 exports.updateDuplicate = updateDuplicate;
 exports.getPostsByLocation = getPostsByLocation;
 exports.addPost = addPost;
