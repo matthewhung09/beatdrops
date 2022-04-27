@@ -21,7 +21,7 @@ function Home() {
   useEffect(() => {
     if (!code) return;
     axios
-      .post("http://localhost:5000/auth/callback", {
+      .post(`${process.env.URL}/auth/callback`, {
         auth_code: code,
       })
       .then((res) => {
@@ -32,7 +32,7 @@ function Home() {
         return res.data.refreshToken;
       })
       .then((r) => {
-        axios.post("http://localhost:5000/update", { refreshToken: r }, { withCredentials: true });
+        axios.post(`${process.env.URL}/update`, { refreshToken: r }, { withCredentials: true });
       })
       .catch((error) => {
         console.log(error);
@@ -52,7 +52,7 @@ function Home() {
 
   function refresh() {
     axios
-      .post("http://localhost:5000/auth/refresh", {
+      .post(`${process.env.URL}/auth/refresh`, {
         refreshToken,
       })
       .then((res) => {
@@ -96,7 +96,7 @@ function Home() {
   // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const url = `http://localhost:5000/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+      const url = `${process.env.URL}/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
       axios
         .get(url, { withCredentials: true })
         .then((response) => {
@@ -127,7 +127,7 @@ function Home() {
 
   async function getCurrentSong() {
     await axios
-      .post("http://localhost:5000/current", { accessToken })
+      .post(`${process.env.URL}/current`, { accessToken })
       .then((res) => {
         if (res) {
           // console.log("hello");
@@ -145,7 +145,7 @@ function Home() {
 
   async function getPlaylists() {
     await axios
-      .post("http://localhost:5000/playlists", { accessToken })
+      .post(`${process.env.URL}/playlists`, { accessToken })
       .then((res) => {
         if (res) {
           // console.log("res: " + JSON.stringify(res.data.playlists));
@@ -181,7 +181,7 @@ function Home() {
   // send ID of post and user - add liked post to their array
   async function makeLikeCall(post_id, liked) {
     try {
-      const response = await axios.patch("http://localhost:5000/user/" + user._id + "/liked", {
+      const response = await axios.patch(`${process.env.URL}/user/` + user._id + "/liked", {
         post: post_id,
         liked: liked,
       });
@@ -223,7 +223,7 @@ function Home() {
     // getPostPosition(lat, long);
     if (song && artist) {
       try {
-        const response = await axios.post("http://localhost:5000/create", {
+        const response = await axios.post(`${process.env.URL}/create`, {
           title: song,
           artist: artist,
           location: { name: location, lat: lat, long: long },
@@ -234,7 +234,7 @@ function Home() {
       }
     } else {
       try {
-        const response = await axios.post("http://localhost:5000/create", {
+        const response = await axios.post(`${process.env.URL}/create`, {
           title: newSong,
           artist: newArtist,
           location: { name: location, lat: lat, long: long },
@@ -277,7 +277,7 @@ function Home() {
 
   function logout() {
     axios
-      .get("http://localhost:5000/logout", { withCredentials: true })
+      .get(`${process.env.URL}/logout`, { withCredentials: true })
       .then(() => {
         console.log("here");
         window.location.assign("/");

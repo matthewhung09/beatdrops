@@ -90,7 +90,7 @@ function SignUpForm() {
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        "http://localhost:5000/signup",
+        `${process.env.URL}/signup`,
         {
           username: values.username,
           email: values.email,

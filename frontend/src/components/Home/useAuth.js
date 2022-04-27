@@ -12,7 +12,7 @@ export default function useAuth(code) {
     //   return;
     // }
     axios
-      .post("http://localhost:5000/auth/callback", {
+      .post(`${process.env.URL}/auth/callback`, {
         auth_code: code,
       })
       .then((res) => {
@@ -32,7 +32,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post("http://localhost:5000/auth/refresh", {
+        .post(`${process.env.URL}/auth/refresh`, {
           refreshToken,
         })
         .then((res) => {
