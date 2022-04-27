@@ -66,6 +66,6 @@
   },
   "devDependencies": {
     "jest": "^27.5.1",
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   }
 }
