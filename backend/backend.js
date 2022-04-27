@@ -171,15 +171,6 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
-app.get("/user/:id/liked", async (req, res) => {
-  const id = req.params["id"];
-  const result = await userServices.getUserLiked(id);
-  if (result === undefined || result === null) res.status(404).send("Resource not found.");
-  else {
-    res.send(result);
-  }
-});
-
 app.post("/auth/callback", async (req, res) => {
   const code = req.body.auth_code;
   let response;
