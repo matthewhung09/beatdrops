@@ -25,7 +25,6 @@ async function getAccessToken() {
     });
     return response.data.access_token;
   } catch (error) {
-    console.log(error);
     return undefined;
   }
 }

@@ -26,6 +26,12 @@ async function addUser(user) {
   return savedUser;
 }
 
+async function checkUserExists(email) {
+  const userModel = getDbConnection().model("User", UserSchema);
+  const user = await userModel.findOne({ email: email });
+  return user;
+}
+
 async function findUserById(id) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
@@ -81,3 +87,4 @@ exports.removeUserLiked = removeUserLiked;
 exports.login = login;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
+exports.checkUserExists = checkUserExists;

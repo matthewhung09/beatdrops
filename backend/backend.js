@@ -124,14 +124,19 @@ app.patch("/user/:id/liked", async (req, res) => {
 });
 
 // Adds user to database upon signup
+// Refactored the email check to here to avoid the validator in the schema
 app.post("/signup", async (req, res) => {
   const new_user = req.body;
   try {
-    // log user in instantaneously
-    const user = await userServices.addUser(new_user);
-    const token = backEndServices.createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
-    res.status(201).json({ user: user });
+    let user = await userServices.checkUserExists(new_user.email);
+    if (user) {
+      res.status(400).json({ errors: { email: "Email already in use" } });
+    } else {
+      user = await userServices.addUser(new_user);
+      const token = backEndServices.createToken(user._id);
+      res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.status(201).json({ user: user });
+    }
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });

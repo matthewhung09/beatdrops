@@ -58,28 +58,28 @@ test("Fetching by valid id and finding", async () => {
   expect(foundUser.email).toBe(dummyUser.email);
 });
 
-// test("Adding user -- successful path", async () => {
-//   const addedUser = {
-//     _id: "randomid",
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: [],
-//   };
-//   const toBeAdded = {
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: [],
-//   };
+test("Adding user -- successful path", async () => {
+  const addedUser = {
+    _id: "randomid",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const toBeAdded = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
 
-//   mockingoose(userModel).toReturn(addedUser, "save");
-//   const result = await userServices.addUser(toBeAdded);
-//   expect(result).toBeTruthy();
-//   expect(result).toHaveProperty("_id");
-//   expect(result).toHaveProperty("createdAt");
-//   expect(result).toHaveProperty("updatedAt");
-// });
+  mockingoose(userModel).toReturn(addedUser, "save");
+  const result = await userServices.addUser(toBeAdded);
+  expect(result).toBeTruthy();
+  expect(result).toHaveProperty("_id");
+  expect(result).toHaveProperty("createdAt");
+  expect(result).toHaveProperty("updatedAt");
+});
 
 test("Adding user liked -- success", async () => {
   const dummyPost = {
@@ -158,6 +158,32 @@ test("Removing user liked -- failure", async () => {
   expect(result).toBe(undefined);
 });
 
+test("Check user exists -- success", async () => {
+  const dummyUser = {
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(dummyUser);
+  const result = await userServices.checkUserExists("gMan@gmail.com");
+  expect(result).toBeDefined();
+  expect(result.username).toBe(dummyUser.username);
+  expect(result.email).toBe(dummyUser.email);
+});
+
+test("Check user exists w/ no existing user -- success", async () => {
+  const dummyUser = {
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(undefined);
+  const result = await userServices.checkUserExists("randomemail@gmail.com");
+  expect(result).toBeUndefined();
+});
+
 test("login -- success", async () => {
   const dummyUser = {
     username: "Matt",
@@ -201,43 +227,6 @@ test("login -- failure with invalid email", async () => {
     expect(e.message).toBe("incorrect email");
   }
 });
-
-// // test("Adding user -- failure path with already taken id", async () => {
-// //   const dummyUser = {
-// //     username: "Griffin",
-// //     password: "DogFan4571?",
-// //     email: "gMan@gmail.com",
-// //     liked: [],
-// //   };
-// //   const addedUser = await userServices.addUser(dummyUser);
-
-// //   const anotherDummyUser = {
-// //     _id: addedUser.id,
-// //     username: "Scott",
-// //     password: "NintendoFan3627!",
-// //     email: "thewoz@gmail.com",
-// //     liked: [],
-// //   };
-// //   await expect(userServices.addUser(anotherDummyUser)).rejects.toThrow();
-// // });
-
-// // test("Adding user -- failure path with un-unique email", async () => {
-// //   const dummyUser = {
-// //     username: "Griffin",
-// //     password: "DogFan4571?",
-// //     email: "gMan@gmail.com",
-// //     liked: [],
-// //   };
-// //   const addedUser = await userServices.addUser(dummyUser);
-
-// //   const anotherDummyUser = {
-// //     username: "Scott",
-// //     password: "NintendoFan3627!",
-// //     email: addedUser.email,
-// //     liked: [],
-// //   };
-// //   await expect(userServices.addUser(anotherDummyUser)).rejects.toThrow();
-// // });
 
 test("Refresh token -- sucess", async () => {
   const dummyUser = {
