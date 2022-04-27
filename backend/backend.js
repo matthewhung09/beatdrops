@@ -32,7 +32,12 @@ const redirect_uri = process.env.REDIRECT_URI;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
 
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "https://beatdrops-app.herokuapp.com/"],
+  })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 
