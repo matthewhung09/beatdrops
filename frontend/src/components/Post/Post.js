@@ -1,10 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { RiPlayListAddLin, RiPlayListFill, RiUserLocationFill } from "react-icons/ri";
-import { MdBookmark, MdBookmarkAdd } from "react-icons/md";
+import { RiPlayListFill } from "react-icons/ri";
 import { BsBookmarkHeartFill, BsBookmarkHeart } from "react-icons/bs";
-import { TiLocation } from "react-icons/ti";
-import { GrLocationPin } from "react-icons/gr";
 import "./Post.css";
 import "reactjs-popup/dist/index.css";
 import Spotify from "react-spotify-embed";
@@ -14,7 +11,6 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
 import Popup from "reactjs-popup";
 
 const ITEM_HEIGHT = 48;
@@ -27,57 +23,6 @@ const MenuProps = {
     },
   },
 };
-
-const useStyles = makeStyles((theme) => ({
-  quantityRoot: {
-    color: "#FFFFFF",
-    backgroundColor: "#303039",
-    opacity: 0.6,
-    borderRadius: "5px",
-    "&:hover": {
-      backgroundColor: "#1E1E24",
-      borderRadius: "5px",
-      opacity: 1,
-    },
-    "&:focus-within": {
-      backgroundColor: "#1E1E24",
-      borderRadius: "5px",
-      opacity: 1,
-    },
-    "& .MuiOutlinedInput-notchedOutline": {
-      border: "1px solid #484850",
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      border: "1px solid #484850",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      border: "1px solid #484850",
-      borderRadius: "5px 5px 0 0",
-    },
-    "& .Mui-disabled": {
-      color: "#FFFFFF",
-      opacity: 0.6,
-    },
-    "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
-      border: "1px solid #484850",
-    },
-  },
-  selectRoot: {
-    color: "#FFFFFF",
-  },
-  icon: {
-    color: "#FFFFFF",
-  },
-  selectPaper: {
-    backgroundColor: "#1E1E24",
-    border: "1px solid #484850",
-    borderRadius: "5px",
-    color: "#FFFFFF",
-    "& li:hover": {
-      backgroundColor: "#303039",
-    },
-  },
-}));
 
 function Post({
   timePosted,
