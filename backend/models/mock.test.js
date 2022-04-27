@@ -72,13 +72,32 @@ test("Adding user -- successful path", async () => {
     email: "gMan@gmail.com",
     liked: [],
   };
-
+  userModel.findOne = jest.fn().mockResolvedValue(undefined);
   mockingoose(userModel).toReturn(addedUser, "save");
   const result = await userServices.addUser(toBeAdded);
   expect(result).toBeTruthy();
   expect(result).toHaveProperty("_id");
   expect(result).toHaveProperty("createdAt");
   expect(result).toHaveProperty("updatedAt");
+});
+
+test("Adding user -- successful path", async () => {
+  const addedUser = {
+    _id: "randomid",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const toBeAdded = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(addedUser);
+  const result = await userServices.addUser(toBeAdded);
+  expect(result).toBeUndefined();
 });
 
 test("Adding user liked -- success", async () => {
@@ -156,32 +175,6 @@ test("Removing user liked -- failure", async () => {
   userModel.findByIdAndUpdate = jest.fn().mockRejectedValue(new Error("error"));
   let result = await userServices.removeUserLiked(1234567, dummyPost._id);
   expect(result).toBe(undefined);
-});
-
-test("Check user exists -- success", async () => {
-  const dummyUser = {
-    username: "Matt",
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-    liked: [],
-  };
-  userModel.findOne = jest.fn().mockResolvedValue(dummyUser);
-  const result = await userServices.checkUserExists("gMan@gmail.com");
-  expect(result).toBeDefined();
-  expect(result.username).toBe(dummyUser.username);
-  expect(result.email).toBe(dummyUser.email);
-});
-
-test("Check user exists w/ no existing user -- success", async () => {
-  const dummyUser = {
-    username: "Matt",
-    password: "DogFan4571?",
-    email: "gMan@gmail.com",
-    liked: [],
-  };
-  userModel.findOne = jest.fn().mockResolvedValue(undefined);
-  const result = await userServices.checkUserExists("randomemail@gmail.com");
-  expect(result).toBeUndefined();
 });
 
 test("login -- success", async () => {

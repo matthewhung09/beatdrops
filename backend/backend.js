@@ -128,11 +128,10 @@ app.patch("/user/:id/liked", async (req, res) => {
 app.post("/signup", async (req, res) => {
   const new_user = req.body;
   try {
-    let user = await userServices.checkUserExists(new_user.email);
-    if (user) {
+    const user = await userServices.addUser(new_user);
+    if (user === undefined) {
       res.status(400).json({ errors: { email: "Email already in use" } });
     } else {
-      user = await userServices.addUser(new_user);
       const token = backEndServices.createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
       res.status(201).json({ user: user });

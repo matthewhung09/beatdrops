@@ -21,15 +21,14 @@ function getDbConnection() {
 
 async function addUser(user) {
   const userModel = getDbConnection().model("User", UserSchema);
-  const userToAdd = new userModel(user);
-  const savedUser = await userToAdd.save();
-  return savedUser;
-}
-
-async function checkUserExists(email) {
-  const userModel = getDbConnection().model("User", UserSchema);
-  const user = await userModel.findOne({ email: email });
-  return user;
+  const checkUser = await userModel.findOne({ email: user.email });
+  if (checkUser) {
+    return undefined;
+  } else {
+    const userToAdd = new userModel(user);
+    const savedUser = await userToAdd.save();
+    return savedUser;
+  }
 }
 
 async function findUserById(id) {
@@ -87,4 +86,3 @@ exports.removeUserLiked = removeUserLiked;
 exports.login = login;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
-exports.checkUserExists = checkUserExists;
