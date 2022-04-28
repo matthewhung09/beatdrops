@@ -29,7 +29,7 @@ dotenv.config();
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 let redirect_uri = process.env.REDIRECT_URI_LOCAL;
-if (app.get("env") === "production") {
+if (process.env.NODE_ENV === "production") {
   redirect_uri = process.env.REDIRECT_URI_PROD;
 }
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
@@ -189,6 +189,7 @@ app.get("/logout", (req, res) => {
 app.post("/auth/callback", async (req, res) => {
   const code = req.body.auth_code;
   let response;
+  console.log(redirect_uri);
   try {
     const data = qs.stringify({
       grant_type: "authorization_code",
