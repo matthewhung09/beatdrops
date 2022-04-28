@@ -8,10 +8,10 @@ import Home from "./components/Home/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-  if (process.env.NODE_ENV === "production") {
-    process.env.REACT_APP_URL = "https://beatdrops.herokuapp.com/";
-  }
+  // console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
+  process.env.NODE_ENV === "production"
+    ? (process.env.REACT_APP_URL = "https://beatdrops.herokuapp.com/")
+    : (process.env.REACT_APP_URL = "http://localhost:5000/");
 
   return (
     <div className="App">
