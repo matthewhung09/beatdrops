@@ -21,9 +21,14 @@ function getDbConnection() {
 
 async function addUser(user) {
   const userModel = getDbConnection().model("User", UserSchema);
-  const userToAdd = new userModel(user);
-  const savedUser = await userToAdd.save();
-  return savedUser;
+  const checkUser = await userModel.findOne({ email: user.email });
+  if (checkUser) {
+    return undefined;
+  } else {
+    const userToAdd = new userModel(user);
+    const savedUser = await userToAdd.save();
+    return savedUser;
+  }
 }
 
 async function findUserById(id) {
@@ -36,12 +41,10 @@ async function findUserById(id) {
 }
 
 async function updateRefresh(id, r) {
-  console.log(r);
   const userModel = getDbConnection().model("User", UserSchema);
   try {
     return await userModel.findByIdAndUpdate(id, { $set: { refresh_token: r } }, { new: true });
   } catch (error) {
-    console.log("error in db");
     return undefined;
   }
 }

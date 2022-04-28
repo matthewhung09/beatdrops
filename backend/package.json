@@ -4,7 +4,7 @@
   "description": "",
   "main": "backend.js",
   "scripts": {
-    "test": "prettier --check . && jest",
+    "test": "prettier --check . && jest --testPathIgnorePatterns models.test.js",
     "dev": "nodemon backend.js",
     "start": "node backend.js"
   },

@@ -28,14 +28,12 @@ async function getPostsByLocation(lat, long) {
 }
 
 async function addPost(post) {
-  console.log("making post");
   const postModel = getDbConnection().model("Post", PostSchema);
   try {
     const postToAdd = new postModel(post);
     const savedPost = await postToAdd.save();
     return savedPost;
   } catch (error) {
-    console.log("fail");
     return false;
   }
 }

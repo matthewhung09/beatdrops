@@ -135,14 +135,18 @@ app.patch("/user/:id/liked", async (req, res) => {
 });
 
 // Adds user to database upon signup
+// Refactored the email check to here to avoid the validator in the schema
 app.post("/signup", async (req, res) => {
   const new_user = req.body;
   try {
-    // log user in instantaneously
     const user = await userServices.addUser(new_user);
-    const token = backEndServices.createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
-    res.status(201).json({ user: user });
+    if (user === undefined) {
+      res.status(400).json({ errors: { email: "Email already in use" } });
+    } else {
+      const token = backEndServices.createToken(user._id);
+      res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.status(201).json({ user: user });
+    }
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
@@ -166,15 +170,6 @@ app.post("/login", async (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/");
-});
-
-app.get("/user/:id", async (req, res) => {
-  const id = req.params["id"];
-  const result = await userServices.findUserById(id);
-  if (result === undefined || result === null) res.status(404).send("Resource not found.");
-  else {
-    res.send({ user: result });
-  }
 });
 
 app.post("/auth/callback", async (req, res) => {

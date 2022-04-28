@@ -58,30 +58,49 @@ test("Fetching by valid id and finding", async () => {
   expect(foundUser.email).toBe(dummyUser.email);
 });
 
-// test("Adding user -- successful path", async () => {
-//   const addedUser = {
-//     _id: "randomid",
-//     username: "Griffin",
-//     password: "DogFan4571?",
-//     email: "gMan@gmail.com",
-//     liked: [],
-//   };
-//   const toBeAdded = {
-//     username: "sdfg",
-//     password: "sdfgsdfg?",
-//     email: "aaaaaaaaaaaaaaaa.com",
-//     liked: [],
-//   };
-//   //userModel.save = jest.fn().mockResolvedValue(addedUser);
-//   mockingoose(userModel).toReturn(addedUser, "save");
-//   const result = await userServices.addUser(toBeAdded);
-//   expect(result).toBeTruthy();
-//   expect(result).toHaveProperty("_id");
-//   expect(result).toHaveProperty("createdAt");
-//   expect(result).toHaveProperty("updatedAt");
-// });
+test("Adding user -- successful path", async () => {
+  const addedUser = {
+    _id: "randomid",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const toBeAdded = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(undefined);
+  mockingoose(userModel).toReturn(addedUser, "save");
+  const result = await userServices.addUser(toBeAdded);
+  expect(result).toBeTruthy();
+  expect(result).toHaveProperty("_id");
+  expect(result).toHaveProperty("createdAt");
+  expect(result).toHaveProperty("updatedAt");
+});
 
-test("Adding user liked -- succuess", async () => {
+test("Adding user -- successful path", async () => {
+  const addedUser = {
+    _id: "randomid",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  const toBeAdded = {
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(addedUser);
+  const result = await userServices.addUser(toBeAdded);
+  expect(result).toBeUndefined();
+});
+
+test("Adding user liked -- success", async () => {
   const dummyPost = {
     _id: "123",
     title: "Food Court",
@@ -201,43 +220,6 @@ test("login -- failure with invalid email", async () => {
     expect(e.message).toBe("incorrect email");
   }
 });
-
-// // test("Adding user -- failure path with already taken id", async () => {
-// //   const dummyUser = {
-// //     username: "Griffin",
-// //     password: "DogFan4571?",
-// //     email: "gMan@gmail.com",
-// //     liked: [],
-// //   };
-// //   const addedUser = await userServices.addUser(dummyUser);
-
-// //   const anotherDummyUser = {
-// //     _id: addedUser.id,
-// //     username: "Scott",
-// //     password: "NintendoFan3627!",
-// //     email: "thewoz@gmail.com",
-// //     liked: [],
-// //   };
-// //   await expect(userServices.addUser(anotherDummyUser)).rejects.toThrow();
-// // });
-
-// // test("Adding user -- failure path with un-unique email", async () => {
-// //   const dummyUser = {
-// //     username: "Griffin",
-// //     password: "DogFan4571?",
-// //     email: "gMan@gmail.com",
-// //     liked: [],
-// //   };
-// //   const addedUser = await userServices.addUser(dummyUser);
-
-// //   const anotherDummyUser = {
-// //     username: "Scott",
-// //     password: "NintendoFan3627!",
-// //     email: addedUser.email,
-// //     liked: [],
-// //   };
-// //   await expect(userServices.addUser(anotherDummyUser)).rejects.toThrow();
-// // });
 
 test("Refresh token -- sucess", async () => {
   const dummyUser = {

@@ -35,6 +35,6 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.plugin(uniqueValidator);
+// UserSchema.plugin(uniqueValidator);
 
 module.exports = UserSchema;
