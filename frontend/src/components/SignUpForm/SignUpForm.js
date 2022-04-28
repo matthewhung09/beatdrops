@@ -90,7 +90,7 @@ function SignUpForm() {
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_URL}/signup`,
+        `${process.env.REACT_APP_URL}signup`,
         {
           username: values.username,
           email: values.email,
