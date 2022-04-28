@@ -159,7 +159,12 @@ app.post("/login", async (req, res) => {
   try {
     const user = await userServices.login(email, password);
     const token = backEndServices.createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000, sameSite: "none" });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 3600 * 1000,
+      secure: true,
+      sameSite: "none",
+    });
     res.status(200).json({ user: user });
   } catch (err) {
     const errors = handleErrors(err);
