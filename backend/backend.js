@@ -43,7 +43,7 @@ app.use(
     allowedHeaders: ["Access-Control-Allow-Origin"],
   })
 );
-
+//a
 // app.options("*", cors());
 app.use(express.json());
 app.use(bodyParser.json());
