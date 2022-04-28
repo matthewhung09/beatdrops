@@ -30,7 +30,7 @@ const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 let redirect_uri = process.env.REDIRECT_URI_LOCAL;
 if (app.get("env") === "production") {
-  redirect_uri = REDIRECT_URI_PROD;
+  redirect_uri = process.env.REDIRECT_URI_PROD;
 }
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
 
