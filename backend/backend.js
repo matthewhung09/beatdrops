@@ -37,7 +37,7 @@ app.use(
     credentials: true,
     origin: [
       "http://localhost:3000",
-      // "https://beatdrops-app.herokuapp.com",
+      "https://beatdrops-app.herokuapp.com",
       // "https://sleepy-river-37036.herokuapp.com/https://beatdrops-app.herokuapp.com",
     ],
     allowedHeaders: ["Access-Control-Allow-Origin"],
