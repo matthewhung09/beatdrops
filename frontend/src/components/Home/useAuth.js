@@ -12,7 +12,7 @@ export default function useAuth(code) {
     //   return;
     // }
     axios
-      .post(`${process.env.REACT_APP_URL}auth/callback`, {
+      .post(`${process.env.REACT_APP_URL}/auth/callback`, {
         auth_code: code,
       })
       .then((res) => {
@@ -32,7 +32,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return;
     const interval = setInterval(() => {
       axios
-        .post(`${process.env.REACT_APP_URL}auth/refresh`, {
+        .post(`${process.env.REACT_APP_URL}/auth/refresh`, {
           refreshToken,
         })
         .then((res) => {
