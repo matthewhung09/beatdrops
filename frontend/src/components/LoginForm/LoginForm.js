@@ -81,10 +81,9 @@ function LoginForm() {
           email: values.email,
           password: values.password,
         },
-        { withCredentials: true }
+        { withCredentials: true, credentials: "include" }
       );
       const data = response.data;
-
       // Route to main page if login info is correct
       if (data.user) {
         window.location.assign("/home");
