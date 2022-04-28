@@ -9,9 +9,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   // console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-  process.env.NODE_ENV === "production"
-    ? (process.env.REACT_APP_URL = "https://beatdrops.herokuapp.com/")
-    : (process.env.REACT_APP_URL = "http://localhost:5000/");
+  if (process.env.NODE_ENV === "production") {
+    process.env.REACT_APP_URL = "https://beatdrops.herokuapp.com/";
+  }
 
   return (
     <div className="App">
