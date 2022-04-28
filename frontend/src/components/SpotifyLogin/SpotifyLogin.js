@@ -44,6 +44,11 @@ function SpotifyLogin() {
   // sets popup to be open when page is first loaded
   const [open, setOpen] = useState(true);
   const closeModal = () => setOpen(false);
+  let prefix;
+  process.env.NODE_ENV === "production"
+    ? (prefix = process.env.REACT_APP_REDIRECT_PROD)
+    : (prefix = process.env.REACT_APP_REDIRECT_LOCAL);
+  const redirect_url = `https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=${prefix}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
 
   return (
     <StylesProvider injectFirst>
@@ -65,7 +70,7 @@ function SpotifyLogin() {
                 >
                   Go Back
                 </StyledButton>
-                <a href="https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state">
+                <a href={redirect_url}>
                   <StyledButton
                     fullWidth
                     type="submit"

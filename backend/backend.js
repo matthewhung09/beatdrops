@@ -145,7 +145,12 @@ app.post("/signup", async (req, res) => {
       res.status(400).json({ errors: { email: "Email already in use" } });
     } else {
       const token = backEndServices.createToken(user._id);
-      res.cookie("jwt", token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 3600 * 1000,
+        secure: true,
+        sameSite: "none",
+      });
       res.status(201).json({ user: user });
     }
   } catch (err) {
