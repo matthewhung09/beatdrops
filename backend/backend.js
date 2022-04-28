@@ -40,7 +40,7 @@ app.use(
       "https://beatdrops-app.herokuapp.com",
       // "https://sleepy-river-37036.herokuapp.com/https://beatdrops-app.herokuapp.com",
     ],
-    allowedHeaders: ["Access-Control-Allow-Origin"],
+    // allowedHeaders: ["Access-Control-Allow-Origin"],
   })
 );
 //a
