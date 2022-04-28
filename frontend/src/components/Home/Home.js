@@ -21,7 +21,7 @@ function Home() {
   useEffect(() => {
     if (!code) return;
     axios
-      .post(`${process.env.URL}/auth/callback`, {
+      .post(`${process.env.REACT_APP_URL}/auth/callback`, {
         auth_code: code,
       })
       .then((res) => {
@@ -32,7 +32,11 @@ function Home() {
         return res.data.refreshToken;
       })
       .then((r) => {
-        axios.post(`${process.env.URL}/update`, { refreshToken: r }, { withCredentials: true });
+        axios.post(
+          `${process.env.REACT_APP_URL}/update`,
+          { refreshToken: r },
+          { withCredentials: true }
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -52,7 +56,7 @@ function Home() {
 
   function refresh() {
     axios
-      .post(`${process.env.URL}/auth/refresh`, {
+      .post(`${process.env.REACT_APP_URL}/auth/refresh`, {
         refreshToken,
       })
       .then((res) => {
@@ -96,7 +100,7 @@ function Home() {
   // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const url = `${process.env.URL}/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+      const url = `${process.env.REACT_APP_URL}/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
       axios
         .get(url, { withCredentials: true })
         .then((response) => {
@@ -127,7 +131,7 @@ function Home() {
 
   async function getCurrentSong() {
     await axios
-      .post(`${process.env.URL}/current`, { accessToken })
+      .post(`${process.env.REACT_APP_URL}/current`, { accessToken })
       .then((res) => {
         if (res) {
           // console.log("hello");
@@ -145,7 +149,7 @@ function Home() {
 
   async function getPlaylists() {
     await axios
-      .post(`${process.env.URL}/playlists`, { accessToken })
+      .post(`${process.env.REACT_APP_URL}/playlists`, { accessToken })
       .then((res) => {
         if (res) {
           // console.log("res: " + JSON.stringify(res.data.playlists));
@@ -181,10 +185,13 @@ function Home() {
   // send ID of post and user - add liked post to their array
   async function makeLikeCall(post_id, liked) {
     try {
-      const response = await axios.patch(`${process.env.URL}/user/` + user._id + "/liked", {
-        post: post_id,
-        liked: liked,
-      });
+      const response = await axios.patch(
+        `${process.env.REACT_APP_URL}/user/` + user._id + "/liked",
+        {
+          post: post_id,
+          liked: liked,
+        }
+      );
       return response;
     } catch (error) {
       console.log(error);
@@ -223,7 +230,7 @@ function Home() {
     // getPostPosition(lat, long);
     if (song && artist) {
       try {
-        const response = await axios.post(`${process.env.URL}/create`, {
+        const response = await axios.post(`${process.env.REACT_APP_URL}/create`, {
           title: song,
           artist: artist,
           location: { name: location, lat: lat, long: long },
@@ -234,7 +241,7 @@ function Home() {
       }
     } else {
       try {
-        const response = await axios.post(`${process.env.URL}/create`, {
+        const response = await axios.post(`${process.env.REACT_APP_URL}/create`, {
           title: newSong,
           artist: newArtist,
           location: { name: location, lat: lat, long: long },
@@ -277,7 +284,7 @@ function Home() {
 
   function logout() {
     axios
-      .get(`${process.env.URL}/logout`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_URL}/logout`, { withCredentials: true })
       .then(() => {
         console.log("here");
         window.location.assign("/");

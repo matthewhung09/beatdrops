@@ -76,7 +76,7 @@ function LoginForm() {
     let response;
     try {
       response = await axios.post(
-        `${process.env.URL}/login`,
+        `${process.env.REACT_APP_URL}/login`,
         {
           email: values.email,
           password: values.password,
