@@ -38,10 +38,12 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://beatdrops-app.herokuapp.com",
-      "https://sleepy-river-37036.herokuapp.com/https://beatdrops.herokuapp.com",
+      "https://sleepy-river-37036.herokuapp.com/https://beatdrops-app.herokuapp.com",
     ],
   })
 );
+
+app.options("*", cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
