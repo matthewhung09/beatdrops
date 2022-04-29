@@ -90,7 +90,6 @@ function Home() {
   // geolocation
   const [lat, setLat] = useState();
   const [long, setLong] = useState();
-  const [accuracy, accurate] = useState();
 
   // takes care of rate limiting issues
   const http = rateLimit(axios.create(), {

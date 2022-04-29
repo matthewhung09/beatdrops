@@ -32,7 +32,7 @@ function Post({
   url,
   updateLikes,
   location,
-  spotifyLike,
+  // spotifyLike,
   playlists,
   spotifyId,
   token,
@@ -51,15 +51,23 @@ function Post({
     }
   }
 
+  /* ---- general Spotify constants ---- */
+
+  const SPOTIFY_PREFIX = "https://api.spotify.com/v1";
+  const HEADERS = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  /* ---- adding to Spotify playlist ---- */
+
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
 
   const handleChange = (e) => {
     setSelectedPlaylist(e.target.value);
-    //console.log(selectedPlaylist);
   };
 
   useEffect(() => {
-    // console.log("should be in here");
     addToPlaylist();
   }, [selectedPlaylist]);
 
@@ -69,31 +77,21 @@ function Post({
       const id = findPlaylistId();
       const data = {
         uris: [uri],
-        // position: 0,
       };
-      console.log("data: ", data);
-      console.log("id: ", id);
       try {
-        const response = await axios.post(
-          `https://api.spotify.com/v1/playlists/${id}/tracks`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log("response: ", response);
+        const response = await axios.post(`${SPOTIFY_PREFIX}/playlists/${id}/tracks`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         return response;
       } catch (error) {
-        console.log("error message: ", error.message);
         return false;
       }
     }
   }
 
-  //Refactored - parsed name and id of the json playlists endpoint
   function findPlaylistId() {
     let userPlaylists = [];
 
@@ -126,35 +124,49 @@ function Post({
     }
     const queryparam = `ids=${spotifyId}`;
     try {
-      const status = await axios.get(
-        "https://api.spotify.com/v1/me/tracks/contains?" + queryparam,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const status = await axios.get(`${SPOTIFY_PREFIX}/me/tracks/contains?` + queryparam, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       setSpotifyLikeStatus(status.data[0]);
     } catch (error) {
       return false;
     }
   }
 
-  async function spotifyLike() {
+  /* ---- handle likes/unlikes on Spotify ---- */
+
+  // add to "Liked Songs"
+  async function likeOnSpotify() {
     const data = {
       ids: [spotifyId],
     };
     try {
-      const response = await axios.put("https://api.spotify.com/v1/me/tracks", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      let response = await axios.put(`${SPOTIFY_PREFIX}/me/tracks`, data, { headers: HEADERS });
       setSpotifyLikeStatus(true);
       return response;
     } catch (error) {
+      console.log(error.status);
+      return false;
+    }
+  }
+
+  // remove from "Liked Songs"
+  async function unlikeOnSpotify() {
+    const data = {
+      ids: [spotifyId],
+    };
+    try {
+      let response = await axios.delete(`${SPOTIFY_PREFIX}/me/tracks`, {
+        headers: HEADERS,
+        data: data,
+      });
+      setSpotifyLikeStatus(false);
+      return response;
+    } catch (error) {
+      console.log(error.status);
       return false;
     }
   }
@@ -165,12 +177,14 @@ function Post({
         <Spotify wide allowtransparency="false" height="118px" link={url} />
         <div className="spotify-actions">
           {spotifyLikeStatus === false ? (
-            <button className="webplayer-buttons" onClick={spotifyLike}>
+            <button className="webplayer-buttons" onClick={likeOnSpotify}>
+              {console.log("liked")}
               <BsBookmarkHeart />
               {'Save to "Liked Songs"'}
             </button>
           ) : (
-            <button className="webplayer-buttons">
+            <button className="webplayer-buttons" onClick={unlikeOnSpotify}>
+              {console.log("unliked")}
               <BsBookmarkHeartFill />
               {'Saved to "Liked Songs"'}
             </button>
