@@ -25,6 +25,8 @@ function Home() {
     redirect_url = process.env.REACT_APP_REDIRECT_PROD;
   }
 
+  console.log("blah");
+
   useEffect(() => {
     if (!code) return;
     axios
