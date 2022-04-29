@@ -87,10 +87,10 @@ function SignUpForm() {
   const [vErr, setvErr] = useState("");
   const [cemail, setEmail] = useState("");
 
-  let prefix;
-  process.env.NODE_ENV === "production"
-    ? (prefix = process.env.REACT_APP_URL_PROD)
-    : (prefix = process.env.REACT_APP_URL_LOCAL);
+  let prefix = process.env.REACT_APP_URL_LOCAL;
+  if (process.env.NODE_ENV === "production") {
+    prefix = process.env.REACT_APP_URL_PROD;
+  }
 
   const onSubmit = async (values) => {
     try {
