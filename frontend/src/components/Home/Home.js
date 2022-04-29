@@ -17,11 +17,13 @@ function Home() {
   const [refreshToken, setRefreshToken] = useState();
   const [expiresIn, setExpiresIn] = useState();
   const isMounted = useRef(false);
-  // a
-  let prefix;
-  process.env.NODE_ENV === "production"
-    ? (prefix = process.env.REACT_APP_URL_PROD)
-    : (prefix = process.env.REACT_APP_URL_LOCAL);
+
+  let prefix = process.env.REACT_APP_URL_LOCAL;
+  let redirect_url = process.env.REACT_APP_REDIRECT_LOCAL;
+  if (process.env.NODE_ENV === "production") {
+    prefix = process.env.REACT_APP_URL_PROD;
+    redirect_url = process.env.REACT_APP_REDIRECT_PROD;
+  }
 
   useEffect(() => {
     if (!code) return;
@@ -30,9 +32,9 @@ function Home() {
         auth_code: code,
       })
       .then((res) => {
+        setExpiresIn(res.data.expiresIn);
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
-        setExpiresIn(res.data.expiresIn);
         window.history.pushState({}, null, "/home");
         return res.data.refreshToken;
       })
@@ -49,7 +51,7 @@ function Home() {
     if (isMounted.current) {
       if (!refreshToken) return;
       refresh();
-      const interval = setInterval(refresh, (expiresIn - 60) * 1000);
+      setInterval(refresh, (expiresIn - 60) * 1000);
     } else {
       isMounted.current = true;
     }
@@ -135,10 +137,7 @@ function Home() {
       .post(`${prefix}/current`, { accessToken })
       .then((res) => {
         if (res) {
-          // console.log("hello");
-          // console.log("Before: " + currentlyPlaying);
           setCurrentlyPlaying(res.data.song);
-          // console.log("After: " + currentlyPlaying);
         }
       })
       .catch((error) => {
@@ -153,7 +152,6 @@ function Home() {
       .post(`${prefix}/playlists`, { accessToken })
       .then((res) => {
         if (res) {
-          // console.log("res: " + JSON.stringify(res.data.playlists));
           setPlaylists(res.data.playlists);
         }
       })
@@ -161,15 +159,6 @@ function Home() {
         console.log(error);
       });
   }
-
-  // function findPlaylistSong(artist, title) {
-  //     for (let i = 0; i < playlists.length; i++) {
-  //         let song = playlists[0].tracks.find(
-  //             (item) => item.artist === artist && item.title === title
-  //         );
-  //         if (song) return song;
-  //     }
-  // }
 
   /* ------ post filtering ------ */
 
@@ -271,8 +260,7 @@ function Home() {
   /* ------ logout ------ */
 
   useEffect(() => {
-    const AUTH_URL =
-      "https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=http://localhost:3000/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
+    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=${redirect_url}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
     if (userSetting === "Logout") {
       logout();
     } else if (userSetting === "Spotify") {
@@ -284,7 +272,6 @@ function Home() {
     axios
       .get(`${prefix}/logout`, { withCredentials: true })
       .then(() => {
-        console.log("here");
         window.location.assign("/");
       })
       .catch((error) => {
@@ -301,8 +288,6 @@ function Home() {
         if (result.state !== "denied") {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              //console.log("lat: " + position.coords.latitude + ", long: " + position.coords.longitude);
-              //console.log("acc: " + position.coords.accuracy);
               setLat(position.coords.latitude);
               setLong(position.coords.longitude);
             },

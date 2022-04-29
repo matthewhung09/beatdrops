@@ -280,7 +280,7 @@ app.post("/playlists", async (req, res) => {
     });
   } catch (error) {
     res.status(500).send(error);
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -289,6 +289,7 @@ app.post("/update", checkUser, async (req, res) => {
   const refreshToken = req.body.refreshToken;
   const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, refreshToken);
+  console.log(user);
 });
 
 app.listen(process.env.PORT || port, () => {
