@@ -189,7 +189,6 @@ app.get("/logout", (req, res) => {
 app.post("/auth/callback", async (req, res) => {
   const code = req.body.auth_code;
   let response;
-  console.log(redirect_uri);
   try {
     const data = qs.stringify({
       grant_type: "authorization_code",
@@ -285,11 +284,9 @@ app.post("/playlists", async (req, res) => {
 });
 
 app.post("/update", checkUser, async (req, res) => {
-  console.log("here");
   const refreshToken = req.body.refreshToken;
   const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, refreshToken);
-  console.log(user);
 });
 
 app.listen(process.env.PORT || port, () => {

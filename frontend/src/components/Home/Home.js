@@ -16,6 +16,7 @@ function Home() {
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [expiresIn, setExpiresIn] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isMounted = useRef(false);
 
   let prefix = process.env.REACT_APP_URL_LOCAL;
@@ -126,6 +127,7 @@ function Home() {
     if (!accessToken) {
       return;
     }
+    setIsLoggedIn(true);
     getCurrentSong();
     getPlaylists();
     // getUsersPlaylist();
@@ -324,7 +326,12 @@ function Home() {
   return (
     <div className="home">
       <div className="user-settings">
-        <Dropdown selected={userSetting} setSelected={setUserSetting} purpose="user" />
+        <Dropdown
+          selected={userSetting}
+          setSelected={setUserSetting}
+          setLoggedIn={isLoggedIn}
+          purpose="user"
+        />
       </div>
       <div className="header">
         <h1>beatdrops</h1>
