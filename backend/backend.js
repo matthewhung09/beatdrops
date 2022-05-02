@@ -38,15 +38,10 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "http://localhost:3000",
-      "https://beatdrops-app.herokuapp.com",
-      // "https://sleepy-river-37036.herokuapp.com/https://beatdrops-app.herokuapp.com",
-    ],
-    // allowedHeaders: ["Access-Control-Allow-Origin"],
+    origin: ["http://localhost:3000", "https://beatdrops.herokuapp.com"],
   })
 );
-//a
+
 // app.options("*", cors());
 app.use(express.json());
 app.use(bodyParser.json());
