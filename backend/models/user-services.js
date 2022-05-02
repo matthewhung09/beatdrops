@@ -79,10 +79,17 @@ async function login(email, password) {
   throw Error("incorrect email");
 }
 
+async function deleteAccount(id){
+  const userModel = getDbConnection().model("user", UserSchema);
+  const res = await userModel.findByIdAndDelete(id);
+  return res;
+}
+
 exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
+exports.deleteAccount = deleteAccount;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
