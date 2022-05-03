@@ -217,6 +217,9 @@ function LoginForm() {
                     )}
                   />
                 ))}
+                <button className="login-btn" onClick={() => navigate("/password-reset")}>
+                  Forgot your password?
+                </button>
                 {/* component for styling */}
                 <Box
                   m={2}

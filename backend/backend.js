@@ -11,7 +11,7 @@ const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
 const bodyParser = require("body-parser");
 const backEndServices = require("./backend-services");
-const nodemailer = require("nodemailer");
+const tokenServices = require("./models/token-services");
 const randomstring = require("random-string-gen");
 
 const app = express();
@@ -296,49 +296,28 @@ app.post("/update", checkUser, async (req, res) => {
 
 /* ------ password reset ------ */
 
-if (
-  !process.env.EMAIL_SERVICE ||
-  !process.env.EMAIL_USER ||
-  !process.env.EMAIL_PASS ||
-  !process.env.SEND_EMAIL
-) {
-  console.warn("Missing environment variables for email login");
-}
-
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
 app.post("/send-email", async (req, res) => {
-  const email = req.body.email;
-  const uniqueUrl = randomstring();
-  const user = await userServices.findUserByEmail(email);
-  if (user) {
-    try {
-      transporter.sendMail(
-        {
-          from: `${process.env.EMAIL_USER}`,
-          to: email,
-          subject: "Reset your password on beatdrops.",
-          html: `<p>Hello! Click this <a href="${process.env.PWD_RESET_PREFIX}/${uniqueUrl}"> link </a> to reset your password.</p>`,
-        },
-        (error, info) => {
-          if (error) {
-            res.send(error);
-          } else {
-            res.send(`Email sent: ${info.response}`);
-          }
-        }
-      );
-    } catch (error) {
-      res.send(error);
+  try {
+    const user = await userServices.findUserByEmail(req.body.email);
+    if (!user) {
+      res.status(404).send({ message: "No user found with that email." });
     }
-  } else {
-    res.status(404).send({ message: "No user found with that email." });
+
+    let token = await tokenServices.findUserById(user._id);
+    if (!token) {
+      token = await tokenServices.addToken({
+        userId: user._id,
+        token: randomstring,
+      });
+    }
+
+    const link = `${process.env.BASE_URL}/reset/${user._id}/${token.token}`;
+    await backEndServices.sendEmail(user.email, "Reset your password on beatdrops.", link);
+
+    res.send("password reset link sent to your email account");
+  } catch (error) {
+    res.send("error occurred");
+    console.log(error);
   }
 });
 
