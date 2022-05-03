@@ -102,8 +102,11 @@ function PasswordForm() {
 
   // set password visibility
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmed, setShowConfirmed] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const handleClickShowConfirmed = () => setShowConfirmed(!showConfirmed);
+  const handleMouseDownConfirmed = () => setShowConfirmed(!showConfirmed);
 
   return (
     <StylesProvider injectFirst>
@@ -142,46 +145,89 @@ function PasswordForm() {
                       },
                     }) => (
                       <Box m={2}>
-                        <TextField
-                          fullWidth
-                          key={name}
-                          variant={variant}
-                          label={entry.label}
-                          onChange={onChange}
-                          error={!!error}
-                          helperText={
-                            error
-                              ? error.message
-                              : name === "email" && vErr.email !== "" && value === cemail
-                              ? vErr.email
-                              : name === "password" && vErr.password !== "" && value === cpassword
-                              ? vErr.password
-                              : null
-                          }
-                          type={showPassword ? "text" : "password"}
-                          FormHelperTextProps={{
-                            style: {
-                              color: "#f44434",
-                            },
-                          }}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  style={{
-                                    width: 50,
-                                  }}
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                >
-                                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
+                        {entry.input === "password" ? (
+                          <TextField
+                            fullWidth
+                            key={name}
+                            variant={variant}
+                            label={entry.label}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={
+                              error
+                                ? error.message
+                                : name === "email" && vErr.email !== "" && value === cemail
+                                ? vErr.email
+                                : name === "password" && vErr.password !== "" && value === cpassword
+                                ? vErr.password
+                                : null
+                            }
+                            type={showPassword ? "text" : "password"}
+                            FormHelperTextProps={{
+                              style: {
+                                color: "#f44434",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    style={{
+                                      width: 50,
+                                    }}
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                  >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        ) : (
+                          <TextField
+                            fullWidth
+                            key={name}
+                            variant={variant}
+                            label={entry.label}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={
+                              error
+                                ? error.message
+                                : name === "email" && vErr.email !== "" && value === cemail
+                                ? vErr.email
+                                : name === "password" && vErr.password !== "" && value === cpassword
+                                ? vErr.password
+                                : null
+                            }
+                            type={showConfirmed ? "text" : "password"}
+                            FormHelperTextProps={{
+                              style: {
+                                color: "#f44434",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    style={{
+                                      width: 50,
+                                    }}
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowConfirmed}
+                                    onMouseDown={handleMouseDownConfirmed}
+                                    edge="end"
+                                  >
+                                    {showConfirmed ? <Visibility /> : <VisibilityOff />}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        )}
                       </Box>
                     )}
                   />
