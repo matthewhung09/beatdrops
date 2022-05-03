@@ -1,12 +1,13 @@
 import * as React from "react";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
-import ResetPasswordForm from "./components/ResetPasswordForm/ResetPasswordForm";
+import EmailResetForm from "./components/EmailResetForm/EmailResetForm";
 import Home from "./components/Home/Home";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PasswordForm from "./components/PasswordForm.java/PasswordForm";
 
 function App() {
   // console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
@@ -22,7 +23,8 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/spotify" element={<SpotifyLogin />} />
-          <Route path="/reset-password" element={<ResetPasswordForm />} />
+          <Route path="/password-reset" element={<EmailResetForm />} />
+          <Route path="/reset/*" element={<PasswordForm />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>

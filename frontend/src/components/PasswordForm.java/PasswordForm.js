@@ -3,9 +3,20 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import styled from "styled-components";
-import { TextField, Box, Button, StylesProvider } from "@material-ui/core";
+import {
+  TextField,
+  InputAdornment,
+  IconButton,
+  Box,
+  Button,
+  StylesProvider,
+} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import isEmailValidator from "validator/lib/isEmail";
 import Popup from "reactjs-popup";
 import "../../App.css";
+import { useNavigate } from "react-router-dom";
 import "../SignUpForm/SignUpForm.css";
 import axios from "axios";
 
@@ -42,7 +53,7 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-function ResetPasswordForm() {
+function PasswordForm() {
   // style
   const variant = "outlined";
 
@@ -56,6 +67,7 @@ function ResetPasswordForm() {
 
   const [vErr, setvErr] = useState("");
   const [cemail, setEmail] = useState("");
+  const [cpassword, setPassword] = useState("");
 
   let prefix = process.env.REACT_APP_URL_LOCAL;
   if (process.env.NODE_ENV === "production") {
@@ -72,18 +84,26 @@ function ResetPasswordForm() {
         { withCredentials: true, credentials: "include" }
       );
     } catch (error) {
-      console.log(error.response.data.message);
       setEmail(values.email);
-      setvErr(error.response.data.message);
+      setPassword(values.password);
+      setvErr(error.response.data.errors);
     }
   };
 
   // info for required entries
-  const rEntries = [{ input: "email", label: "Email" }];
+  const rEntries = [
+    { input: "password", label: "Password" },
+    { input: "confirmed", label: "Confirm password" },
+  ];
 
   // sets popup to be open when page is first loaded
   const [open, setOpen] = useState(true);
   const closeModal = () => setOpen(false);
+
+  // set password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   return (
     <StylesProvider injectFirst>
@@ -98,10 +118,10 @@ function ResetPasswordForm() {
               &times;
             </button>
             <PopupWrapper>
-              <PopupTitle> Reset your password.</PopupTitle>
+              <PopupTitle> Choose a new password.</PopupTitle>
               <h2 style={{ lineHeight: "unset", color: "grey", fontWeight: "400" }}>
-                Enter the email address that you used to register. We'll send you an email with a
-                link to reset your password.
+                It should be at least 8 characters long, and it must include a capital letter and a
+                special character.
               </h2>
               <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
                 {rEntries.map((entry, index) => (
@@ -132,14 +152,34 @@ function ResetPasswordForm() {
                           helperText={
                             error
                               ? error.message
-                              : name === "email" && vErr !== "" && value === cemail
-                              ? vErr
+                              : name === "email" && vErr.email !== "" && value === cemail
+                              ? vErr.email
+                              : name === "password" && vErr.password !== "" && value === cpassword
+                              ? vErr.password
                               : null
                           }
+                          type={showPassword ? "text" : "password"}
                           FormHelperTextProps={{
                             style: {
                               color: "#f44434",
                             },
+                          }}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  style={{
+                                    width: 50,
+                                  }}
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                >
+                                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
                           }}
                         />
                       </Box>
@@ -168,4 +208,4 @@ function ResetPasswordForm() {
   );
 }
 
-export default ResetPasswordForm;
+export default PasswordForm;
