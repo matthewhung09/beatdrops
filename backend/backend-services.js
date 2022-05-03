@@ -103,9 +103,6 @@ async function getPlaylists(accessToken) {
     });
   }
 
-  // result = playlists.filter((playlist) => playlist.tracks.length > 0);
-
-  // return result;
   return playlists;
 }
 
@@ -129,10 +126,11 @@ async function getTracks(id, token, playlistName) {
 }
 
 // send email for password reset
-async function sendEmail(email, subject, text) {
+async function sendEmail(email, link) {
   try {
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -142,8 +140,8 @@ async function sendEmail(email, subject, text) {
     await transporter.sendMail({
       from: `${process.env.EMAIL_USER}`,
       to: email,
-      subject: subject,
-      html: `<p>Hello! Click this <a href="${text}"> link </a> to reset your password.</p>`,
+      subject: "Reset your password on beatdrops.",
+      html: `<p>Hello! Click this <a href="${link}"> link </a> to reset your password.</p>`,
     });
 
     console.log("email sent successfully");

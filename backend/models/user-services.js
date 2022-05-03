@@ -71,6 +71,7 @@ async function removeUserLiked(user_id, post_id) {
     return undefined;
   }
 }
+
 async function login(email, password) {
   const userModel = getDbConnection().model("User", UserSchema);
   const user = await userModel.findOne({ email: email });
@@ -84,6 +85,15 @@ async function login(email, password) {
   throw Error("incorrect email");
 }
 
+async function resetPassword(id, password) {
+  const userModel = getDbConnection().model("User", UserSchema);
+  try {
+    return await userModel.findByIdAndUpdate(id, { $set: { password: password } }, { new: true });
+  } catch (error) {
+    return undefined;
+  }
+}
+
 exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.addUserLiked = addUserLiked;
@@ -92,3 +102,4 @@ exports.login = login;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
 exports.findUserByEmail = findUserByEmail;
+exports.resetPassword = resetPassword;

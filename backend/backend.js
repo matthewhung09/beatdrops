@@ -299,26 +299,75 @@ app.post("/update", checkUser, async (req, res) => {
 app.post("/send-email", async (req, res) => {
   try {
     const user = await userServices.findUserByEmail(req.body.email);
-    if (!user) {
+    if (user) {
       res.status(404).send({ message: "No user found with that email." });
     }
 
-    let token = await tokenServices.findUserById(user._id);
+    let token = await tokenServices.findTokenWithUserId(user._id);
+    // create token for user if one doesn't already exist
     if (!token) {
+      const slug = randomstring();
       token = await tokenServices.addToken({
         userId: user._id,
-        token: randomstring,
+        token: slug,
       });
     }
 
-    const link = `${process.env.BASE_URL}/reset/${user._id}/${token.token}`;
-    await backEndServices.sendEmail(user.email, "Reset your password on beatdrops.", link);
-
+    // send email to user
+    const link = `http://localhost:3000/reset/${token.token}`;
+    await backEndServices.sendEmail(user.email, link);
     res.send("password reset link sent to your email account");
   } catch (error) {
     res.send("error occurred");
     console.log(error);
   }
+});
+
+app.post("/reset/:token", async (req, res) => {
+  try {
+    const user = await userServices.findById(req.params.userId);
+    if (!user) {
+      return res.status(400).send("invalid link or expired");
+    }
+
+    const token = await tokenServices.checkValidToken(user._id, req.params.token);
+    if (!token) {
+      return res.status(400).send("Invalid link or expired");
+    }
+
+    // await userServices.resetPassword(user._id, req.body.password);
+    user.password = req.body.password;
+    await user.save();
+    await token.delete();
+
+    res.send("password reset sucessfully.");
+  } catch (error) {
+    res.send("An error occured");
+    console.log(error);
+  }
+  // try {
+  //   const schema = Joi.object({ password: Joi.string().required() });
+  //   const { error } = schema.validate(req.body);
+  //   if (error) return res.status(400).send(error.details[0].message);
+
+  //   const user = await User.findById(req.params.userId);
+  //   if (!user) return res.status(400).send("invalid link or expired");
+
+  //   const token = await Token.findOne({
+  //     userId: user._id,
+  //     token: req.params.token,
+  //   });
+  //   if (!token) return res.status(400).send("Invalid link or expired");
+
+  //   user.password = req.body.password;
+  //   await user.save();
+  //   await token.delete();
+
+  //   res.send("password reset sucessfully.");
+  // } catch (error) {
+  //   res.send("An error occured");
+  //   console.log(error);
+  // }
 });
 
 app.listen(process.env.PORT || port, () => {

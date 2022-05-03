@@ -19,10 +19,22 @@ function getDbConnection() {
   return dbConnection;
 }
 
-async function findUserById(id) {
+async function findTokenWithUserId(id) {
   const tokenModel = getDbConnection().model("Token", TokenSchema);
   try {
     return await tokenModel.findById(id);
+  } catch (error) {
+    return undefined;
+  }
+}
+
+async function checkValidToken(id, token) {
+  const tokenModel = getDbConnection().model("Token", TokenSchema);
+  try {
+    return await tokenModel.findOne({
+      userId: id,
+      token: token,
+    });
   } catch (error) {
     return undefined;
   }
@@ -35,5 +47,6 @@ async function addToken(token) {
   return savedToken;
 }
 
-exports.findUserById = findUserById;
+exports.findTokenWithUserId = findTokenWithUserId;
+exports.checkValidToken = checkValidToken;
 exports.addToken = addToken;

@@ -77,14 +77,13 @@ function PasswordForm() {
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        `${prefix}/send-email`,
+        `${prefix}/reset/:token`,
         {
-          email: values.email,
+          password: values.password,
         },
         { withCredentials: true, credentials: "include" }
       );
     } catch (error) {
-      setEmail(values.email);
       setPassword(values.password);
       setvErr(error.response.data.errors);
     }
@@ -93,7 +92,7 @@ function PasswordForm() {
   // info for required entries
   const rEntries = [
     { input: "password", label: "Password" },
-    { input: "confirmed", label: "Confirm password" },
+    // { input: "confirmed", label: "Confirm password" },
   ];
 
   // sets popup to be open when page is first loaded
