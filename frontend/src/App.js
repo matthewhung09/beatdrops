@@ -4,6 +4,7 @@ import "./App.css";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import SpotifyLogin from "./components/SpotifyLogin/SpotifyLogin";
 import LoginForm from "./components/LoginForm/LoginForm";
+import ResetPasswordForm from "./components/ResetPasswordForm/ResetPasswordForm";
 import Home from "./components/Home/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/spotify" element={<SpotifyLogin />} />
+          <Route path="/reset-password" element={<ResetPasswordForm />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>

@@ -11,6 +11,8 @@ const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
 const bodyParser = require("body-parser");
 const backEndServices = require("./backend-services");
+const nodemailer = require("nodemailer");
+const randomstring = require("random-string-gen");
 
 const app = express();
 const port = 5000;
@@ -290,6 +292,54 @@ app.post("/update", checkUser, async (req, res) => {
   const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, refreshToken);
   console.log(user);
+});
+
+/* ------ password reset ------ */
+
+if (
+  !process.env.EMAIL_SERVICE ||
+  !process.env.EMAIL_USER ||
+  !process.env.EMAIL_PASS ||
+  !process.env.SEND_EMAIL
+) {
+  console.warn("Missing environment variables for email login");
+}
+
+const transporter = nodemailer.createTransport({
+  service: process.env.EMAIL_SERVICE,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+app.post("/send-email", async (req, res) => {
+  const email = req.body.email;
+  const uniqueUrl = randomstring();
+  const user = await userServices.findUserByEmail(email);
+  if (user) {
+    try {
+      transporter.sendMail(
+        {
+          from: `${process.env.EMAIL_USER}`,
+          to: email,
+          subject: "Reset your password on beatdrops.",
+          html: `<p>Hello! Click this <a href="${process.env.PWD_RESET_PREFIX}/${uniqueUrl}"> link </a> to reset your password.</p>`,
+        },
+        (error, info) => {
+          if (error) {
+            res.send(error);
+          } else {
+            res.send(`Email sent: ${info.response}`);
+          }
+        }
+      );
+    } catch (error) {
+      res.send(error);
+    }
+  } else {
+    res.status(404).send({ message: "No user found with that email." });
+  }
 });
 
 app.listen(process.env.PORT || port, () => {

@@ -40,6 +40,11 @@ async function findUserById(id) {
   }
 }
 
+async function findUserByEmail(email) {
+  const userModel = getDbConnection().model("User", UserSchema);
+  return await userModel.findOne({ email: email });
+}
+
 async function updateRefresh(id, r) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
@@ -86,3 +91,4 @@ exports.removeUserLiked = removeUserLiked;
 exports.login = login;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
+exports.findUserByEmail = findUserByEmail;
