@@ -9,15 +9,9 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
-import {Icon} from "leaflet";
+import Map from "../Map/Map"
 
 const code = new URLSearchParams(window.location.search).get("code");
-
-const musicnote = new Icon({
-  iconUrl: '/musicnote.png',
-  iconSize: [25,40]
-});
 
 function Home() {
   const [accessToken, setAccessToken] = useState();
@@ -31,9 +25,6 @@ function Home() {
     prefix = process.env.REACT_APP_URL_PROD;
     redirect_url = process.env.REACT_APP_REDIRECT_PROD;
   }
-
-  const markers = [35.29998594, -120.662194]; //Where to set markers
-  const position = [35.30190423, -120.6637702]; //Position at Cal Poly Slo
 
   useEffect(() => {
     if (!code) return;
@@ -402,6 +393,35 @@ function Home() {
             </div>
           )}
         </Popup>
+
+        <Popup
+          closeOnDocumentClick
+          modal
+          nested
+          trigger={
+            <button className="create-btn">
+              {" "}
+              Map <IoIosAddCircle className="circle" />
+            </button>
+          }
+          style={{
+            minWidth: "50em",
+          }}
+        >
+        {(close) => (
+            <div className="modal">
+              <button className="close" onClick={close}>
+                &times;
+              </button>
+              <div className="content">
+              
+              <Map></Map>
+
+              </div>
+            </div>
+          )}
+        </Popup>
+
       </div>
       {user !== undefined ? (
         <div className="posts">
@@ -425,20 +445,6 @@ function Home() {
       ) : (
         <p>Loading...</p>
       )}
-
-<MapContainer center={position} zoom={13} scrollWheelZoom={true}>
-    <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-    <Marker position={markers}
-    icon = {musicnote}>
-      <Popup>
-        Beat <br /> Dropped!
-      </Popup>
-  </Marker>
-</MapContainer>
-
     </div>
   );
 }
