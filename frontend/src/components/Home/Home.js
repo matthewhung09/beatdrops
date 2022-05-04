@@ -9,7 +9,7 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import Map from "../Map/Map"
+import Map from "../Map/Map";
 
 const code = new URLSearchParams(window.location.search).get("code");
 
@@ -408,20 +408,17 @@ function Home() {
             minWidth: "50em",
           }}
         >
-        {(close) => (
+          {(close) => (
             <div className="modal">
               <button className="close" onClick={close}>
                 &times;
               </button>
               <div className="content">
-              
-              <Map></Map>
-
+                <Map></Map>
               </div>
             </div>
           )}
         </Popup>
-
       </div>
       {user !== undefined ? (
         <div className="posts">
