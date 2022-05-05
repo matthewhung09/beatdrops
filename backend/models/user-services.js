@@ -88,7 +88,15 @@ async function login(email, password) {
 async function resetPassword(id, password) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
-    return await userModel.findByIdAndUpdate(id, { $set: { password: password } }, { new: true });
+    return await userModel.findByIdAndUpdate(
+      { _id: id },
+      { $set: { password: password } },
+      { new: true }
+    );
+    // const newUser = await userModel.findById(id);
+    // console.log(newUser);
+    // newUser.password = password;
+    // return await newUser.save();
   } catch (error) {
     return undefined;
   }

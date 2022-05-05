@@ -24,7 +24,8 @@ function App() {
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/spotify" element={<SpotifyLogin />} />
           <Route path="/password-reset" element={<EmailResetForm />} />
-          <Route path="/reset/*" element={<PasswordForm />} />
+          <Route path="/reset/:userId/:token" element={<PasswordForm />} />
+          {/* <Route path="/reset/*" element={<PasswordForm />} /> */}
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>

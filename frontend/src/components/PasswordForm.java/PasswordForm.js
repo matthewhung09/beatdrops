@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
 import {
   TextField,
   InputAdornment,
@@ -19,6 +20,8 @@ import "../../App.css";
 import { useNavigate } from "react-router-dom";
 import "../SignUpForm/SignUpForm.css";
 import axios from "axios";
+import { BsGoogle } from "react-icons/bs";
+import { FaConnectdevelop } from "react-icons/fa";
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -73,11 +76,17 @@ function PasswordForm() {
   if (process.env.NODE_ENV === "production") {
     prefix = process.env.REACT_APP_URL_PROD;
   }
+  // const url = window.location.pathname.substring(7);
+  // const [userId, token] = url.split("/");
+  const { userId, token } = useParams();
 
   const onSubmit = async (values) => {
+    console.log("in here");
     try {
       await axios.post(
-        `${prefix}/reset/:token`,
+        `${prefix}/reset/${userId}/${token}`,
+        // `${prefix}/reset/1234}/1234`,
+
         {
           password: values.password,
         },
@@ -125,7 +134,7 @@ function PasswordForm() {
                 It should be at least 8 characters long, and it must include a capital letter and a
                 special character.
               </h2>
-              <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
+              <form style={{ width: "100%" }} onSubmit={onSubmit}>
                 {rEntries.map((entry, index) => (
                   <Controller
                     defaultValue=""

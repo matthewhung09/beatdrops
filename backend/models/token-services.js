@@ -47,6 +47,13 @@ async function addToken(token) {
   return savedToken;
 }
 
+async function deleteToken(token) {
+  const tokenModel = getDbConnection().model("Token", TokenSchema);
+  await tokenModel.deleteOne({ userId: token.userId });
+  console.log("deleted");
+}
+
 exports.findTokenWithUserId = findTokenWithUserId;
 exports.checkValidToken = checkValidToken;
 exports.addToken = addToken;
+exports.deleteToken = deleteToken;
