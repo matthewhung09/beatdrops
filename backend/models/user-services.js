@@ -40,6 +40,11 @@ async function findUserById(id) {
   }
 }
 
+async function findUserByEmail(email) {
+  const userModel = getDbConnection().model("User", UserSchema);
+  return await userModel.findOne({ email: email });
+}
+
 async function updateRefresh(id, r) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
@@ -66,6 +71,7 @@ async function removeUserLiked(user_id, post_id) {
     return undefined;
   }
 }
+
 async function login(email, password) {
   const userModel = getDbConnection().model("User", UserSchema);
   const user = await userModel.findOne({ email: email });
@@ -79,6 +85,24 @@ async function login(email, password) {
   throw Error("incorrect email");
 }
 
+async function resetPassword(id, password) {
+  const userModel = getDbConnection().model("User", UserSchema);
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return await userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+    // const newUser = await userModel.findById(id);
+    // console.log(newUser);
+    // newUser.password = password;
+    // const userToAdd = new userModel(newUser);
+    // const updated = await userToAdd.save();
+    // return updated;
+  } catch (error) {
+    console.log(error);
+    return undefined;
+  }
+}
+
 exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.addUserLiked = addUserLiked;
@@ -86,3 +110,5 @@ exports.removeUserLiked = removeUserLiked;
 exports.login = login;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
+exports.findUserByEmail = findUserByEmail;
+exports.resetPassword = resetPassword;

@@ -11,6 +11,8 @@ const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
 const bodyParser = require("body-parser");
 const backEndServices = require("./backend-services");
+const tokenServices = require("./models/token-services");
+const randomstring = require("random-string-gen");
 
 const app = express();
 const port = 5000;
@@ -285,6 +287,61 @@ app.post("/update", checkUser, async (req, res) => {
   const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, refreshToken);
   console.log(user);
+});
+
+/* ------ password reset ------ */
+
+app.post("/send-email", async (req, res) => {
+  try {
+    const user = await userServices.findUserByEmail(req.body.email);
+    if (!user) {
+      res.status(404).send({ message: "No user found with that email." });
+    }
+
+    let token = await tokenServices.findTokenWithUserId(user._id);
+    // create token for user if one doesn't already exist
+    if (!token) {
+      const slug = randomstring();
+      token = await tokenServices.addToken({
+        userId: user._id,
+        token: slug,
+      });
+    }
+
+    // send email to user
+    const link = `http://localhost:3000/reset/${token.userId}/${token.token}`;
+    await backEndServices.sendEmail(user.email, link);
+    res.send("password reset link sent to your email account");
+  } catch (error) {
+    res.send("error occurred");
+    console.log(error);
+  }
+});
+
+app.post("/reset/:userId/:token", async (req, res) => {
+  try {
+    const user = await userServices.findUserById(req.params.userId);
+    if (!user) {
+      return res.status(400).send("invalid link or expired");
+    }
+
+    const token = await tokenServices.checkValidToken(user._id, req.params.token);
+    if (!token) {
+      return res.status(400).send("Invalid link or expired");
+    }
+
+    // console.log(user);
+    // const new_user = await userServices.resetPassword(user._id, req.body.password);
+    console.log("req.body.password: ", req.body.password);
+    await userServices.resetPassword(user._id, req.body.password);
+    // console.log(new_user);
+    await tokenServices.deleteToken(token);
+
+    res.send("password reset sucessfully.");
+  } catch (error) {
+    res.send("An error occured");
+    console.log(error);
+  }
 });
 
 app.listen(process.env.PORT || port, () => {
