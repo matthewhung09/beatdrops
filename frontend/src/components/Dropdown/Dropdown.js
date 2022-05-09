@@ -3,10 +3,14 @@ import "../Dropdown/Dropdown.css";
 import { BsFilterCircleFill } from "react-icons/bs";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 
-function Dropdown({ selected, setSelected, purpose }) {
+function Dropdown({ selected, setSelected, setLoggedIn, purpose }) {
   const [isActive, setIsActive] = useState(false);
   let options = [];
-  purpose === "filter" ? (options = ["Likes", "Recent"]) : (options = ["Spotify", "Logout"]);
+  purpose === "filter"
+    ? (options = ["Likes", "Recent"])
+    : setLoggedIn
+    ? (options = ["Logout"])
+    : (options = ["Spotify", "Logout"]);
 
   return (
     <div className="dropdown">
