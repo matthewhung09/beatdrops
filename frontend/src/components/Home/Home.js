@@ -395,6 +395,7 @@ function Home() {
         </Popup>
 
         <Popup
+          className="map-popup"
           closeOnDocumentClick
           modal
           nested
@@ -404,17 +405,14 @@ function Home() {
               Map <IoIosAddCircle className="circle" />
             </button>
           }
-          style={{
-            minWidth: "50em",
-          }}
         >
           {(close) => (
             <div className="modal">
               <button className="close" onClick={close}>
                 &times;
               </button>
-              <div className="content">
-                <Map lat={lat} long={long} />
+              <div className="map-content">
+                <Map lat={lat} long={long} posts={postList} />
               </div>
             </div>
           )}
