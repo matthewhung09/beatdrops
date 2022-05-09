@@ -21,14 +21,14 @@ function getPostLocations(posts) {
 function Map({ lat, long }) {
   console.log("lat: " + lat + ", long: " + long);
   const [postList, setPosts] = useState([]);
-  const markers = [
-    [35.29998594, -120.662194],
-    [35.30190423, -120.6637702],
-    [35.30049726, -120.6635648],
-    [35.30020077, -120.6588906],
-    [35.30246159, -120.6641323],
-    [35.2993642, -120.6558726],
-  ]; //Where to set markers
+  // const markers = [
+  //   [35.29998594, -120.662194],
+  //   [35.30190423, -120.6637702],
+  //   [35.30049726, -120.6635648],
+  //   [35.30020077, -120.6588906],
+  //   [35.30246159, -120.6641323],
+  //   [35.2993642, -120.6558726],
+  // ]; //Where to set markers
 
   const position = [35.30190423, -120.6637702]; //Position at Cal Poly Slo
 
@@ -45,15 +45,16 @@ function Map({ lat, long }) {
   }, []);
 
   return (
-    <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
+    <MapContainer center={[lat, long]} zoom={18} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        style={{ minWidth: 50 }}
       />
       {postList.map((marker, index) => (
         <Marker position={[marker.location.lat, marker.location.long]} icon={musicnote} key={index}>
           <Popup>
-            Beat <br /> Dropped!
+            {marker.title} <br /> {marker.artist}
           </Popup>
         </Marker>
       ))}
