@@ -326,7 +326,6 @@ app.post("/send-email", async (req, res) => {
 app.post("/reset/:userId/:token", async (req, res) => {
   try {
     const user = await userServices.findUserById(req.params.userId);
-    console.log(user);
     if (!user) {
       return res.status(400).send("invalid link or expired");
     }
@@ -336,9 +335,11 @@ app.post("/reset/:userId/:token", async (req, res) => {
       return res.status(400).send("Invalid link or expired");
     }
 
-    console.log(user);
-    const new_user = await userServices.resetPassword(user._id, req.body.password);
-    console.log(new_user);
+    // console.log(user);
+    // const new_user = await userServices.resetPassword(user._id, req.body.password);
+    console.log("req.body.password: ", req.body.password);
+    await userServices.resetPassword(user._id, req.body.password);
+    // console.log(new_user);
     await tokenServices.deleteToken(token);
 
     res.send("password reset sucessfully.");

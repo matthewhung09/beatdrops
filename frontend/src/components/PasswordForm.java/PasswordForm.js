@@ -62,14 +62,13 @@ function PasswordForm() {
 
   // validation
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Please enter your email."),
+    password: Yup.string().required("Please enter your password."),
   });
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, reset } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const [vErr, setvErr] = useState("");
-  const [cemail, setEmail] = useState("");
   const [cpassword, setPassword] = useState("");
 
   let prefix = process.env.REACT_APP_URL_LOCAL;
@@ -134,7 +133,7 @@ function PasswordForm() {
                 It should be at least 8 characters long, and it must include a capital letter and a
                 special character.
               </h2>
-              <form style={{ width: "100%" }} onSubmit={onSubmit}>
+              <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
                 {rEntries.map((entry, index) => (
                   <Controller
                     defaultValue=""
@@ -164,8 +163,6 @@ function PasswordForm() {
                             helperText={
                               error
                                 ? error.message
-                                : name === "email" && vErr.email !== "" && value === cemail
-                                ? vErr.email
                                 : name === "password" && vErr.password !== "" && value === cpassword
                                 ? vErr.password
                                 : null
@@ -205,8 +202,6 @@ function PasswordForm() {
                             helperText={
                               error
                                 ? error.message
-                                : name === "email" && vErr.email !== "" && value === cemail
-                                ? vErr.email
                                 : name === "password" && vErr.password !== "" && value === cpassword
                                 ? vErr.password
                                 : null

@@ -88,16 +88,17 @@ async function login(email, password) {
 async function resetPassword(id, password) {
   const userModel = getDbConnection().model("User", UserSchema);
   try {
-    return await userModel.findByIdAndUpdate(
-      { _id: id },
-      { $set: { password: password } },
-      { new: true }
-    );
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return await userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
     // const newUser = await userModel.findById(id);
     // console.log(newUser);
     // newUser.password = password;
-    // return await newUser.save();
+    // const userToAdd = new userModel(newUser);
+    // const updated = await userToAdd.save();
+    // return updated;
   } catch (error) {
+    console.log(error);
     return undefined;
   }
 }
