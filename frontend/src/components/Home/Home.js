@@ -11,6 +11,7 @@ import axios from "axios";
 import rateLimit from "axios-rate-limit";
 import Map from "../Map/Map";
 
+
 const code = new URLSearchParams(window.location.search).get("code");
 
 function Home() {
