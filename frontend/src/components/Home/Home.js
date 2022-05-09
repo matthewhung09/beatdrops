@@ -414,7 +414,7 @@ function Home() {
                 &times;
               </button>
               <div className="content">
-                <Map></Map>
+                <Map lat={lat} long={long} />
               </div>
             </div>
           )}
