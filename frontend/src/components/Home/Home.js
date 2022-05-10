@@ -9,7 +9,9 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-// test
+import Map from "../Map/Map";
+
+
 const code = new URLSearchParams(window.location.search).get("code");
 
 function Home() {
@@ -395,6 +397,30 @@ function Home() {
                   }}
                   postError={postError}
                 />
+              </div>
+            </div>
+          )}
+        </Popup>
+
+        <Popup
+          className="map-popup"
+          closeOnDocumentClick
+          modal
+          nested
+          trigger={
+            <button className="create-btn">
+              {" "}
+              Map <IoIosAddCircle className="circle" />
+            </button>
+          }
+        >
+          {(close) => (
+            <div className="modal">
+              <button className="close" onClick={close}>
+                &times;
+              </button>
+              <div className="map-content">
+                <Map lat={lat} long={long} posts={postList} />
               </div>
             </div>
           )}

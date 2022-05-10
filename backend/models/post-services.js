@@ -18,13 +18,18 @@ function getDbConnection() {
   return dbConnection;
 }
 
-async function getPostsByLocation(lat, long) {
+async function getPostsByLocation(lat, long, only_coords) {
   const postModel = getDbConnection().model("Post", PostSchema);
   const result = await postModel.find({
     "location.lat": { $lte: lat + 0.0145, $gte: lat - 0.0145 },
     "location.long": { $lte: long + 0.0183, $gte: long - 0.0183 },
   });
-  return result;
+  if(only_coords){
+    return getPostLocations(result);
+  }
+  else {
+    return result;
+  }
 }
 
 async function addPost(post) {
