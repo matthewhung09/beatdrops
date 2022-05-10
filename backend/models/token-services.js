@@ -51,6 +51,7 @@ async function deleteToken(token) {
   const tokenModel = getDbConnection().model("Token", TokenSchema);
   await tokenModel.deleteOne({ userId: token.userId });
   console.log("deleted");
+  return true;
 }
 
 exports.findTokenWithUserId = findTokenWithUserId;
