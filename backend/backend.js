@@ -30,7 +30,7 @@ dotenv.config();
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = process.env.REDIRECT_URI;
+const frontend_url = process.env.FRONTEND_URL;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
 
 app.use(cookieParser());
@@ -187,7 +187,7 @@ app.post("/auth/callback", async (req, res) => {
     const data = qs.stringify({
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: redirect_uri,
+      redirect_uri: frontend_url + "/home",
     });
     response = await axios.post("https://accounts.spotify.com/api/token", data, {
       headers: {
@@ -303,7 +303,7 @@ app.post("/send-email", async (req, res) => {
     }
 
     // send email to user
-    const link = `http://localhost:3000/reset/${token.userId}/${token.token}`;
+    const link = `${process.env.FRONTEND_URL}/reset/${token.userId}/${token.token}`;
     await backEndServices.sendEmail(user.email, link);
     res.send("password reset link sent to your email account");
   } catch (error) {
