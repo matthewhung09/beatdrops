@@ -19,12 +19,8 @@ function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isMounted = useRef(false);
 
-  let prefix = process.env.REACT_APP_URL_LOCAL;
-  let redirect_url = process.env.REACT_APP_REDIRECT_LOCAL;
-  if (process.env.NODE_ENV === "production") {
-    prefix = process.env.REACT_APP_URL_PROD;
-    redirect_url = process.env.REACT_APP_REDIRECT_PROD;
-  }
+  const prefix = process.env.REACT_APP_URL;
+  const redirect_url = process.env.REACT_APP_REDIRECT;
 
   useEffect(() => {
     if (!code) return;

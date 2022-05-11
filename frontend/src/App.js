@@ -10,12 +10,6 @@ import Home from "./components/Home/Home";
 import PasswordForm from "./components/PasswordForm.java/PasswordForm";
 
 function App() {
-  // console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-  // if (process.env.NODE_ENV === "production") {
-  //   process.env.REACT_APP_URL_PROD = "https://beatdrops.herokuapp.com/";
-  //   console.log(process.env.REACT_APP_URL_PROD);
-  // }
-
   return (
     <div className="App">
       <Router>

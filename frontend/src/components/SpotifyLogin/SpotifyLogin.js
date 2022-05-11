@@ -45,10 +45,7 @@ function SpotifyLogin() {
   const [open, setOpen] = useState(true);
   const closeModal = () => setOpen(false);
 
-  let prefix = process.env.REACT_APP_REDIRECT_LOCAL;
-  if (process.env.NODE_ENV === "production") {
-    prefix = process.env.REACT_APP_REDIRECT_PROD;
-  }
+  const prefix = process.env.REACT_APP_REDIRECT;
 
   const redirect_url = `https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=${prefix}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
 

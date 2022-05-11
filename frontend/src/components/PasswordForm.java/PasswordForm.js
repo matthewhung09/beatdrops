@@ -71,12 +71,7 @@ function PasswordForm() {
   const [vErr, setvErr] = useState("");
   const [cpassword, setPassword] = useState("");
 
-  let prefix = process.env.REACT_APP_URL_LOCAL;
-  if (process.env.NODE_ENV === "production") {
-    prefix = process.env.REACT_APP_URL_PROD;
-  }
-  // const url = window.location.pathname.substring(7);
-  // const [userId, token] = url.split("/");
+  const prefix = process.env.REACT_APP_URL;
   const { userId, token } = useParams();
 
   const onSubmit = async (values) => {
