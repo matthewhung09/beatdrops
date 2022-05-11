@@ -396,6 +396,30 @@ function Home() {
             </div>
           )}
         </Popup>
+
+        <Popup
+          className="map-popup"
+          closeOnDocumentClick
+          modal
+          nested
+          trigger={
+            <button className="create-btn">
+              {" "}
+              Map <IoIosAddCircle className="circle" />
+            </button>
+          }
+        >
+          {(close) => (
+            <div className="modal">
+              <button className="close" onClick={close}>
+                &times;
+              </button>
+              <div className="map-content">
+                <Map lat={lat} long={long} posts={postList} />
+              </div>
+            </div>
+          )}
+        </Popup>
       </div>
       {user !== undefined ? (
         <div className="posts">

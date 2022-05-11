@@ -75,7 +75,7 @@ app.get("/posts", checkUser, async (req, res) => {
   const lat = parseFloat(req.query.lat);
   const long = parseFloat(req.query.long);
   try {
-    const posts = await postServices.getPostsByLocation(lat, long);
+    const posts = await postServices.getPostsByLocation(lat, long, false);
     res.status(201).json({ posts: posts, user: req.user });
   } catch (error) {
     res.status(500).send(error.message);

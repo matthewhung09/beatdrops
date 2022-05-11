@@ -12,7 +12,7 @@ by Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
 ### Start frontend
 
-1. In the frontend folder, run `npm start`.
+1. In the frontend folder, run `npm run dev`.
 
 ## Branching
 
