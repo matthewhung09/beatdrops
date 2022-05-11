@@ -24,10 +24,9 @@ async function getPostsByLocation(lat, long, only_coords) {
     "location.lat": { $lte: lat + 0.0145, $gte: lat - 0.0145 },
     "location.long": { $lte: long + 0.0183, $gte: long - 0.0183 },
   });
-  if(only_coords){
+  if (only_coords) {
     return getPostLocations(result);
-  }
-  else {
+  } else {
     return result;
   }
 }

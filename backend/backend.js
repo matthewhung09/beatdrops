@@ -30,10 +30,7 @@ dotenv.config();
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-let redirect_uri = process.env.REDIRECT_URI_LOCAL;
-if (process.env.NODE_ENV === "production") {
-  redirect_uri = process.env.REDIRECT_URI_PROD;
-}
+const redirect_uri = process.env.REDIRECT_URI;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
 
 app.use(cookieParser());

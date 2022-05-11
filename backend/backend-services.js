@@ -147,6 +147,7 @@ async function sendEmail(email, link) {
     console.log("email sent successfully");
   } catch (error) {
     console.log(error, "email failed to send");
+    return false;
   }
 }
 
