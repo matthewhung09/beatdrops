@@ -4,12 +4,18 @@ const qs = require("qs");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
-
+const oauth2Client = new OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 // Get access token in order to use Spotify API
 // This is different from /auth/login - here we use our developer credentials
 // to get access token to make requests to API
@@ -128,15 +134,28 @@ async function getTracks(id, token, playlistName) {
 // send email for password reset
 async function sendEmail(email, link) {
   try {
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
+    const accessToken = await oauth2Client.getAccessToken();
+    console.log(accessToken.token);
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE,
       // secure: true,
+      tls: {
+        rejectUnauthorized: false,
+      },
       auth: {
+        type: "OAuth2",
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+        accessToken: accessToken.token,
+        // pass: process.env.EMAIL_PASS,
       },
     });
-
+    console.log("here");
     await transporter.sendMail({
       from: `${process.env.EMAIL_USER}`,
       to: email,
