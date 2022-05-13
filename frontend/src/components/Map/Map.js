@@ -1,17 +1,14 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "./Map.css";
-
-let prefix = process.env.REACT_APP_URL_LOCAL;
+import Post from "../Post/Post";
 
 const musicnote = new Icon({
-  iconUrl: "/musicnote.png",
-  iconSize: [25, 40],
+  iconUrl: "/musnoteMarker.png",
+  iconSize: [75, 90],
 });
 
-function Map({ lat, long, posts }) {
+function Map({ lat, long, posts, user}) {
   console.log("lat: " + lat + ", long: " + long);
 
   return (
@@ -28,9 +25,20 @@ function Map({ lat, long, posts }) {
         // style={{ maxWidth: 10 }}
       />
       {posts.map((marker, index) => (
-        <Marker position={[marker.location.lat, marker.location.long]} icon={musicnote} key={index}>
+        <Marker position={[marker.location.lat, marker.location.long]} icon={musicnote} key={index} 
+       >
           <Popup>
-            {marker.title} <br /> {marker.artist}
+          {marker.title} <br /> {marker.artist}
+          <div className="posts">
+            <Post
+            
+              uri={marker.spotify_uri}
+              url={marker.url}
+             
+              spotifyId={marker.spotify_id}
+           
+            />
+        </div>
           </Popup>
         </Marker>
       ))}

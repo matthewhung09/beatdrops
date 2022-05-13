@@ -329,7 +329,8 @@ function Home() {
         <Dropdown selected={userSetting} setSelected={setUserSetting} purpose="user" />
       </div>
       <div className="header">
-        <h1>beatdrops</h1>
+        <h1>Beatdrops</h1>
+        <picture> <img src = "logo_app.png" width = "150" height = "80"/> </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
       <div className="home-actions">
@@ -403,7 +404,7 @@ function Home() {
           trigger={
             <button className="create-btn">
               {" "}
-              Map <IoIosAddCircle className="circle" />
+              View Map <IoIosAddCircle className="circle" />
             </button>
           }
         >
@@ -413,7 +414,7 @@ function Home() {
                 &times;
               </button>
               <div className="map-content">
-                <Map lat={lat} long={long} posts={postList} />
+                <Map lat={lat} long={long} posts={postList} user={user} />
               </div>
             </div>
           )}
