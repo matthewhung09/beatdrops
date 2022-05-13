@@ -3,9 +3,10 @@ import { Icon } from "leaflet";
 import "./Map.css";
 
 const musicnote = new Icon({
-  iconUrl: "/musicnote.png",
-  iconSize: [25, 40],
+  iconUrl: "/musnoteMarker.png",
+  iconSize: [75, 90],
 });
+
 
 function Map({ lat, long, posts }) {
   return (

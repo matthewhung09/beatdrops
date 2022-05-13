@@ -74,6 +74,7 @@ function Post({
   async function addToPlaylist() {
     // takes care of undefined id on first render of useEffect
     if (selectedPlaylist !== "") {
+      alert("Song Added To " + selectedPlaylist);
       const id = findPlaylistId();
       const data = {
         uris: [uri],
