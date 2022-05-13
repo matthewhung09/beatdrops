@@ -338,11 +338,10 @@ app.post("/auth/remove", checkUser, async (req, res) => {
   console.log("k0w46un94");
   const user_id = req.body._id;
   const user = await userServices.deleteSpotifyAccess(user_id);
-  if(user){
+  if (user) {
     res.status(204).end();
-  }
-  else{
-    res.status(404).send("User not found")
+  } else {
+    res.status(404).send("User not found");
   }
 });
 
