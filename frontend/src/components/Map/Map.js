@@ -1,10 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "./Map.css";
-
-let prefix = process.env.REACT_APP_URL_LOCAL;
 
 const musicnote = new Icon({
   iconUrl: "/musicnote.png",
@@ -12,8 +8,6 @@ const musicnote = new Icon({
 });
 
 function Map({ lat, long, posts }) {
-  console.log("lat: " + lat + ", long: " + long);
-
   return (
     <MapContainer
       className="map"
@@ -27,13 +21,20 @@ function Map({ lat, long, posts }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         // style={{ maxWidth: 10 }}
       />
-      {posts.map((marker, index) => (
-        <Marker position={[marker.location.lat, marker.location.long]} icon={musicnote} key={index}>
-          <Popup>
-            {marker.title} <br /> {marker.artist}
-          </Popup>
-        </Marker>
-      ))}
+      {posts.map(
+        (marker, index) =>
+          marker.location.onCampus && (
+            <Marker
+              position={[marker.location.lat, marker.location.long]}
+              icon={musicnote}
+              key={index}
+            >
+              <Popup>
+                {marker.title} <br /> {marker.artist}
+              </Popup>
+            </Marker>
+          )
+      )}
     </MapContainer>
   );
 }

@@ -57,12 +57,10 @@ function EmailResetForm() {
   const [vErr, setvErr] = useState("");
   const [cemail, setEmail] = useState("");
 
-  const prefix = process.env.REACT_APP_URL;
-
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        `${prefix}/send-email`,
+        `${process.env.REACT_APP_URL}/send-email`,
         {
           email: values.email,
         },

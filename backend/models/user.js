@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
 const bcrypt = require("bcrypt");
-var uniqueValidator = require("mongoose-unique-validator");
 
 const UserSchema = new mongoose.Schema(
   {

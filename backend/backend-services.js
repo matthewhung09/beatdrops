@@ -138,7 +138,6 @@ async function sendEmail(email, link) {
       refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     });
     const accessToken = await oauth2Client.getAccessToken();
-    console.log(accessToken.token);
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE,
       // secure: true,
@@ -155,7 +154,6 @@ async function sendEmail(email, link) {
         // pass: process.env.EMAIL_PASS,
       },
     });
-    console.log("here");
     await transporter.sendMail({
       from: `${process.env.EMAIL_USER}`,
       to: email,

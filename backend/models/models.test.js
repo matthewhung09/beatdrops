@@ -321,7 +321,6 @@ test("Refresh token -- sucess", async () => {
   const addedUser = await result.save();
   const refreshToken = "asdfasdfasdfasdfsadf";
   const user = await userServices.updateRefresh(addedUser.id, refreshToken);
-  console.log(user);
   expect(user).toBeDefined();
   expect(user.refresh_token).toBe(refreshToken);
 });

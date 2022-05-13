@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import "../Dropdown/Dropdown.css";
-import { BsFilterCircleFill } from "react-icons/bs";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
+import { IoFilterSharp } from "react-icons/io5";
 
 function Dropdown({ selected, setSelected, setLoggedIn, purpose }) {
   const [isActive, setIsActive] = useState(false);
@@ -16,7 +16,7 @@ function Dropdown({ selected, setSelected, setLoggedIn, purpose }) {
     <div className="dropdown">
       {purpose === "filter" ? (
         <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
-          {selected} <BsFilterCircleFill />
+          {selected} <IoFilterSharp />
         </div>
       ) : (
         <div

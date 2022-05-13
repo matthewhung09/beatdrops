@@ -28,10 +28,10 @@ const limiter = new Bottleneck({
 
 dotenv.config();
 
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-const frontend_url = process.env.FRONTEND_URL;
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
+const auth_token = Buffer.from(
+  `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
+  "utf-8"
+).toString("base64");
 
 app.use(cookieParser());
 app.use(
@@ -88,7 +88,6 @@ app.post("/create", async (req, res) => {
   const new_post = await limiter.schedule(() =>
     backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
   );
-  console.log(new_post);
   if (!new_post) {
     res.status(500).end();
   } else {
@@ -187,7 +186,7 @@ app.post("/auth/callback", async (req, res) => {
     const data = qs.stringify({
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: frontend_url + "/home",
+      redirect_uri: process.env.FRONTEND_URL + "/home",
     });
     response = await axios.post("https://accounts.spotify.com/api/token", data, {
       headers: {
@@ -324,11 +323,7 @@ app.post("/reset/:userId/:token", async (req, res) => {
       return res.status(400).send("Invalid link or expired");
     }
 
-    // console.log(user);
-    // const new_user = await userServices.resetPassword(user._id, req.body.password);
-    console.log("req.body.password: ", req.body.password);
     await userServices.resetPassword(user._id, req.body.password);
-    // console.log(new_user);
     await tokenServices.deleteToken(token);
 
     res.send("password reset sucessfully.");

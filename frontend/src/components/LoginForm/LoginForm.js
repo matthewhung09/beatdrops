@@ -72,13 +72,11 @@ function LoginForm() {
   const [cemail, setEmail] = useState("");
   const [cpassword, setPassword] = useState("");
 
-  const prefix = process.env.REACT_APP_URL;
-
   const onSubmit = async (values) => {
     let response;
     try {
       response = await axios.post(
-        `${prefix}/login`,
+        `${process.env.REACT_APP_URL}/login`,
         {
           email: values.email,
           password: values.password,

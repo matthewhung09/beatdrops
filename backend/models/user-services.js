@@ -91,12 +91,6 @@ async function resetPassword(id, password) {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     return await userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
-    // const newUser = await userModel.findById(id);
-    // console.log(newUser);
-    // newUser.password = password;
-    // const userToAdd = new userModel(newUser);
-    // const updated = await userToAdd.save();
-    // return updated;
   } catch (error) {
     console.log(error);
     return undefined;

@@ -87,12 +87,10 @@ function SignUpForm() {
   const [vErr, setvErr] = useState("");
   const [cemail, setEmail] = useState("");
 
-  const prefix = process.env.REACT_APP_URL;
-
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        `${prefix}/signup`,
+        `${process.env.REACT_APP_URL}/signup`,
         {
           username: values.username,
           email: values.email,

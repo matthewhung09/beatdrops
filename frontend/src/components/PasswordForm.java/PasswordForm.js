@@ -71,15 +71,12 @@ function PasswordForm() {
   const [vErr, setvErr] = useState("");
   const [cpassword, setPassword] = useState("");
 
-  const prefix = process.env.REACT_APP_URL;
   const { userId, token } = useParams();
 
   const onSubmit = async (values) => {
-    console.log("in here");
     try {
       await axios.post(
-        `${prefix}/reset/${userId}/${token}`,
-        // `${prefix}/reset/1234}/1234`,
+        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
 
         {
           password: values.password,
