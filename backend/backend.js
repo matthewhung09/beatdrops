@@ -289,6 +289,7 @@ app.post("/send-email", async (req, res) => {
     const user = await userServices.findUserByEmail(req.body.email);
     if (!user) {
       res.status(404).send({ message: "No user found with that email." });
+      return;
     }
 
     let token = await tokenServices.findTokenWithUserId(user._id);
@@ -305,7 +306,7 @@ app.post("/send-email", async (req, res) => {
     const link = `${process.env.FRONTEND_URL}/reset/${token.userId}/${token.token}`;
     await backEndServices.sendEmail(user.email, link);
     res.send("password reset link sent to your email account");
-  } catch (error) {
+  } catch (err) {
     res.send("error occurred");
     console.log(error);
   }
