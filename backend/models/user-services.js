@@ -79,9 +79,9 @@ async function login(email, password) {
   throw Error("incorrect email");
 }
 
-async function deleteAccount(id){
+async function deleteSpotifyAccess(id){
   const userModel = getDbConnection().model("user", UserSchema);
-  const res = await userModel.findByIdAndDelete(id);
+  const res = await userModel.findByIdAndUpdate(id, { $set: { refresh_token: "" } } );
   return res;
 }
 
@@ -90,6 +90,6 @@ exports.findUserById = findUserById;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
-exports.deleteAccount = deleteAccount;
+exports.deleteSpotifyAccess = deleteSpotifyAccess;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
