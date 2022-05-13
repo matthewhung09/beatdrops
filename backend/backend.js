@@ -289,6 +289,7 @@ app.post("/send-email", async (req, res) => {
     const user = await userServices.findUserByEmail(req.body.email);
     if (!user) {
       res.status(404).send({ message: "No user found with that email." });
+      return;
     }
 
     let token = await tokenServices.findTokenWithUserId(user._id);

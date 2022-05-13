@@ -75,7 +75,7 @@ function SignUpForm() {
       .required("Please enter your password.")
       .matches(
         passwordRegExp,
-        "Password must contain at least 8 characters, one uppercase, one number and one special case character."
+        "Password must contain at least 8 characters, one uppercase, one number, and one special case character."
       ),
     username: Yup.string().required("Please enter a nickname."),
   });
@@ -130,9 +130,9 @@ function SignUpForm() {
               {" "}
               <b>♬ beatdrops </b>{" "}
             </div>
-            <button className="close" onClick={close}>
+            {/* <button className="close" onClick={close}>
               &times;
-            </button>
+            </button> */}
             <PopupWrapper>
               <PopupTitle> Sign up for a free beatdrops account.</PopupTitle>
               <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>

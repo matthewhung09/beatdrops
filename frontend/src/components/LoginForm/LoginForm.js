@@ -119,9 +119,9 @@ function LoginForm() {
               {" "}
               <b>♬ beatdrops </b>{" "}
             </div>
-            <button className="close" onClick={close}>
+            {/* <button className="close" onClick={close}>
               &times;
-            </button>
+            </button> */}
             <PopupWrapper>
               <PopupTitle> Login to your account.</PopupTitle>
               <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
@@ -212,9 +212,6 @@ function LoginForm() {
                     )}
                   />
                 ))}
-                <button className="login-btn" onClick={() => navigate("/password-reset")}>
-                  Forgot your password?
-                </button>
                 {/* component for styling */}
                 <Box
                   m={2}
@@ -223,10 +220,23 @@ function LoginForm() {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <StyledButton fullWidth type="submit" variant="contained" color="primary">
+                  <StyledButton
+                    fullWidth
+                    type="submit"
+                    style={{ marginTop: 30, marginBottom: 20 }}
+                    variant="contained"
+                    color="primary"
+                  >
                     Continue
                   </StyledButton>
-                  <div className="login" style={{ marginTop: 45, marginBottom: -22 }}>
+                  <button
+                    className="login-btn"
+                    style={{ marginTop: -110, marginBottom: 32, marginLeft: -255 }}
+                    onClick={() => navigate("/password-reset")}
+                  >
+                    Forgot your password?
+                  </button>
+                  <div className="login" style={{ marginTop: 60, marginBottom: -22 }}>
                     <div className="login-text">Don't have an account?</div>
                     <button className="login-btn" onClick={() => navigate("/signup")}>
                       SIGNUP
