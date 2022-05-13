@@ -97,11 +97,18 @@ async function resetPassword(id, password) {
   }
 }
 
+async function deleteSpotifyAccess(id){
+  const userModel = getDbConnection().model("user", UserSchema);
+  const res = await userModel.findByIdAndUpdate(id, { $set: { refresh_token: "" } } );
+  return res;
+}
+
 exports.addUser = addUser;
 exports.findUserById = findUserById;
 exports.addUserLiked = addUserLiked;
 exports.removeUserLiked = removeUserLiked;
 exports.login = login;
+exports.deleteSpotifyAccess = deleteSpotifyAccess;
 exports.setConnection = setConnection;
 exports.updateRefresh = updateRefresh;
 exports.findUserByEmail = findUserByEmail;
