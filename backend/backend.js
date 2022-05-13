@@ -306,7 +306,7 @@ app.post("/send-email", async (req, res) => {
     const link = `${process.env.FRONTEND_URL}/reset/${token.userId}/${token.token}`;
     await backEndServices.sendEmail(user.email, link);
     res.send("password reset link sent to your email account");
-  } catch (err) {
+  } catch (error) {
     res.send("error occurred");
     console.log(error);
   }
