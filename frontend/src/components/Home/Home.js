@@ -138,9 +138,11 @@ function Home() {
       .post(`${process.env.REACT_APP_URL}/current`, { accessToken })
       .then((res) => {
         if (res) {
-          setCurrentlyPlaying(res.data.song);
-          setNewSong(res.data.song.name);
-          setNewArtist(res.data.song.artists[0].name);
+          if (res.data.song) {
+            setCurrentlyPlaying(res.data.song);
+            setNewSong(res.data.song.name);
+            setNewArtist(res.data.song.artists[0].name);
+          }
         }
       })
       .catch((error) => {
