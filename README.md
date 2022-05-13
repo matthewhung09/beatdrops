@@ -12,7 +12,7 @@ by Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
 ### Start frontend
 
-1. In the frontend folder, run `npm start`.
+1. In the frontend folder, run `npm run dev`.
 
 ## Branching
 
@@ -33,7 +33,7 @@ Only do this if we have already discussed, otherwise create a pull request.
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
-## Style Checker 
+## Style Checker
 
 Prettier: Style checker that auto-formats your code and allows you to toggle specific formatting rules. Command-line interface and IDE plugins available.
 

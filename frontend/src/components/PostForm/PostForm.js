@@ -22,7 +22,6 @@ function PostForm({
   onChangeSong,
   onChangeArtist,
   onClick,
-  postCurrent,
   postFromPlaylist,
   postError,
 }) {
@@ -64,11 +63,8 @@ function PostForm({
           <div className="current">
             {currentlyPlaying && (
               <div>
-                <h2 className="current">Currently streaming</h2>
+                <h2 className="current">Currently streaming:</h2>
                 <p className="current">{currentlyPlaying.name}</p>
-                <button onClick={postCurrent} className="btn">
-                  Post
-                </button>
               </div>
             )}
           </div>

@@ -179,13 +179,11 @@ function Post({
         <div className="spotify-actions">
           {spotifyLikeStatus === false ? (
             <button className="webplayer-buttons" onClick={likeOnSpotify}>
-              {console.log("liked")}
               <BsBookmarkHeart />
               {'Save to "Liked Songs"'}
             </button>
           ) : (
             <button className="webplayer-buttons" onClick={unlikeOnSpotify}>
-              {console.log("unliked")}
               <BsBookmarkHeartFill />
               {'Saved to "Liked Songs"'}
             </button>

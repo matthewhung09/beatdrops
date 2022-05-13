@@ -11,6 +11,8 @@ const userServices = require("./models/user-services");
 const checkUser = require("./middleware/authMiddleware");
 const bodyParser = require("body-parser");
 const backEndServices = require("./backend-services");
+const tokenServices = require("./models/token-services");
+const randomstring = require("random-string-gen");
 
 const app = express();
 const port = 5000;
@@ -26,13 +28,10 @@ const limiter = new Bottleneck({
 
 dotenv.config();
 
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-let redirect_uri = process.env.REDIRECT_URI_LOCAL;
-if (process.env.NODE_ENV === "production") {
-  redirect_uri = process.env.REDIRECT_URI_PROD;
-}
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
+const auth_token = Buffer.from(
+  `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
+  "utf-8"
+).toString("base64");
 
 app.use(cookieParser());
 app.use(
@@ -89,7 +88,6 @@ app.post("/create", async (req, res) => {
   const new_post = await limiter.schedule(() =>
     backEndServices.getPostData(req.body.title, req.body.artist, req.body.location)
   );
-  console.log(new_post);
   if (!new_post) {
     res.status(500).end();
   } else {
@@ -184,12 +182,11 @@ app.get("/logout", (req, res) => {
 app.post("/auth/callback", async (req, res) => {
   const code = req.body.auth_code;
   let response;
-  console.log(redirect_uri);
   try {
     const data = qs.stringify({
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: redirect_uri,
+      redirect_uri: process.env.FRONTEND_URL + "/home",
     });
     response = await axios.post("https://accounts.spotify.com/api/token", data, {
       headers: {
@@ -280,11 +277,72 @@ app.post("/playlists", async (req, res) => {
 });
 
 app.post("/update", checkUser, async (req, res) => {
-  console.log("here");
   const refreshToken = req.body.refreshToken;
   const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, refreshToken);
-  console.log(user);
+});
+
+/* ------ password reset ------ */
+
+app.post("/send-email", async (req, res) => {
+  try {
+    const user = await userServices.findUserByEmail(req.body.email);
+    if (!user) {
+      res.status(404).send({ message: "No user found with that email." });
+    }
+
+    let token = await tokenServices.findTokenWithUserId(user._id);
+    // create token for user if one doesn't already exist
+    if (!token) {
+      const slug = randomstring();
+      token = await tokenServices.addToken({
+        userId: user._id,
+        token: slug,
+      });
+    }
+
+    // send email to user
+    const link = `${process.env.FRONTEND_URL}/reset/${token.userId}/${token.token}`;
+    await backEndServices.sendEmail(user.email, link);
+    res.send("password reset link sent to your email account");
+  } catch (error) {
+    res.send("error occurred");
+    console.log(error);
+  }
+});
+
+app.post("/reset/:userId/:token", async (req, res) => {
+  try {
+    const user = await userServices.findUserById(req.params.userId);
+    if (!user) {
+      return res.status(400).send("invalid link or expired");
+    }
+
+    const token = await tokenServices.checkValidToken(user._id, req.params.token);
+    if (!token) {
+      return res.status(400).send("Invalid link or expired");
+    }
+
+    await userServices.resetPassword(user._id, req.body.password);
+    await tokenServices.deleteToken(token);
+
+    res.send("password reset sucessfully.");
+  } catch (error) {
+    res.send("An error occured");
+    console.log(error);
+  }
+});
+
+//remove spotify access
+app.post("/auth/remove", checkUser, async (req, res) => {
+  console.log("k0w46un94");
+  const user_id = req.body._id;
+  const user = await userServices.deleteSpotifyAccess(user_id);
+  if (user) {
+    res.status(204).end();
+  } else {
+    res.status(404).send("User not found");
+  }
 });
 
 app.listen(process.env.PORT || port, () => {

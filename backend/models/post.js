@@ -24,6 +24,7 @@ const PostSchema = new mongoose.Schema(
       name: String,
       lat: Number,
       long: Number,
+      onCampus: Boolean,
     },
     url: {
       type: String,

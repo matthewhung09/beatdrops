@@ -72,16 +72,11 @@ function LoginForm() {
   const [cemail, setEmail] = useState("");
   const [cpassword, setPassword] = useState("");
 
-  let prefix = process.env.REACT_APP_URL_LOCAL;
-  if (process.env.NODE_ENV === "production") {
-    prefix = process.env.REACT_APP_URL_PROD;
-  }
-
   const onSubmit = async (values) => {
     let response;
     try {
       response = await axios.post(
-        `${prefix}/login`,
+        `${process.env.REACT_APP_URL}/login`,
         {
           email: values.email,
           password: values.password,
@@ -217,6 +212,9 @@ function LoginForm() {
                     )}
                   />
                 ))}
+                <button className="login-btn" onClick={() => navigate("/password-reset")}>
+                  Forgot your password?
+                </button>
                 {/* component for styling */}
                 <Box
                   m={2}

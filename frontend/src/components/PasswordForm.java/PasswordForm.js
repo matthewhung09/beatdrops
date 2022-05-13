@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
 import {
   TextField,
   InputAdornment,
@@ -19,6 +20,8 @@ import "../../App.css";
 import { useNavigate } from "react-router-dom";
 import "../SignUpForm/SignUpForm.css";
 import axios from "axios";
+import { BsGoogle } from "react-icons/bs";
+import { FaConnectdevelop } from "react-icons/fa";
 
 const PopupWrapper = styled.div`
   display: flex;
@@ -53,63 +56,43 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-function SignUpForm() {
-  let navigate = useNavigate();
-
+function PasswordForm() {
   // style
   const variant = "outlined";
 
   // validation
-  const passwordRegExp =
-    /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email format.")
-      .required("Please enter your email.")
-      .test(
-        "is-valid",
-        (message) => `${message.path} is invalid.`,
-        (value) => (value ? isEmailValidator(value) : new Yup.ValidationError("Invalid value."))
-      ),
-    password: Yup.string()
-      .required("Please enter your password.")
-      .matches(
-        passwordRegExp,
-        "Password must contain at least 8 characters, one uppercase, one number and one special case character."
-      ),
-    username: Yup.string().required("Please enter a nickname."),
+    password: Yup.string().required("Please enter your password."),
   });
-
   const { handleSubmit, control, reset } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const [vErr, setvErr] = useState("");
-  const [cemail, setEmail] = useState("");
+  const [cpassword, setPassword] = useState("");
+
+  const { userId, token } = useParams();
 
   const onSubmit = async (values) => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_URL}/signup`,
+        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
+
         {
-          username: values.username,
-          email: values.email,
           password: values.password,
         },
-        { withCredentials: true }
+        { withCredentials: true, credentials: "include" }
       );
-      navigate("/spotify");
     } catch (error) {
-      setEmail(values.email);
+      setPassword(values.password);
       setvErr(error.response.data.errors);
     }
   };
 
   // info for required entries
   const rEntries = [
-    { input: "email", label: "Email" },
-    { input: "password", label: "Create a password" },
-    { input: "username", label: "What should we call you?" },
+    { input: "password", label: "Password" },
+    // { input: "confirmed", label: "Confirm password" },
   ];
 
   // sets popup to be open when page is first loaded
@@ -118,8 +101,11 @@ function SignUpForm() {
 
   // set password visibility
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmed, setShowConfirmed] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const handleClickShowConfirmed = () => setShowConfirmed(!showConfirmed);
+  const handleMouseDownConfirmed = () => setShowConfirmed(!showConfirmed);
 
   return (
     <StylesProvider injectFirst>
@@ -134,7 +120,11 @@ function SignUpForm() {
               &times;
             </button>
             <PopupWrapper>
-              <PopupTitle> Sign up for a free beatdrops account.</PopupTitle>
+              <PopupTitle> Choose a new password.</PopupTitle>
+              <h2 style={{ lineHeight: "unset", color: "grey", fontWeight: "400" }}>
+                It should be at least 8 characters long, and it must include a capital letter and a
+                special character.
+              </h2>
               <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
                 {rEntries.map((entry, index) => (
                   <Controller
@@ -165,15 +155,16 @@ function SignUpForm() {
                             helperText={
                               error
                                 ? error.message
-                                : name === "email" && vErr.email !== "" && value === cemail
-                                ? vErr.email
-                                : name === "password" && vErr.password !== ""
+                                : name === "password" && vErr.password !== "" && value === cpassword
                                 ? vErr.password
-                                : name === "username" && vErr.username !== ""
-                                ? vErr.username
                                 : null
                             }
                             type={showPassword ? "text" : "password"}
+                            FormHelperTextProps={{
+                              style: {
+                                color: "#f44434",
+                              },
+                            }}
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -193,43 +184,50 @@ function SignUpForm() {
                             }}
                           />
                         ) : (
-                          <div>
-                            {/* {console.log(
-                                                            "value: ",
-                                                            value,
-                                                            "cemail: ",
-                                                            cemail
-                                                        )} */}
-                            <TextField
-                              fullWidth
-                              key={name}
-                              variant={variant}
-                              label={entry.label}
-                              onChange={onChange}
-                              error={!!error}
-                              helperText={
-                                error
-                                  ? error.message
-                                  : name === "email" && vErr.email !== "" && value === cemail
-                                  ? vErr.email
-                                  : name === "password" && vErr.password !== ""
-                                  ? vErr.password
-                                  : name === "username" && vErr.username !== ""
-                                  ? vErr.username
-                                  : null
-                              }
-                              FormHelperTextProps={{
-                                style: {
-                                  color: "#f44434",
-                                },
-                              }}
-                            />
-                          </div>
+                          <TextField
+                            fullWidth
+                            key={name}
+                            variant={variant}
+                            label={entry.label}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={
+                              error
+                                ? error.message
+                                : name === "password" && vErr.password !== "" && value === cpassword
+                                ? vErr.password
+                                : null
+                            }
+                            type={showConfirmed ? "text" : "password"}
+                            FormHelperTextProps={{
+                              style: {
+                                color: "#f44434",
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    style={{
+                                      width: 50,
+                                    }}
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowConfirmed}
+                                    onMouseDown={handleMouseDownConfirmed}
+                                    edge="end"
+                                  >
+                                    {showConfirmed ? <Visibility /> : <VisibilityOff />}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
                         )}
                       </Box>
                     )}
                   />
                 ))}
+
                 {/* component for styling */}
                 <Box
                   m={2}
@@ -241,12 +239,6 @@ function SignUpForm() {
                   <StyledButton fullWidth type="submit" variant="contained" color="primary">
                     Continue
                   </StyledButton>
-                  <div className="login" style={{ marginTop: 45, marginBottom: -22 }}>
-                    <div className="login-text">Already have an account?</div>
-                    <button className="login-btn" onClick={() => navigate("/")}>
-                      LOGIN
-                    </button>
-                  </div>
                 </Box>
               </form>
             </PopupWrapper>
@@ -257,4 +249,4 @@ function SignUpForm() {
   );
 }
 
-export default SignUpForm;
+export default PasswordForm;

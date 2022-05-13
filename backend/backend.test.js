@@ -1,8 +1,9 @@
 const axios = require("axios");
 const jsonwebtoken = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const backendServices = require("./backend-services");
 
-const userPlaylists = require("./backend-services");
-const currSongData = require("./currentSongData.json");
+jest.mock("nodemailer");
 jest.mock("axios");
 jest.mock("jsonwebtoken");
 
@@ -23,13 +24,13 @@ test("Get access token -- success", async () => {
 
   axios.post.mockResolvedValue(resp);
 
-  const res = await userPlaylists.getAccessToken();
+  const res = await backendServices.getAccessToken();
   expect(res).toEqual(mockAccessToken);
 });
 
 test("Get access token -- failure", async () => {
   axios.post.mockResolvedValue(undefined);
-  const res = await userPlaylists.getAccessToken();
+  const res = await backendServices.getAccessToken();
   expect(res).toBe(undefined);
 });
 
@@ -82,7 +83,7 @@ test("Get song data -- success", async () => {
   };
   axios.post.mockResolvedValue(respo);
 
-  const res = await userPlaylists.getPostData("Dean Town", "Vulfpeck", undefined);
+  const res = await backendServices.getPostData("Dean Town", "Vulfpeck", undefined);
   expect(res).toEqual(new_post);
 });
 
@@ -98,7 +99,7 @@ test("Get song data -- failure", async () => {
   axios.post.mockResolvedValue(respo);
 
   axios.get.mockResolvedValue(false);
-  const res = await userPlaylists.getPostData("Dean Town", "Vulfpeck", undefined);
+  const res = await backendServices.getPostData("Dean Town", "Vulfpeck", undefined);
   expect(res).toBe(false);
 });
 
@@ -123,7 +124,7 @@ test("Get song data -- no song matches", async () => {
   };
 
   axios.post.mockResolvedValue(respo);
-  const res = await userPlaylists.getPostData("not a real song", "aaaaaaa", undefined);
+  const res = await backendServices.getPostData("not a real song", "aaaaaaa", undefined);
   expect(res).toBe(false);
 });
 
@@ -131,7 +132,7 @@ test("create jwt token", async () => {
   const randomToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWZmNTA3NjcxMGUyOWM4ZTY2M2NmYiIsImlhdCI6MTY1MDk0NDEwNiwiZXhwIjoxNjUwOTQ3NzA2fQ.DfmfNdlU7K_Ke1rsbz-Cq5PsBc5emgspLyklLpD0hHg";
   jsonwebtoken.sign.mockResolvedValue(randomToken);
-  const res = await userPlaylists.createToken("asdfa");
+  const res = await backendServices.createToken("asdfa");
   expect(res).toEqual(randomToken);
 });
 
@@ -224,6 +225,25 @@ test("fetch playlists", async () => {
     },
   ];
 
-  const playlists = await userPlaylists.getPlaylists();
+  const playlists = await backendServices.getPlaylists();
   expect(playlists).toEqual(expected);
+});
+
+test("send email -- success", async () => {
+  const sendMailMock = jest.fn().mockResolvedValue(undefined);
+  nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+  const res = await backendServices.sendEmail(
+    "r@gmail.com",
+    "https://beatdrops.herokuapp/password-reset/asdf"
+  );
+  expect(sendMailMock).toHaveBeenCalled();
+});
+
+test("send email -- fail", async () => {
+  nodemailer.createTransport.mockReturnValue(undefined);
+  const res = await backendServices.sendEmail(
+    "r@gmail.com",
+    "https://beatdrops.herokuapp/password-reset/asdf"
+  );
+  expect(res).toBe(false);
 });

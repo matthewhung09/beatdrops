@@ -3,6 +3,8 @@ import "reactjs-popup/dist/index.css";
 import "./Home.css";
 import { useState, useEffect, useRef } from "react";
 import { IoIosAddCircle } from "react-icons/io";
+import { RiRoadMapLine } from "react-icons/ri";
+
 import Popup from "reactjs-popup";
 import Post from "../Post/Post";
 import PostForm from "../PostForm/PostForm";
@@ -11,26 +13,19 @@ import axios from "axios";
 import rateLimit from "axios-rate-limit";
 import Map from "../Map/Map";
 
-
 const code = new URLSearchParams(window.location.search).get("code");
 
 function Home() {
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [expiresIn, setExpiresIn] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isMounted = useRef(false);
-
-  let prefix = process.env.REACT_APP_URL_LOCAL;
-  let redirect_url = process.env.REACT_APP_REDIRECT_LOCAL;
-  if (process.env.NODE_ENV === "production") {
-    prefix = process.env.REACT_APP_URL_PROD;
-    redirect_url = process.env.REACT_APP_REDIRECT_PROD;
-  }
 
   useEffect(() => {
     if (!code) return;
     axios
-      .post(`${prefix}/auth/callback`, {
+      .post(`${process.env.REACT_APP_URL}/auth/callback`, {
         auth_code: code,
       })
       .then((res) => {
@@ -41,7 +36,11 @@ function Home() {
         return res.data.refreshToken;
       })
       .then((r) => {
-        axios.post(`${prefix}/update`, { refreshToken: r }, { withCredentials: true });
+        axios.post(
+          `${process.env.REACT_APP_URL}/update`,
+          { refreshToken: r },
+          { withCredentials: true }
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -61,7 +60,7 @@ function Home() {
 
   function refresh() {
     axios
-      .post(`${prefix}/auth/refresh`, {
+      .post(`${process.env.REACT_APP_URL}/auth/refresh`, {
         refreshToken,
       })
       .then((res) => {
@@ -104,7 +103,7 @@ function Home() {
   // Used to call getAllPosts, maybe refactor to use it still for testing purposes?
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const url = `${prefix}/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+      const url = `${process.env.REACT_APP_URL}/posts?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
       axios
         .get(url, { withCredentials: true })
         .then((response) => {
@@ -128,6 +127,7 @@ function Home() {
     if (!accessToken) {
       return;
     }
+    setIsLoggedIn(true);
     getCurrentSong();
     getPlaylists();
     // getUsersPlaylist();
@@ -135,10 +135,14 @@ function Home() {
 
   async function getCurrentSong() {
     await axios
-      .post(`${prefix}/current`, { accessToken })
+      .post(`${process.env.REACT_APP_URL}/current`, { accessToken })
       .then((res) => {
         if (res) {
-          setCurrentlyPlaying(res.data.song);
+          if (res.data.song) {
+            setCurrentlyPlaying(res.data.song);
+            setNewSong(res.data.song.name);
+            setNewArtist(res.data.song.artists[0].name);
+          }
         }
       })
       .catch((error) => {
@@ -150,7 +154,7 @@ function Home() {
 
   async function getPlaylists() {
     await axios
-      .post(`${prefix}/playlists`, { accessToken })
+      .post(`${process.env.REACT_APP_URL}/playlists`, { accessToken })
       .then((res) => {
         if (res) {
           setPlaylists(res.data.playlists);
@@ -176,10 +180,13 @@ function Home() {
   // send ID of post and user - add liked post to their array
   async function makeLikeCall(post_id, liked) {
     try {
-      const response = await axios.patch(`${prefix}/user/` + user._id + "/liked", {
-        post: post_id,
-        liked: liked,
-      });
+      const response = await axios.patch(
+        `${process.env.REACT_APP_URL}/user/` + user._id + "/liked",
+        {
+          post: post_id,
+          liked: liked,
+        }
+      );
       return response;
     } catch (error) {
       console.log(error);
@@ -190,9 +197,9 @@ function Home() {
   /* ------ post creation ------ */
 
   // Submit for making new post
-  async function onSubmitPostClick(song, artist) {
+  async function onSubmitPostClick() {
     let success = false;
-    await makePostCall(song, artist).then((result) => {
+    await makePostCall().then((result) => {
       if (result && result.status === 201) {
         setPosts([result.data, ...postList]);
         success = true;
@@ -213,32 +220,19 @@ function Home() {
     close();
   }
 
-  async function makePostCall(song, artist) {
-    const location = await getPostPosition();
-    // getPostPosition(lat, long);
-    if (song && artist) {
-      try {
-        const response = await axios.post(`${prefix}/create`, {
-          title: song,
-          artist: artist,
-          location: { name: location, lat: lat, long: long },
-        });
-        return response;
-      } catch (error) {
-        return false;
-      }
-    } else {
-      try {
-        const response = await axios.post(`${prefix}/create`, {
-          title: newSong,
-          artist: newArtist,
-          location: { name: location, lat: lat, long: long },
-        });
-        return response;
-      } catch (error) {
-        console.log("Post failed");
-        return false;
-      }
+  async function makePostCall() {
+    const { postedLocation, onCampus } = await getPostPosition();
+    getPostPosition(lat, long);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_URL}/create`, {
+        title: newSong,
+        artist: newArtist,
+        location: { name: postedLocation, lat: lat, long: long, onCampus: onCampus },
+      });
+      return response;
+    } catch (error) {
+      console.log("Post failed");
+      return false;
     }
   }
 
@@ -261,7 +255,7 @@ function Home() {
   /* ------ logout ------ */
 
   useEffect(() => {
-    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=31aab7d48ba247f2b055c23b5ac155d8&response_type=code&redirect_uri=${redirect_url}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
+    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
     if (userSetting === "Logout") {
       logout();
     } else if (userSetting === "Spotify") {
@@ -271,7 +265,7 @@ function Home() {
 
   function logout() {
     axios
-      .get(`${prefix}/logout`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_URL}/logout`, { withCredentials: true })
       .then(() => {
         window.location.assign("/");
       })
@@ -310,14 +304,18 @@ function Home() {
       let geoData = response.data.features[0].properties;
 
       // random off campus place
-      if (geoData.name === undefined) return geoData.street;
+      if (geoData.name === undefined) return { postedLocation: geoData.street, onCampus: false };
       // not at a specific campus building
-      else if (geoData.name === "California Polytechnic State University") return geoData.street;
+      else if (geoData.name === "California Polytechnic State University")
+        return { postedLocation: geoData.street, onCampus: true };
       // strip number from on campus buildings
       else if (geoData.name.includes("("))
-        return geoData.name.substring(0, geoData.name.indexOf("("));
+        return {
+          postedLocation: geoData.name.substring(0, geoData.name.indexOf("(")),
+          onCampus: true,
+        };
       // by default, return name of place
-      return geoData.properties.name;
+      return { postedLocation: geoData.properties.name, onCampus: false };
     } catch (error) {
       console.log(error);
     }
@@ -326,7 +324,12 @@ function Home() {
   return (
     <div className="home">
       <div className="user-settings">
-        <Dropdown selected={userSetting} setSelected={setUserSetting} purpose="user" />
+        <Dropdown
+          selected={userSetting}
+          setSelected={setUserSetting}
+          setLoggedIn={isLoggedIn}
+          purpose="user"
+        />
       </div>
       <div className="header">
         <h1>Beatdrops</h1>
@@ -369,25 +372,12 @@ function Home() {
                   onClick={async () => {
                     (await onSubmitPostClick()) ? resetPostForm(close) : setPostError(postErrMsg);
                   }}
-                  postCurrent={async () => {
-                    setNewSong(currentlyPlaying.name);
-                    setNewArtist(currentlyPlaying.artists[0].name);
-                    (await onSubmitPostClick(
-                      currentlyPlaying.name,
-                      currentlyPlaying.artists[0].name
-                    ))
-                      ? resetPostForm(close)
-                      : setPostError(postErrMsg);
-                  }}
                   postFromPlaylist={async (value) => {
                     let songInfo = value.split("by");
                     let title = songInfo[0];
                     let artist = songInfo[1];
                     setNewSong(title);
                     setNewArtist(artist);
-                    // (await onSubmitPostClick(title, artist))
-                    //     ? resetPostForm(close)
-                    //     : setPostError(postErrMsg);
                   }}
                   postError={postError}
                 />
@@ -404,7 +394,7 @@ function Home() {
           trigger={
             <button className="create-btn">
               {" "}
-              View Map <IoIosAddCircle className="circle" />
+              Map <RiRoadMapLine className="circle" />
             </button>
           }
         >
@@ -414,7 +404,7 @@ function Home() {
                 &times;
               </button>
               <div className="map-content">
-                <Map lat={lat} long={long} posts={postList} user={user} />
+                <Map lat={lat} long={long} posts={postList}/>
               </div>
             </div>
           )}

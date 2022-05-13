@@ -3,12 +3,19 @@ const baseURI = "https://api.spotify.com/v1";
 const qs = require("qs");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, "utf-8").toString("base64");
-
+const oauth2Client = new OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 // Get access token in order to use Spotify API
 // This is different from /auth/login - here we use our developer credentials
 // to get access token to make requests to API
@@ -102,9 +109,6 @@ async function getPlaylists(accessToken) {
     });
   }
 
-  // result = playlists.filter((playlist) => playlist.tracks.length > 0);
-
-  // return result;
   return playlists;
 }
 
@@ -127,8 +131,46 @@ async function getTracks(id, token, playlistName) {
   return tracks;
 }
 
+// send email for password reset
+async function sendEmail(email, link) {
+  try {
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
+    const accessToken = await oauth2Client.getAccessToken();
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE,
+      // secure: true,
+      tls: {
+        rejectUnauthorized: false,
+      },
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_USER,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+        accessToken: accessToken.token,
+        // pass: process.env.EMAIL_PASS,
+      },
+    });
+    await transporter.sendMail({
+      from: `${process.env.EMAIL_USER}`,
+      to: email,
+      subject: "Reset your password on beatdrops.",
+      html: `<p>Hello! Click this <a href="${link}"> link </a> to reset your password.</p>`,
+    });
+
+    console.log("email sent successfully");
+  } catch (error) {
+    console.log(error, "email failed to send");
+    return false;
+  }
+}
+
 exports.getTracks = getTracks;
 exports.getPlaylists = getPlaylists;
 exports.createToken = createToken;
 exports.getPostData = getPostData;
 exports.getAccessToken = getAccessToken;
+exports.sendEmail = sendEmail;

@@ -5,6 +5,8 @@ const PostSchema = require("./post");
 const postServices = require("./post-services");
 const mockingoose = require("mockingoose");
 const bcrypt = require("bcrypt");
+const TokenSchema = require("./token");
+const tokenServices = require("./token-services");
 
 jest.mock("bcrypt");
 
@@ -14,6 +16,7 @@ let postModel;
 beforeAll(async () => {
   userModel = mongoose.model("User", UserSchema);
   postModel = mongoose.model("Post", PostSchema);
+  tokenModel = mongoose.model("Token", TokenSchema);
 });
 
 afterAll(async () => {});
@@ -52,6 +55,23 @@ test("Fetching by valid id and finding", async () => {
 
   userModel.findById = jest.fn().mockResolvedValue(dummyUser);
   const foundUser = await userServices.findUserById("randomid");
+  expect(foundUser).toBeDefined();
+  expect(foundUser.id).toBe(dummyUser.id);
+  expect(foundUser.name).toBe(dummyUser.name);
+  expect(foundUser.email).toBe(dummyUser.email);
+});
+
+test("Fetching by email and finding", async () => {
+  const dummyUser = {
+    _id: "randomid",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+
+  userModel.findOne = jest.fn().mockResolvedValue(dummyUser);
+  const foundUser = await userServices.findUserByEmail("gMan@gmail.com");
   expect(foundUser).toBeDefined();
   expect(foundUser.id).toBe(dummyUser.id);
   expect(foundUser.name).toBe(dummyUser.name);
@@ -219,6 +239,32 @@ test("login -- failure with invalid email", async () => {
   } catch (e) {
     expect(e.message).toBe("incorrect email");
   }
+});
+
+test("reset password -- success", async () => {
+  const dummyUser = {
+    id: 123,
+    username: "Matt",
+    password: "newPassword1!",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(dummyUser);
+  const updatedUser = await userServices.resetPassword(123, "newPassword1!");
+  expect(updatedUser.password).toEqual(dummyUser.password);
+});
+
+test("reset password -- fail", async () => {
+  const dummyUser = {
+    id: 123,
+    username: "Matt",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    liked: [],
+  };
+  userModel.findByIdAndUpdate = jest.fn().mockRejectedValue(new Error("error"));
+  const updatedUser = await userServices.resetPassword(123, "newPassword1!");
+  expect(updatedUser).toBeUndefined;
 });
 
 test("Refresh token -- sucess", async () => {
@@ -459,4 +505,73 @@ test("Update duplicate -- success", async () => {
   expect(res.title).toBe(post.title);
   expect(res.artist).toBe(post.artist);
   expect(res.reposts).toBe(post.reposts);
+});
+
+/* token tests */
+test("Fetching by invalid id -- faiure", async () => {
+  const anyId = "123";
+  tokenModel.findById = jest.fn().mockRejectedValue(new Error("error"));
+  const user = await tokenServices.findTokenWithUserId(anyId);
+  expect(user).toBeUndefined();
+  expect(tokenModel.findById).toHaveBeenCalledWith(anyId);
+});
+
+test("Fetching by valid id and finding", async () => {
+  const dummyToken = {
+    userId: 123,
+    token: "asdfasdf",
+  };
+
+  tokenModel.findById = jest.fn().mockResolvedValue(dummyToken);
+  const foundUser = await tokenServices.findTokenWithUserId("randomid");
+  expect(foundUser).toBeDefined();
+  expect(foundUser.userId).toBe(dummyToken.userId);
+  expect(foundUser.token).toBe(dummyToken.token);
+});
+
+test("check valid token -- fail", async () => {
+  const anyId = "123";
+  tokenModel.findOne = jest.fn().mockRejectedValue(new Error("error"));
+  const user = await tokenServices.checkValidToken(anyId, "asdfasdf");
+  expect(user).toBeUndefined();
+});
+
+test("check valid token -- success", async () => {
+  const dummyToken = {
+    userId: 123,
+    token: "asdfasdf",
+  };
+
+  tokenModel.findOne = jest.fn().mockResolvedValue(dummyToken);
+  const foundUser = await tokenServices.checkValidToken(123, "asdfasdf");
+  expect(foundUser).toBeDefined();
+  expect(foundUser.userId).toBe(dummyToken.userId);
+  expect(foundUser.token).toBe(dummyToken.token);
+});
+
+test("add token -- success", async () => {
+  const mockObjectId = new mongoose.Types.ObjectId();
+  const addedToken = {
+    userId: mockObjectId,
+    token: "asdfasdf",
+  };
+  const tokenToAdd = {
+    userId: mockObjectId,
+    token: "asdfasdf",
+  };
+  mockingoose(tokenModel).toReturn(addedToken, "save");
+  const user = await tokenServices.addToken(tokenToAdd);
+  expect(user).toBeTruthy();
+  expect(user).toHaveProperty("userId");
+  expect(user).toHaveProperty("token");
+});
+
+test("delete token -- success", async () => {
+  const deletedToken = {
+    userId: 123,
+    token: "asdfasdf",
+  };
+  mockingoose(tokenModel).toReturn(deletedToken, "deleteOne");
+  const user = await tokenServices.deleteToken("asdfasdf");
+  expect(user).toBeTruthy();
 });
