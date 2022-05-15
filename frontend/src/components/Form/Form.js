@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StylesProvider } from "@material-ui/core";
 import { TextField, InputAdornment, IconButton, Box } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -41,9 +41,9 @@ function Form({
   onClick,
   mainActionText,
   styles,
+  instructions,
 }) {
   let navigate = useNavigate();
-  const variant = "outlined";
 
   // validation
   const { handleSubmit, control, reset } = useForm({
@@ -107,6 +107,43 @@ function Form({
     }
   };
 
+  const { userId, token } = useParams();
+
+  const onSubmitChooseNewPassword = async (values) => {
+    try {
+      console.log("hello");
+      await axios.post(
+        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
+
+        {
+          password: values.password,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/password-reset-success");
+    } catch (error) {
+      setPassword(values.password);
+      setvErr(error.response.data.errors);
+    }
+  };
+
+  const onSubmitEmailReset = async (values) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_URL}/send-email`,
+        {
+          email: values.email,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/email-success");
+    } catch (error) {
+      console.log(error.response.data.message);
+      setEmail(values.email);
+      setvErr(error.response.data.message);
+    }
+  };
+
   return (
     <StylesProvider injectFirst>
       <Popup open={open} closeOnDocumentClick={false} onClose={closeModal}>
@@ -118,11 +155,24 @@ function Form({
             </div>
             <PopupWrapper>
               <PopupTitle> {popupTitle} </PopupTitle>
+              {(formType === "chooseNewPassword" || formType === "emailReset") && (
+                <h2 style={{ lineHeight: "unset", color: "grey", fontWeight: "400" }}>
+                  {instructions}
+                </h2>
+              )}
               <form
                 style={{ width: "100%" }}
-                onSubmit={
-                  formType === "signup" ? handleSubmit(onSubmitSignup) : handleSubmit(onSubmitLogin)
-                }
+                onSubmit={() => {
+                  if (formType === "signup") {
+                    handleSubmit(onSubmitSignup);
+                  } else if (formType === "login") {
+                    handleSubmit(onSubmitLogin);
+                  } else if (formType === "chooseNewPassword") {
+                    handleSubmit(onSubmitChooseNewPassword);
+                  } else {
+                    handleSubmit(onSubmitEmailReset);
+                  }
+                }}
               >
                 {rEntries.map((entry, index) => (
                   <Controller
@@ -146,7 +196,7 @@ function Form({
                         <TextField
                           fullWidth
                           key={name}
-                          variant={variant}
+                          variant={"outlined"}
                           label={entry.label}
                           onChange={onChange}
                           error={!!error}
@@ -174,23 +224,25 @@ function Form({
                           }}
                           // conditionally render the visibility toggle for passwords
                           InputProps={
-                            entry.input === "password" && {
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  <IconButton
-                                    style={{
-                                      width: 50,
-                                    }}
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                  >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                  </IconButton>
-                                </InputAdornment>
-                              ),
-                            }
+                            entry.input === "password"
+                              ? {
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      <IconButton
+                                        style={{
+                                          width: 50,
+                                        }}
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                      >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                      </IconButton>
+                                    </InputAdornment>
+                                  ),
+                                }
+                              : undefined
                           }
                         />
                       </Box>
