@@ -283,6 +283,22 @@ test("Refresh token -- sucess", async () => {
   expect(result.refresh_token).toBe(dummyUser.refresh_token);
 });
 
+test("Refresh token delete -- success", async () => {
+  const dummyUser = {
+    _id: "123",
+    username: "Griffin",
+    password: "DogFan4571?",
+    email: "gMan@gmail.com",
+    refresh_token: "",
+    liked: [],
+  };
+
+  userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(dummyUser);
+  const result = await userServices.updateRefresh("123", "");
+  expect(result).toBeTruthy();
+  expect(result.refresh_token).toBe(dummyUser.refresh_token);
+});
+
 test("Refresh token -- failure", async () => {
   const dummyUser = {
     _id: "123",

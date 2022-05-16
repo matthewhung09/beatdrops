@@ -2,6 +2,10 @@ const axios = require("axios");
 const jsonwebtoken = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const backendServices = require("./backend-services");
+const { google } = require("googleapis");
+
+jest.mock("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 jest.mock("nodemailer");
 jest.mock("axios");
@@ -229,21 +233,23 @@ test("fetch playlists", async () => {
   expect(playlists).toEqual(expected);
 });
 
+test("send email -- fail", async () => {
+  nodemailer.createTransport.mockReturnValue(undefined);
+  const res = await backendServices.sendEmail(
+    "r@gmail.com",
+    "https://beatdrops.herokuapp/password-reset/asdf",
+    "randomtoken"
+  );
+  expect(res).toBe(false);
+});
+
 test("send email -- success", async () => {
   const sendMailMock = jest.fn().mockResolvedValue(undefined);
   nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
   const res = await backendServices.sendEmail(
     "r@gmail.com",
-    "https://beatdrops.herokuapp/password-reset/asdf"
+    "https://beatdrops.herokuapp/password-reset/asdf",
+    "randomtoken"
   );
   expect(sendMailMock).toHaveBeenCalled();
-});
-
-test("send email -- fail", async () => {
-  nodemailer.createTransport.mockReturnValue(undefined);
-  const res = await backendServices.sendEmail(
-    "r@gmail.com",
-    "https://beatdrops.herokuapp/password-reset/asdf"
-  );
-  expect(res).toBe(false);
 });
