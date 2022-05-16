@@ -85,6 +85,7 @@ function Form({
   };
 
   const onSubmitLogin = async (values) => {
+    console.log("ere");
     let response;
     try {
       response = await axios.post(
@@ -154,6 +155,7 @@ function Form({
               <b>♬ beatdrops </b>{" "}
             </div>
             <PopupWrapper>
+              {console.log(formType)}
               <PopupTitle> {popupTitle} </PopupTitle>
               {(formType === "chooseNewPassword" || formType === "emailReset") && (
                 <h2 style={{ lineHeight: "unset", color: "grey", fontWeight: "400" }}>
@@ -162,17 +164,15 @@ function Form({
               )}
               <form
                 style={{ width: "100%" }}
-                onSubmit={() => {
-                  if (formType === "signup") {
-                    handleSubmit(onSubmitSignup);
-                  } else if (formType === "login") {
-                    handleSubmit(onSubmitLogin);
-                  } else if (formType === "chooseNewPassword") {
-                    handleSubmit(onSubmitChooseNewPassword);
-                  } else {
-                    handleSubmit(onSubmitEmailReset);
-                  }
-                }}
+                onSubmit={
+                  formType === "signup"
+                    ? handleSubmit(onSubmitSignup)
+                    : formType === "login"
+                    ? handleSubmit(onSubmitLogin)
+                    : formType === "chooseNewPassword"
+                    ? handleSubmit(onSubmitChooseNewPassword)
+                    : handleSubmit(onSubmitEmailReset)
+                }
               >
                 {rEntries.map((entry, index) => (
                   <Controller
