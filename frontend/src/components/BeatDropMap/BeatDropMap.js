@@ -1,32 +1,32 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
-import "./Map.css";
+import "./BeatDropMap.css";
 
 const musicnote = new Icon({
   iconUrl: "/musnoteMarker.png",
   iconSize: [75, 90],
 });
 
-//groups near post
-//returns a hashmap ([lat, long], [songs])
-function groupPosts(posts) {
-  let notes = new Map();
+function BeatDropMap({ lat, long, posts }) {
+  const notes = new Map();
   for (let i = 0; i < posts.length; i++) {
-    console.log(posts[i]);
     let rLat = Math.ceil(posts[i].location.lat / 0.00002) * 0.000002;
     let rLong = Math.ceil(posts[i].location.long / 0.00002) * 0.000002;
-    if (notes.has([rLat, rLong])) {
-      //let songs = notes.get([rLat, rLong]).push({ title: posts[i].title, artist: posts[i].artist });
-      notes.set([rLat, rLong], [{ title: posts[i].title, artist: posts[i].artist }]);
+    let coordString = rLat.toString() + ", " + rLong.toString();
+    if (notes.has(coordString)) {
+      notes.get(coordString).push(posts[i]);
     } else {
-      notes.set([rLat, rLong], [{ title: posts[i].title, artist: posts[i].artist }]);
+      notes.set(coordString, [posts[i]]);
     }
   }
-  return notes;
-}
+  for (let i = 0; i < posts.length; i++) {
+    console.log("potato");
+  }
+  console.log(notes);
+  notes.forEach((posts) => {
+    console.log(posts.length);
+  });
 
-function Map({ lat, long, posts }) {
-  //const notes = groupPosts(posts);
   return (
     <MapContainer
       className="map"
@@ -40,7 +40,7 @@ function Map({ lat, long, posts }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         // style={{ maxWidth: 10 }}
       />
-      {posts.map(
+      {/* {posts.map(
         (marker, index) =>
           marker.location.onCampus && (
             <Marker
@@ -53,9 +53,31 @@ function Map({ lat, long, posts }) {
               </Popup>
             </Marker>
           )
-      )}
+      )} */}
+      {notes.forEach((posts) => {
+        //posts[0].location.onCampus &&
+        //posts.length > 1 ? (
+        <Marker
+          position={[posts[0].location.lat, posts[0].location.long]}
+          icon={musicnote}
+          //key={index}
+        >
+          <Popup>text</Popup>
+        </Marker>;
+        // ) : (
+        //   <Marker
+        //     position={[posts[0].location.lat, posts[0].location.long]}
+        //     icon={musicnote}
+        //     //key={index}
+        //   >
+        //     <Popup>
+        //       {posts[0].title} <br /> something
+        //     </Popup>
+        //   </Marker>
+        // );
+      })}
     </MapContainer>
   );
 }
 
-export default Map;
+export default BeatDropMap;

@@ -11,7 +11,7 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import Map from "../Map/Map";
+import BeatDropMap from "../BeatDropMap/BeatDropMap";
 
 const code = new URLSearchParams(window.location.search).get("code");
 
@@ -333,7 +333,10 @@ function Home() {
       </div>
       <div className="header">
         <h1>Beatdrops</h1>
-        <picture> <img src = "logo_app.png" width = "150" height = "80"/> </picture>
+        <picture>
+          {" "}
+          <img src="logo_app.png" width="150" height="80" />{" "}
+        </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
       <div className="home-actions">
@@ -404,7 +407,7 @@ function Home() {
                 &times;
               </button>
               <div className="map-content">
-                <Map lat={lat} long={long} posts={postList}/>
+                <BeatDropMap lat={lat} long={long} posts={postList} />
               </div>
             </div>
           )}
