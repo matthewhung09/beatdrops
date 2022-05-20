@@ -2,6 +2,7 @@ import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import Form from "../Form/Form";
+import axios from "axios";
 import "../../App.css";
 import "../SignUpForm/SignUpForm.css";
 
@@ -20,6 +21,23 @@ function LoginForm() {
     password: Yup.string().required("Please enter your password."),
   });
 
+  const onSubmitCall = async (values) => {
+    console.log(values);
+    let response = await axios.post(
+      `${process.env.REACT_APP_URL}/login`,
+      {
+        email: values.email,
+        password: values.password,
+      },
+      { withCredentials: true, credentials: "include" }
+    );
+    const data = response.data;
+    // Route to main page if login info is correct
+    if (data.user) {
+      window.location.assign("/home");
+    }
+  };
+
   return (
     <Form
       rEntries={rEntries}
@@ -30,6 +48,7 @@ function LoginForm() {
       onClick={() => navigate("/signup")}
       mainActionText="SIGNUP"
       styles={{ marginTop: 100, marginBottom: -22 }}
+      onSubmitCall={onSubmitCall}
     />
   );
 }

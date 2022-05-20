@@ -3,13 +3,11 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StylesProvider } from "@material-ui/core";
 import { TextField, InputAdornment, IconButton, Box } from "@material-ui/core";
-import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Popup from "reactjs-popup";
 import FormFooter from "../Form/FormFooter";
-import axios from "axios";
 import "../../App.css";
 import "../SignUpForm/SignUpForm.css";
 
@@ -42,9 +40,8 @@ function Form({
   mainActionText,
   styles,
   instructions,
+  onSubmitCall,
 }) {
-  let navigate = useNavigate();
-
   // validation
   const { handleSubmit, control, reset } = useForm({
     resolver: yupResolver(validationSchema),
@@ -66,82 +63,14 @@ function Form({
   };
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const onSubmitSignup = async (values) => {
+  // for all the different forms
+  const onSubmit = async (values) => {
     try {
-      await axios.post(
-        `${process.env.REACT_APP_URL}/signup`,
-        {
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        },
-        { withCredentials: true }
-      );
-      navigate("/spotify");
-    } catch (error) {
-      setEmail(values.email);
-      setvErr(error.response.data.errors);
-    }
-  };
-
-  const onSubmitLogin = async (values) => {
-    console.log("ere");
-    let response;
-    try {
-      response = await axios.post(
-        `${process.env.REACT_APP_URL}/login`,
-        {
-          email: values.email,
-          password: values.password,
-        },
-        { withCredentials: true, credentials: "include" }
-      );
-      const data = response.data;
-      // Route to main page if login info is correct
-      if (data.user) {
-        window.location.assign("/home");
-      }
+      onSubmitCall(values);
     } catch (error) {
       setEmail(values.email);
       setPassword(values.password);
       setvErr(error.response.data.errors);
-    }
-  };
-
-  const { userId, token } = useParams();
-
-  const onSubmitChooseNewPassword = async (values) => {
-    try {
-      console.log("hello");
-      await axios.post(
-        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
-
-        {
-          password: values.password,
-        },
-        { withCredentials: true, credentials: "include" }
-      );
-      navigate("/password-reset-success");
-    } catch (error) {
-      setPassword(values.password);
-      setvErr(error.response.data.errors);
-    }
-  };
-
-  const onSubmitEmailReset = async (values) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_URL}/send-email`,
-        {
-          email: values.email,
-        },
-        { withCredentials: true, credentials: "include" }
-      );
-      navigate("/email-success");
-    } catch (error) {
-      console.log(error.response.data.message);
-      setEmail(values.email);
-      setvErr(error.response.data.message);
     }
   };
 
@@ -162,18 +91,7 @@ function Form({
                   {instructions}
                 </h2>
               )}
-              <form
-                style={{ width: "100%" }}
-                onSubmit={
-                  formType === "signup"
-                    ? handleSubmit(onSubmitSignup)
-                    : formType === "login"
-                    ? handleSubmit(onSubmitLogin)
-                    : formType === "chooseNewPassword"
-                    ? handleSubmit(onSubmitChooseNewPassword)
-                    : handleSubmit(onSubmitEmailReset)
-                }
-              >
+              <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
                 {rEntries.map((entry, index) => (
                   <Controller
                     defaultValue=""
@@ -213,7 +131,9 @@ function Form({
                           }
                           // allows text to be displayed
                           type={
-                            (entry.input === "password" && showPassword) || entry.input === "email"
+                            (entry.input === "password" && showPassword) ||
+                            entry.input === "email" ||
+                            entry.input === "username"
                               ? "text"
                               : "password"
                           }
