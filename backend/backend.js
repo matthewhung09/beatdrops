@@ -349,7 +349,7 @@ app.post("/reset/:userId/:token", async (req, res) => {
 //remove spotify access
 app.post("/auth/remove", checkUser, async (req, res) => {
   console.log("k0w46un94");
-  const user_id = req.body._id;
+  const user_id = req.user._id;
   const user = await userServices.updateRefresh(user_id, "");
   if (user) {
     res.status(204).end();
