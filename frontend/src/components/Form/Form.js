@@ -9,7 +9,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Popup from "reactjs-popup";
 import FormFooter from "../Form/FormFooter";
 import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
+import "../Form/Form.css";
 
 const PopupWrapper = styled.div`
   display: flex;

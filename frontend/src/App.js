@@ -9,7 +9,6 @@ import EmailResetForm from "./components/PasswordReset/EmailResetForm";
 import Home from "./components/Home/Home";
 import ChooseNewPasswordForm from "./components/PasswordReset/ChooseNewPasswordForm";
 import ConfirmationPopup from "./components/PasswordReset/ConfirmationPopup/ConfirmationPopup";
-import ConfirmationPopup2 from "./components/PasswordReset/ConfirmationPopup/ConfirmationPopup2";
 
 function App() {
   return (
@@ -21,8 +20,16 @@ function App() {
           <Route path="/spotify" element={<SpotifyLogin />} />
           <Route path="/password-reset" element={<EmailResetForm />} />
           <Route path="/reset/:userId/:token" element={<ChooseNewPasswordForm />} />
-          <Route path="/email-success" element={<ConfirmationPopup />} />
-          <Route path="/password-reset-success" element={<ConfirmationPopup2 />} />
+          <Route
+            path="/email-success"
+            element={
+              <ConfirmationPopup message="A password reset link has been sent to the email address you submitted." />
+            }
+          />
+          <Route
+            path="/password-reset-success"
+            element={<ConfirmationPopup message="Your password has been successfully updated." />}
+          />
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>

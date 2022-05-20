@@ -1,10 +1,8 @@
 import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import Form from "../Form/Form";
 import axios from "axios";
-import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
+import Form from "../Form/Form";
 
 function LoginForm() {
   let navigate = useNavigate();

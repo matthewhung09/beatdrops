@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import axios from "axios";
 import Form from "../Form/Form";
-import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
 
 function EmailResetForm() {
   let navigate = useNavigate();

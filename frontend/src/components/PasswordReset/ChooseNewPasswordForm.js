@@ -1,8 +1,6 @@
 import { React } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
 import axios from "axios";
 import Form from "../Form/Form";
 

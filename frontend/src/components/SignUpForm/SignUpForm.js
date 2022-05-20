@@ -1,11 +1,9 @@
 import { React } from "react";
 import { useNavigate } from "react-router-dom";
-import * as Yup from "yup";
 import isEmailValidator from "validator/lib/isEmail";
-import Form from "../Form/Form";
+import * as Yup from "yup";
 import axios from "axios";
-import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
+import Form from "../Form/Form";
 
 function SignUpForm() {
   let navigate = useNavigate();

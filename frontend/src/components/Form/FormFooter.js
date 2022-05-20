@@ -2,8 +2,6 @@ import { React } from "react";
 import { Box, Button } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import "../../App.css";
-import "../SignUpForm/SignUpForm.css";
 
 const StyledButton = styled(Button)`
   background-color: black;
