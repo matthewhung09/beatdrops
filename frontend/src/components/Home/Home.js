@@ -11,7 +11,7 @@ import PostForm from "../PostForm/PostForm";
 import Dropdown from "../Dropdown/Dropdown";
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
-import Map from "../Map/Map";
+import BeatDropMap from "../BeatDropMap/BeatDropMap";
 
 const code = new URLSearchParams(window.location.search).get("code");
 
@@ -258,10 +258,24 @@ function Home() {
     const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
     if (userSetting === "Logout") {
       logout();
-    } else if (userSetting === "Spotify") {
+    } else if (userSetting === "Connect Spotify") {
       window.location.assign(AUTH_URL);
+    } else if (userSetting === "Remove Spotify") {
+      removeSpotifyAccess();
     }
   }, [userSetting]);
+
+  function removeSpotifyAccess() {
+    console.log("in");
+    axios
+      .post(`${process.env.REACT_APP_URL}/auth/remove`, {}, { withCredentials: true })
+      .then(() => {
+        window.location.assign("https://www.spotify.com/us/account/apps/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   function logout() {
     axios
@@ -335,7 +349,11 @@ function Home() {
         <h1>Beatdrops</h1>
         <picture>
           {" "}
-          <img src="logo_app.png" width="150" height="80" />{" "}
+          <img
+            src="logo_app.png"
+            width="150"
+            height="80"
+          />{" "}
         </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
@@ -361,7 +379,10 @@ function Home() {
         >
           {(close) => (
             <div className="modal">
-              <button className="close" onClick={close}>
+              <button
+                className="close"
+                onClick={close}
+              >
                 &times;
               </button>
               <div className="content">
@@ -403,11 +424,18 @@ function Home() {
         >
           {(close) => (
             <div className="modal">
-              <button className="close" onClick={close}>
+              <button
+                className="close"
+                onClick={close}
+              >
                 &times;
               </button>
               <div className="map-content">
-                <Map lat={lat} long={long} posts={postList} />
+                <BeatDropMap
+                  lat={lat}
+                  long={long}
+                  posts={postList}
+                />
               </div>
             </div>
           )}
