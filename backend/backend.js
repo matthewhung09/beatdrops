@@ -110,7 +110,7 @@ app.post("/create", async (req, res) => {
     } else {
       let post = await postServices.updateDuplicate(new_post);
       if (post) {
-        res.status(200).end();
+        res.status(200).json(post);
       } else {
         res.status(500).end();
       }
