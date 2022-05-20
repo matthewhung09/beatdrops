@@ -270,7 +270,7 @@ function Home() {
     axios
       .post(`${process.env.REACT_APP_URL}/auth/remove`, {}, { withCredentials: true })
       .then(() => {
-        window.location.assign("/home");
+        window.location.assign("https://www.spotify.com/us/account/apps/");
       })
       .catch((error) => {
         console.log(error);
