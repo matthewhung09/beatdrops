@@ -5,7 +5,7 @@ import Popup from "reactjs-popup";
 import { useNavigate } from "react-router-dom";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import "../../../App.css";
-import "../../SignUpForm/SignUpForm.css";
+import "../../Form/Form.css";
 import "./ConfirmationPopup.css";
 
 const PopupWrapper = styled.div`
@@ -30,7 +30,7 @@ const StyledButton = styled(Button)`
   cursor: pointer;
 `;
 
-function ConfirmationPopup() {
+function ConfirmationPopup({ message }) {
   let navigate = useNavigate();
 
   // sets popup to be open when page is first loaded
@@ -44,7 +44,8 @@ function ConfirmationPopup() {
           <PopupWrapper>
             <BsFillCheckCircleFill className="checkIcon" />
             <h2 style={{ lineHeight: "unset", fontWeight: "500", fontSize: "2em" }}>
-              A password reset link has been sent to the email address you submitted.
+              {message}
+              {/* A password reset link has been sent to the email address you submitted. */}
             </h2>
             <StyledButton
               fullWidth

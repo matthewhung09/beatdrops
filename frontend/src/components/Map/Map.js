@@ -7,7 +7,6 @@ const musicnote = new Icon({
   iconSize: [75, 90],
 });
 
-
 function Map({ lat, long, posts }) {
   return (
     <MapContainer
