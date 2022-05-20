@@ -9,8 +9,8 @@ function Dropdown({ selected, setSelected, setLoggedIn, purpose }) {
   purpose === "filter"
     ? (options = ["Likes", "Recent"])
     : setLoggedIn
-    ? (options = ["Logout"])
-    : (options = ["Spotify", "Logout"]);
+    ? (options = ["Remove Spotify", "Logout"])
+    : (options = ["Connect Spotify", "Logout"]);
 
   return (
     <div className="dropdown">
