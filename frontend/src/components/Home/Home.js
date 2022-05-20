@@ -258,10 +258,24 @@ function Home() {
     const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
     if (userSetting === "Logout") {
       logout();
-    } else if (userSetting === "Spotify") {
+    } else if (userSetting === "Connect Spotify") {
       window.location.assign(AUTH_URL);
+    } else if (userSetting === "Remove Spotify") {
+      removeSpotifyAccess();
     }
   }, [userSetting]);
+
+  function removeSpotifyAccess() {
+    console.log("in");
+    axios
+      .post(`${process.env.REACT_APP_URL}/auth/remove`, {}, { withCredentials: true })
+      .then(() => {
+        window.location.assign("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   function logout() {
     axios
