@@ -349,7 +349,11 @@ function Home() {
         <h1>Beatdrops</h1>
         <picture>
           {" "}
-          <img src="logo_app.png" width="150" height="80" />{" "}
+          <img
+            src="logo_app.png"
+            width="150"
+            height="80"
+          />{" "}
         </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
@@ -375,7 +379,10 @@ function Home() {
         >
           {(close) => (
             <div className="modal">
-              <button className="close" onClick={close}>
+              <button
+                className="close"
+                onClick={close}
+              >
                 &times;
               </button>
               <div className="content">
@@ -417,11 +424,18 @@ function Home() {
         >
           {(close) => (
             <div className="modal">
-              <button className="close" onClick={close}>
+              <button
+                className="close"
+                onClick={close}
+              >
                 &times;
               </button>
               <div className="map-content">
-                <BeatDropMap lat={lat} long={long} posts={postList} />
+                <BeatDropMap
+                  lat={lat}
+                  long={long}
+                  posts={postList}
+                />
               </div>
             </div>
           )}

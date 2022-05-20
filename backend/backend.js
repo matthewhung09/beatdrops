@@ -13,6 +13,8 @@ const bodyParser = require("body-parser");
 const backEndServices = require("./backend-services");
 const tokenServices = require("./models/token-services");
 const randomstring = require("random-string-gen");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const app = express();
 const port = 5000;
@@ -28,6 +30,11 @@ const limiter = new Bottleneck({
 
 dotenv.config();
 
+const oauth2Client = new OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 const auth_token = Buffer.from(
   `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
   "utf-8"
@@ -75,7 +82,7 @@ app.get("/posts", checkUser, async (req, res) => {
   const lat = parseFloat(req.query.lat);
   const long = parseFloat(req.query.long);
   try {
-    const posts = await postServices.getPostsByLocation(lat, long, false);
+    const posts = await postServices.getPostsByLocation(lat, long);
     res.status(201).json({ posts: posts, user: req.user });
   } catch (error) {
     res.status(500).send(error.message);
@@ -303,8 +310,13 @@ app.post("/send-email", async (req, res) => {
     }
 
     // send email to user
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
+    const accessToken = await oauth2Client.getAccessToken();
+
     const link = `${process.env.FRONTEND_URL}/reset/${token.userId}/${token.token}`;
-    await backEndServices.sendEmail(user.email, link);
+    await backEndServices.sendEmail(user.email, link, accessToken);
     res.send("password reset link sent to your email account");
   } catch (error) {
     res.send("error occurred");
@@ -337,9 +349,8 @@ app.post("/reset/:userId/:token", async (req, res) => {
 //remove spotify access
 app.post("/auth/remove", checkUser, async (req, res) => {
   console.log("k0w46un94");
-  const user_id = req.user._id;
-  console.log(user_id);
-  const user = await userServices.deleteSpotifyAccess(user_id);
+  const user_id = req.body._id;
+  const user = await userServices.updateRefresh(user_id, "");
   if (user) {
     res.status(204).end();
   } else {
