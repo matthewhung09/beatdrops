@@ -62,7 +62,14 @@ function BeatDropMap({ lat, long, posts }) {
               key={index}
             >
               <Popup>
-                {marker.posts[0].title} <br /> {marker.posts[0].artist}
+                <ol>
+                  {marker.posts.map((post) => (
+                    <li>
+                      {" "}
+                      {post.title} <br /> {post.artist}{" "}
+                    </li>
+                  ))}
+                </ol>
               </Popup>
             </Marker>
           ) : (
