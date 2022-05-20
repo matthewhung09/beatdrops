@@ -8,23 +8,35 @@ const musicnote = new Icon({
 });
 
 function BeatDropMap({ lat, long, posts }) {
-  const notes = new Map();
+  const grouped = new Map();
   for (let i = 0; i < posts.length; i++) {
     let rLat = Math.ceil(posts[i].location.lat / 0.00002) * 0.000002;
     let rLong = Math.ceil(posts[i].location.long / 0.00002) * 0.000002;
     let coordString = rLat.toString() + ", " + rLong.toString();
-    if (notes.has(coordString)) {
-      notes.get(coordString).push(posts[i]);
+    if (grouped.has(coordString)) {
+      grouped.get(coordString).push(posts[i]);
     } else {
-      notes.set(coordString, [posts[i]]);
+      grouped.set(coordString, [posts[i]]);
     }
   }
-  for (let i = 0; i < posts.length; i++) {
-    console.log("potato");
-  }
-  console.log(notes);
-  notes.forEach((posts) => {
-    console.log(posts.length);
+
+  const notes = [];
+  grouped.forEach((group) => {
+    const newEntry = {};
+    newEntry.location = group[0].location;
+    if (group.length > 1) {
+      newEntry.isMultiple = true;
+      for (let i = 0; i < group.length; i++) {
+        if ("posts" in newEntry) {
+          newEntry.posts.push(group[i]);
+        } else {
+          newEntry.posts = [group[i]];
+        }
+      }
+    } else {
+      newEntry.posts = group[0];
+    }
+    notes.push(newEntry);
   });
 
   return (
@@ -40,42 +52,31 @@ function BeatDropMap({ lat, long, posts }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         // style={{ maxWidth: 10 }}
       />
-      {/* {posts.map(
+      {notes.map(
         (marker, index) =>
-          marker.location.onCampus && (
+          marker.location.onCampus &&
+          (marker.isMultiple ? (
             <Marker
               position={[marker.location.lat, marker.location.long]}
               icon={musicnote}
               key={index}
             >
               <Popup>
-                {marker.title} <br /> {marker.artist}
+                {marker.posts[0].title} <br /> {marker.posts[0].artist}
               </Popup>
             </Marker>
-          )
-      )} */}
-      {notes.forEach((posts) => {
-        //posts[0].location.onCampus &&
-        //posts.length > 1 ? (
-        <Marker
-          position={[posts[0].location.lat, posts[0].location.long]}
-          icon={musicnote}
-          //key={index}
-        >
-          <Popup>text</Popup>
-        </Marker>;
-        // ) : (
-        //   <Marker
-        //     position={[posts[0].location.lat, posts[0].location.long]}
-        //     icon={musicnote}
-        //     //key={index}
-        //   >
-        //     <Popup>
-        //       {posts[0].title} <br /> something
-        //     </Popup>
-        //   </Marker>
-        // );
-      })}
+          ) : (
+            <Marker
+              position={[marker.location.lat, marker.location.long]}
+              icon={musicnote}
+              key={index}
+            >
+              <Popup>
+                {marker.posts.title} <br /> {marker.posts.artist}
+              </Popup>
+            </Marker>
+          ))
+      )}
     </MapContainer>
   );
 }
