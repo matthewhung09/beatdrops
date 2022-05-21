@@ -31,7 +31,7 @@ describe('Post song to homepage', () => {
                     lat: 0,
                     long: 0,
                     onCampus: true,
-                  }
+                }
               
               };
         });
@@ -53,19 +53,27 @@ describe('Post song to homepage', () => {
             });
         });
     });
-/*
-    context('Unsuccessfull post', () => {
+
+    context('Unsuccessful song post', () => {
 
         before(() => {
         });
 
-        let user = {};
+        let post = {};
 
         it('GIVEN I have chosen to post a song.', () => {
-            user = {
-                name: 'Leah',
-                job: 'S'
-            }
+            post = {
+
+                title: "fed kourt",
+                artist: "potsu",  
+                location: {
+                    name: "Dexter Lawn",
+                    lat: 0,
+                    long: 0,
+                    onCampus: true,
+                }
+            };
+
         });
 
         it('WHEN I spell a song name incorrectly.', () => {
@@ -77,12 +85,12 @@ describe('Post song to homepage', () => {
             }).then((response) => {
                 //Using matchers from Chai: https://www.chaijs.com/guide/styles/#assert
                 //All Cypress supported matchers here: https://docs.cypress.io/guides/references/assertions
-                assert.equal(response.status, 400,
+                assert.equal(response.status, 404,
                     'THEN I get an error message telling me that I spelled the song incorrectly.');
-                assert.notExists(response.body, 
+                assert.notExists(response.body.title, 
                     'AND there\'s no response obj');                    
             });
         });
     });
-*/
+
 });
