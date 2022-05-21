@@ -21,7 +21,7 @@ describe('Post song to homepage', () => {
 
         let post = {};
 
-        it('GIVEN My user object has valid fields (user and job)', () => {
+        it('GIVEN I have chosen to post a song to the homepage.', () => {
             post = {
               
                 title: "food court",
@@ -36,7 +36,7 @@ describe('Post song to homepage', () => {
               };
         });
 
-        it('I spell the song and title correctly, and the song exists on Spotify.', () => {
+        it('WHEN I spell the song and title correctly, and the song exists on Spotify.', () => {
             cy.request('POST', 'http://localhost:5000/create', post).then((response) => {
                 //Using matchers from Chai: https://www.chaijs.com/guide/styles/#assert
                    // All Cypress supported matchers here: https://docs.cypress.io/guides/references/assertions
