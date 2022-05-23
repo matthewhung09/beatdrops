@@ -19,26 +19,9 @@ function BeatDropMap({ lat, long, posts }) {
       grouped.set(coordString, [posts[i]]);
     }
   }
-  console.log(grouped);
 
-  const notes = [];
-  grouped.forEach((group) => {
-    const newEntry = {};
-    newEntry.location = group[0].location;
-    if (group.length > 1) {
-      newEntry.isMultiple = true;
-      for (let i = 0; i < group.length; i++) {
-        if ("posts" in newEntry) {
-          newEntry.posts.push(group[i]);
-        } else {
-          newEntry.posts = [group[i]];
-        }
-      }
-    } else {
-      newEntry.posts = group[0];
-    }
-    notes.push(newEntry);
-  });
+  const notes = Array.from(grouped.values());
+  console.log(notes);
 
   return (
     <MapContainer
@@ -55,16 +38,15 @@ function BeatDropMap({ lat, long, posts }) {
       />
       {notes.map(
         (marker, index) =>
-          marker.location.onCampus &&
-          (marker.isMultiple ? (
+          marker[0].location.onCampus && (
             <Marker
-              position={[marker.location.lat, marker.location.long]}
+              position={[marker[0].location.lat, marker[0].location.long]}
               icon={musicnote}
               key={index}
             >
               <Popup>
                 <ol>
-                  {marker.posts.map((post) => (
+                  {marker.map((post) => (
                     <li>
                       {" "}
                       {post.title} <br /> {post.artist}{" "}
@@ -73,17 +55,7 @@ function BeatDropMap({ lat, long, posts }) {
                 </ol>
               </Popup>
             </Marker>
-          ) : (
-            <Marker
-              position={[marker.location.lat, marker.location.long]}
-              icon={musicnote}
-              key={index}
-            >
-              <Popup>
-                {marker.posts.title} <br /> {marker.posts.artist}
-              </Popup>
-            </Marker>
-          ))
+          )
       )}
     </MapContainer>
   );
