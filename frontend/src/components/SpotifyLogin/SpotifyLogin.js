@@ -49,10 +49,17 @@ function SpotifyLogin() {
 
   return (
     <StylesProvider injectFirst>
-      <Popup open={open} closeOnDocumentClick={false} onClose={closeModal}>
+      <Popup
+        open={open}
+        closeOnDocumentClick={false}
+        onClose={closeModal}
+      >
         {(close) => (
           <div className="modal">
-            <button className="close" onClick={close}>
+            <button
+              className="close"
+              onClick={close}
+            >
               &times;
             </button>
             <PopupWrapper>

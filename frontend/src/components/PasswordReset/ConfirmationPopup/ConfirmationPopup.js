@@ -39,7 +39,11 @@ function ConfirmationPopup({ message }) {
 
   return (
     <StylesProvider injectFirst>
-      <Popup open={open} closeOnDocumentClick={false} onClose={closeModal}>
+      <Popup
+        open={open}
+        closeOnDocumentClick={false}
+        onClose={closeModal}
+      >
         <div className="modal">
           <PopupWrapper>
             <BsFillCheckCircleFill className="checkIcon" />

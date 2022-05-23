@@ -15,7 +15,10 @@ function Dropdown({ selected, setSelected, setLoggedIn, purpose }) {
   return (
     <div className="dropdown">
       {purpose === "filter" ? (
-        <div className="dropdown-btn" onClick={() => setIsActive(!isActive)}>
+        <div
+          className="dropdown-btn"
+          onClick={() => setIsActive(!isActive)}
+        >
           {selected} <IoFilterSharp />
         </div>
       ) : (
