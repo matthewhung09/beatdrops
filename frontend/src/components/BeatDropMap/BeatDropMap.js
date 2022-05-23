@@ -10,8 +10,8 @@ const musicnote = new Icon({
 function BeatDropMap({ lat, long, posts }) {
   const grouped = new Map();
   for (let i = 0; i < posts.length; i++) {
-    let rLat = Math.ceil(posts[i].location.lat / 0.00002) * 0.000002;
-    let rLong = Math.ceil(posts[i].location.long / 0.00002) * 0.000002;
+    let rLat = Math.ceil(posts[i].location.lat / 0.00005) * 0.000005;
+    let rLong = Math.ceil(posts[i].location.long / 0.00005) * 0.000005;
     let coordString = rLat.toString() + ", " + rLong.toString();
     if (grouped.has(coordString)) {
       grouped.get(coordString).push(posts[i]);
@@ -19,6 +19,7 @@ function BeatDropMap({ lat, long, posts }) {
       grouped.set(coordString, [posts[i]]);
     }
   }
+  console.log(grouped);
 
   const notes = [];
   grouped.forEach((group) => {
