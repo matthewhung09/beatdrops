@@ -8,6 +8,9 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Popup from "reactjs-popup";
 import FormFooter from "../Form/FormFooter";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+
 import "../../App.css";
 import "../Form/Form.css";
 
@@ -40,8 +43,9 @@ function Form({
   mainActionText,
   styles,
   instructions,
-  onSubmitCall,
 }) {
+  let navigate = useNavigate();
+
   // validation
   const { handleSubmit, control, reset } = useForm({
     resolver: yupResolver(validationSchema),
@@ -63,10 +67,53 @@ function Form({
   };
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  // for all the different forms
-  const onSubmit = async (values) => {
+  // // for all the different forms
+  // const onSubmit = async (values) => {
+  //   try {
+  //     onSubmitCall(values);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setEmail(values.email);
+  //     setPassword(values.password);
+  //     setvErr(error.response.data.errors);
+  //   }
+  // };
+
+  const onSubmitSignup = async (values) => {
     try {
-      onSubmitCall(values);
+      await axios.post(
+        `${process.env.REACT_APP_URL}/signup`,
+        {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        },
+        { withCredentials: true }
+      );
+      navigate("/spotify");
+    } catch (error) {
+      setEmail(values.email);
+      setvErr(error.response.data.errors);
+    }
+  };
+
+  const onSubmitLogin = async (values) => {
+    console.log("ere");
+    let response;
+    try {
+      response = await axios.post(
+        `${process.env.REACT_APP_URL}/login`,
+        {
+          email: values.email,
+          password: values.password,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      const data = response.data;
+      // Route to main page if login info is correct
+      if (data.user) {
+        window.location.assign("/home");
+      }
     } catch (error) {
       setEmail(values.email);
       setPassword(values.password);
@@ -74,9 +121,50 @@ function Form({
     }
   };
 
+  const { userId, token } = useParams();
+
+  const onSubmitChooseNewPassword = async (values) => {
+    try {
+      console.log("hello");
+      await axios.post(
+        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
+
+        {
+          password: values.password,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/password-reset-success");
+    } catch (error) {
+      setPassword(values.password);
+      setvErr(error.response.data.errors);
+    }
+  };
+
+  const onSubmitEmailReset = async (values) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_URL}/send-email`,
+        {
+          email: values.email,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/email-success");
+    } catch (error) {
+      console.log(error.response.data.message);
+      setEmail(values.email);
+      setvErr(error.response.data.message);
+    }
+  };
+
   return (
     <StylesProvider injectFirst>
-      <Popup open={open} closeOnDocumentClick={false} onClose={closeModal}>
+      <Popup
+        open={open}
+        closeOnDocumentClick={false}
+        onClose={closeModal}
+      >
         {() => (
           <div className="modal">
             <div className="header">
@@ -91,7 +179,18 @@ function Form({
                   {instructions}
                 </h2>
               )}
-              <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={
+                  formType === "signup"
+                    ? handleSubmit(onSubmitSignup)
+                    : formType === "login"
+                    ? handleSubmit(onSubmitLogin)
+                    : formType === "chooseNewPassword"
+                    ? handleSubmit(onSubmitChooseNewPassword)
+                    : handleSubmit(onSubmitEmailReset)
+                }
+              >
                 {rEntries.map((entry, index) => (
                   <Controller
                     defaultValue=""

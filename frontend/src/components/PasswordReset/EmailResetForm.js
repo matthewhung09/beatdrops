@@ -14,17 +14,6 @@ function EmailResetForm() {
     email: Yup.string().required("Please enter your email."),
   });
 
-  const onSubmitCall = async (values) => {
-    await axios.post(
-      `${process.env.REACT_APP_URL}/send-email`,
-      {
-        email: values.email,
-      },
-      { withCredentials: true, credentials: "include" }
-    );
-    navigate("/email-success");
-  };
-
   return (
     <Form
       rEntries={rEntries}
@@ -33,7 +22,6 @@ function EmailResetForm() {
       popupTitle="Reset your password."
       instructions="Enter the email address that you used to register. We'll send you an email with a
                   link to reset your password."
-      onSubmitCall={onSubmitCall}
     />
   );
 }
