@@ -175,15 +175,26 @@ function Post({
   return (
     <div className="card">
       <div className="spotify-div">
-        <Spotify wide allowtransparency="false" height="118px" link={url} />
+        <Spotify
+          wide
+          allowtransparency="false"
+          height="118px"
+          link={url}
+        />
         <div className="spotify-actions">
           {spotifyLikeStatus === false ? (
-            <button className="webplayer-buttons" onClick={likeOnSpotify}>
+            <button
+              className="webplayer-buttons"
+              onClick={likeOnSpotify}
+            >
               <BsBookmarkHeart />
               {'Save to "Liked Songs"'}
             </button>
           ) : (
-            <button className="webplayer-buttons" onClick={unlikeOnSpotify}>
+            <button
+              className="webplayer-buttons"
+              onClick={unlikeOnSpotify}
+            >
               <BsBookmarkHeartFill />
               {'Saved to "Liked Songs"'}
             </button>
@@ -202,7 +213,10 @@ function Post({
           >
             {(close) => (
               <div className="modal">
-                <button className="close" onClick={close}>
+                <button
+                  className="close"
+                  onClick={close}
+                >
                   &times;
                 </button>
                 <div className="content">
@@ -218,7 +232,10 @@ function Post({
                     >
                       {playlists &&
                         playlists.map((playlist, index) => (
-                          <MenuItem key={index} value={playlist.name}>
+                          <MenuItem
+                            key={index}
+                            value={playlist.name}
+                          >
                             {playlist.name}
                           </MenuItem>
                         ))}

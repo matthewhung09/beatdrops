@@ -11,7 +11,13 @@ const styles = (theme) => ({
 });
 
 const PopperMy = function (props) {
-  return <Popper {...props} style={styles.popper} placement="bottom-start" />;
+  return (
+    <Popper
+      {...props}
+      style={styles.popper}
+      placement="bottom-start"
+    />
+  );
 };
 
 function PostForm({
@@ -49,12 +55,21 @@ function PostForm({
           <h1 className="header"> Post a song </h1>
           <div className="input-content">
             <h2>Song title</h2>
-            <input value={newSong} onChange={onChangeSong} />
+            <input
+              value={newSong}
+              onChange={onChangeSong}
+            />
             <h2>Artist name</h2>
-            <input value={newArtist} onChange={onChangeArtist} />
+            <input
+              value={newArtist}
+              onChange={onChangeArtist}
+            />
             {postError && <p> {postError} </p>}
           </div>
-          <button onClick={onClick} className="btn">
+          <button
+            onClick={onClick}
+            className="btn"
+          >
             Post
           </button>
         </div>
@@ -85,7 +100,10 @@ function PostForm({
                 sx={{ width: 300 }}
                 placement="bottom-start"
                 renderInput={(params) => (
-                  <TextField {...params} label="Search by title or artist..." />
+                  <TextField
+                    {...params}
+                    label="Search by title or artist..."
+                  />
                 )}
                 onChange={handleChange}
                 style={{
@@ -93,7 +111,10 @@ function PostForm({
                 }}
                 renderOption={(props, song) => {
                   return (
-                    <li {...props} key={Math.random()}>
+                    <li
+                      {...props}
+                      key={Math.random()}
+                    >
                       {/* {option.name} */}
                       {song.title} by {song.artist}
                     </li>

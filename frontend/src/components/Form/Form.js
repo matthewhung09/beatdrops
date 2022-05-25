@@ -76,7 +76,11 @@ function Form({
 
   return (
     <StylesProvider injectFirst>
-      <Popup open={open} closeOnDocumentClick={false} onClose={closeModal}>
+      <Popup
+        open={open}
+        closeOnDocumentClick={false}
+        onClose={closeModal}
+      >
         {() => (
           <div className="modal">
             <div className="header">
@@ -91,7 +95,10 @@ function Form({
                   {instructions}
                 </h2>
               )}
-              <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={handleSubmit(onSubmit)}
+              >
                 {rEntries.map((entry, index) => (
                   <Controller
                     defaultValue=""
