@@ -4,32 +4,55 @@ An web-based application where you can anonymously share music!
 
 by Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
-## Launching beatdrops
+## Environment Setup
 
-### Start backend
+### Frontend
+Create a `.env` file with the following variables.
+```
+REACT_APP_CLIENT_ID='YOUR_CLIENT_ID'
+REACT_APP_URL=http://localhost:5000
+REACT_APP_REDIRECT=http://localhost:3000
+```
+Run these commands in both the frontend folder to install dependencies and start the server
+```
+npm install
+npm run dev
+```
 
-1. In the backend folder, run `npm run dev`.
+### Backend
+Create a `.env` file with the following variables.
+```
+CLIENT_ID='YOUR_CLIENT_ID'
+CLIENT_SECRET='YOUR_CLIENT_SECRET
+CONNECTION_URL='YOUR_CONNECTION_URL'
+JWT_SECRET='YOUR_JWT_SECRET'
+FRONTEND_URL=http://localhost:3000
+EMAIL_SERVICE=Gmail
+EMAIL_USER='YOUR_EMAIL'
+EMAIL_PASS='YOUR_PASS'
+GOOGLE_CLIENT_ID='YOUR_CLIENT_ID'
+GOOGLE_CLIENT_SECRET='YOUR_CLIENT_SECRET'
+GOOGLE_REDIRECT_URL='YOUR_REDIRECT_URL'
+GOOGLE_REFRESH_TOKEN='YOUR_REFRESH_TOKEN'
+```
+Run these commands in both the frontend folder to install dependencies and start the server
+```
+npm install
+npm run dev
+```
 
-### Start frontend
-
-1. In the frontend folder, run `npm run dev`.
-
-## Branching
-
-### To Create a New Branch:
-
-1. `git branch feature-yourname`
-2. After you `git pull` from main, make sure to `git checkout` to your branch.
-
-### To Merge Branches:
-
-Only do this if we have already discussed, otherwise create a pull request.
-
-1. Make sure all your code is pushed to your branch
-2. `git checkout main`
-3. `git merge branch-name`
-
-## Code Coverage
+## Testing
+### Running Tests
+To run unit tests in the backend:
+```
+npm test
+```
+To run API and E2E tests:
+```
+./node_modules/.bin/cypress open
+```
+Then click on the testing file in the opened cypress window.
+### Code Coverage
 
 ![alt text](https://github.com/matthewhung09/beatdrops/blob/main/images/coverage_report.PNG)
 
@@ -43,6 +66,10 @@ Configuring "Format on Save" in Visual Studio Code:
 2. Preferences
 3. Settings
 4. Search for "Format On Save" and check the box.
+
+To format all files, run
+
+`npx prettier --write . `
 
 ## External Project Docs
 
