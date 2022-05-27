@@ -269,7 +269,6 @@ app.post("/current", async (req, res) => {
       song: response.data.item,
     });
   } catch (error) {
-    // console.log(error);
     return false;
   }
 });
