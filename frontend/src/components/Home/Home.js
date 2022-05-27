@@ -361,15 +361,11 @@ function Home() {
         />
       </div>
       <div className="header">
+        <img
+          alt="logo"
+          src="logo_app.png"
+        />
         <h1>Beatdrops</h1>
-        <picture>
-          {" "}
-          <img
-            src="logo_app.png"
-            width="150"
-            height="80"
-          />{" "}
-        </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
       <div className="home-actions">
