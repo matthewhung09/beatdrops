@@ -1,12 +1,8 @@
 import { React } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import axios from "axios";
 import Form from "../Form/Form";
 
 function ChooseNewPasswordForm() {
-  let navigate = useNavigate();
-
   // info for required entries
   const rEntries = [{ input: "password", label: "Password" }];
 
@@ -21,8 +17,6 @@ function ChooseNewPasswordForm() {
         "Password must contain at least 8 characters, one uppercase, one number, and one special case character."
       ),
   });
-
-  const { userId, token } = useParams();
 
   return (
     <Form

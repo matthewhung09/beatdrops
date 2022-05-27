@@ -2,7 +2,6 @@ import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import isEmailValidator from "validator/lib/isEmail";
 import * as Yup from "yup";
-import axios from "axios";
 import Form from "../Form/Form";
 
 function SignUpForm() {

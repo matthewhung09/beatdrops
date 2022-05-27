@@ -1,11 +1,8 @@
 import { React } from "react";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import axios from "axios";
 import Form from "../Form/Form";
 
 function EmailResetForm() {
-  let navigate = useNavigate();
   // info for required entries
   const rEntries = [{ input: "email", label: "Email" }];
 

@@ -44,7 +44,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://beatdrops.herokuapp.com"],
+    origin: ["http://localhost:3000", "https://beatdrops-frontend.herokuapp.com"],
   })
 );
 
@@ -280,6 +280,7 @@ app.post("/current", async (req, res) => {
 app.post("/playlists", async (req, res) => {
   const accessToken = req.body.accessToken;
   if (accessToken === undefined) {
+    console.log("in here");
     return;
   }
 

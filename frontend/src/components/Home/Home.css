@@ -107,6 +107,12 @@
 
 /* ---- home ---- */
 
+.home img {
+  width: 8em;
+  height: 5em;
+  margin-bottom: 20px;
+}
+
 .home {
   font-family: "Karla", sans-serif;
   display: flex;
@@ -152,4 +158,9 @@
   justify-content: "center";
   justify-items: "center";
   /* background-color: blue; */
+}
+
+.popup-content.map-popup-content {
+  min-width: 65em;
+  height: fit-content;
 }

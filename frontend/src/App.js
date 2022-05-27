@@ -15,11 +15,26 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/signup" element={<SignUpForm />} />
-          <Route path="/spotify" element={<SpotifyLogin />} />
-          <Route path="/password-reset" element={<EmailResetForm />} />
-          <Route path="/reset/:userId/:token" element={<ChooseNewPasswordForm />} />
+          <Route
+            path="/"
+            element={<LoginForm />}
+          />
+          <Route
+            path="/signup"
+            element={<SignUpForm />}
+          />
+          <Route
+            path="/spotify"
+            element={<SpotifyLogin />}
+          />
+          <Route
+            path="/password-reset"
+            element={<EmailResetForm />}
+          />
+          <Route
+            path="/reset/:userId/:token"
+            element={<ChooseNewPasswordForm />}
+          />
           <Route
             path="/email-success"
             element={
@@ -30,7 +45,10 @@ function App() {
             path="/password-reset-success"
             element={<ConfirmationPopup message="Your password has been successfully updated." />}
           />
-          <Route path="/home" element={<Home />} />
+          <Route
+            path="/home"
+            element={<Home />}
+          />
         </Routes>
       </Router>
     </div>

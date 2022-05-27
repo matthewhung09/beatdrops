@@ -156,6 +156,7 @@ function Home() {
     await axios
       .post(`${process.env.REACT_APP_URL}/playlists`, { accessToken })
       .then((res) => {
+        console.log(res);
         if (res) {
           setPlaylists(res.data.playlists);
         }
@@ -254,8 +255,22 @@ function Home() {
 
   /* ------ logout ------ */
 
+  const PERMISSIONS = [
+    "user-read-email",
+    "user-read-private",
+    "user-library-read",
+    "user-library-modify",
+    "user-read-playback-state",
+    "user-modify-playback-state",
+    "playlist-read-private",
+    "playlist-modify-private",
+    "playlist-modify-public",
+    "playlist-read-collaborative",
+  ].join("%20");
+
   useEffect(() => {
-    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
+    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20${PERMISSIONS}`;
+
     if (userSetting === "Logout") {
       logout();
     } else if (userSetting === "Connect Spotify") {
@@ -346,15 +361,11 @@ function Home() {
         />
       </div>
       <div className="header">
+        <img
+          alt="logo"
+          src="logo_app.png"
+        />
         <h1>Beatdrops</h1>
-        <picture>
-          {" "}
-          <img
-            src="logo_app.png"
-            width="150"
-            height="80"
-          />{" "}
-        </picture>
         <h2>YikYak meets Spotify</h2>
       </div>
       <div className="home-actions">

@@ -20,12 +20,25 @@ const StyledButton = styled(Button)`
 function FormFooter({ secondaryActionText, onClick, mainActionText, formType, styles }) {
   let navigate = useNavigate();
   return (
-    <Box m={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <StyledButton fullWidth type="submit" variant="contained" color="primary">
+    <Box
+      m={2}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <StyledButton
+        fullWidth
+        type="submit"
+        // type="submit"
+        variant="contained"
+        color="primary"
+      >
         Continue
       </StyledButton>
       {formType === "login" && (
         <button
+          type="button"
           className="login-btn"
           style={{ marginTop: -90, marginLeft: -255 }}
           onClick={() => navigate("/password-reset")}
@@ -34,9 +47,16 @@ function FormFooter({ secondaryActionText, onClick, mainActionText, formType, st
         </button>
       )}
 
-      <div className="login" style={styles}>
+      <div
+        className="login"
+        style={styles}
+      >
         <div className="login-text">{secondaryActionText}</div>
-        <button className="login-btn" onClick={onClick}>
+        <button
+          type="button"
+          className="login-btn"
+          onClick={onClick}
+        >
           {mainActionText}
         </button>
       </div>
