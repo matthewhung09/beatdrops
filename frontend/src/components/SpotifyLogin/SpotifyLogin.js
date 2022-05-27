@@ -45,7 +45,20 @@ function SpotifyLogin() {
   const [open, setOpen] = useState(true);
   const closeModal = () => setOpen(false);
 
-  const redirect_url = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`;
+  const PERMISSIONS = [
+    "user-read-email",
+    "user-read-private",
+    "user-library-read",
+    "user-library-modify",
+    "user-read-playback-state",
+    "user-modify-playback-state",
+    "playlist-read-private",
+    "playlist-modify-private",
+    "playlist-modify-public",
+    "playlist-read-collaborative",
+  ].join("%20");
+
+  const redirect_url = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT}/home&scope=streaming%20${PERMISSIONS}`;
 
   return (
     <StylesProvider injectFirst>

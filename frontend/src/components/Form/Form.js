@@ -3,11 +3,13 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StylesProvider } from "@material-ui/core";
 import { TextField, InputAdornment, IconButton, Box } from "@material-ui/core";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Popup from "reactjs-popup";
 import FormFooter from "../Form/FormFooter";
+import axios from "axios";
 import "../../App.css";
 import "../Form/Form.css";
 
@@ -40,10 +42,11 @@ function Form({
   mainActionText,
   styles,
   instructions,
-  onSubmitCall,
 }) {
+  let navigate = useNavigate();
+
   // validation
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
@@ -62,15 +65,82 @@ function Form({
     setShowPassword(!showPassword);
   };
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const handleErrors = (error, values) => {
+    setEmail(values.email);
+    setPassword(values.password);
+    setvErr(error.response.data.errors);
+  };
 
   // for all the different forms
-  const onSubmit = async (values) => {
+  const onSubmitSignup = async (values) => {
     try {
-      onSubmitCall(values);
+      await axios.post(
+        `${process.env.REACT_APP_URL}/signup`,
+        {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        },
+        { withCredentials: true }
+      );
+      navigate("/spotify");
     } catch (error) {
-      setEmail(values.email);
-      setPassword(values.password);
-      setvErr(error.response.data.errors);
+      handleErrors(error, values);
+    }
+  };
+
+  const onSubmitLogin = async (values) => {
+    let response;
+    try {
+      response = await axios.post(
+        `${process.env.REACT_APP_URL}/login`,
+        {
+          email: values.email,
+          password: values.password,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      const data = response.data;
+      // Route to main page if login info is correct
+      if (data.user) {
+        window.location.assign("/home");
+      }
+    } catch (error) {
+      handleErrors(error, values);
+    }
+  };
+
+  const { userId, token } = useParams();
+
+  const onSubmitChooseNewPassword = async (values) => {
+    try {
+      console.log("hello");
+      await axios.post(
+        `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
+
+        {
+          password: values.password,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/password-reset-success");
+    } catch (error) {
+      handleErrors(error, values);
+    }
+  };
+
+  const onSubmitEmailReset = async (values) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_URL}/send-email`,
+        {
+          email: values.email,
+        },
+        { withCredentials: true, credentials: "include" }
+      );
+      navigate("/email-success");
+    } catch (error) {
+      handleErrors(error, values);
     }
   };
 
@@ -97,7 +167,15 @@ function Form({
               )}
               <form
                 style={{ width: "100%" }}
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={
+                  formType === "signup"
+                    ? handleSubmit(onSubmitSignup)
+                    : formType === "login"
+                    ? handleSubmit(onSubmitLogin)
+                    : formType === "chooseNewPassword"
+                    ? handleSubmit(onSubmitChooseNewPassword)
+                    : handleSubmit(onSubmitEmailReset)
+                }
               >
                 {rEntries.map((entry, index) => (
                   <Controller

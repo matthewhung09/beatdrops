@@ -1,12 +1,8 @@
 import { React } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import axios from "axios";
 import Form from "../Form/Form";
 
 function ChooseNewPasswordForm() {
-  let navigate = useNavigate();
-
   // info for required entries
   const rEntries = [{ input: "password", label: "Password" }];
 
@@ -22,20 +18,6 @@ function ChooseNewPasswordForm() {
       ),
   });
 
-  const { userId, token } = useParams();
-
-  const onSubmitCall = async (values) => {
-    await axios.post(
-      `${process.env.REACT_APP_URL}/reset/${userId}/${token}`,
-
-      {
-        password: values.password,
-      },
-      { withCredentials: true, credentials: "include" }
-    );
-    navigate("/password-reset-success");
-  };
-
   return (
     <Form
       rEntries={rEntries}
@@ -44,7 +26,6 @@ function ChooseNewPasswordForm() {
       popupTitle="Choose a new password."
       instructions="Your new password must contain at least 8 characters, one uppercase, one number,
                   and one special case character."
-      onSubmitCall={onSubmitCall}
     />
   );
 }

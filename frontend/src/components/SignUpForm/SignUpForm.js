@@ -2,7 +2,6 @@ import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import isEmailValidator from "validator/lib/isEmail";
 import * as Yup from "yup";
-import axios from "axios";
 import Form from "../Form/Form";
 
 function SignUpForm() {
@@ -36,19 +35,6 @@ function SignUpForm() {
     username: Yup.string().required("Please enter a nickname."),
   });
 
-  const onSubmitCall = async (values) => {
-    await axios.post(
-      `${process.env.REACT_APP_URL}/signup`,
-      {
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      },
-      { withCredentials: true }
-    );
-    navigate("/spotify");
-  };
-
   return (
     <Form
       rEntries={rEntries}
@@ -59,7 +45,6 @@ function SignUpForm() {
       onClick={() => navigate("/")}
       mainActionText="LOGIN"
       styles={{ marginTop: 50, marginBottom: -20 }}
-      onSubmitCall={() => onSubmitCall}
     />
   );
 }

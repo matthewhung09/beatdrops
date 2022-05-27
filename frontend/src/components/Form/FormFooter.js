@@ -30,6 +30,7 @@ function FormFooter({ secondaryActionText, onClick, mainActionText, formType, st
       <StyledButton
         fullWidth
         type="submit"
+        // type="submit"
         variant="contained"
         color="primary"
       >
@@ -37,6 +38,7 @@ function FormFooter({ secondaryActionText, onClick, mainActionText, formType, st
       </StyledButton>
       {formType === "login" && (
         <button
+          type="button"
           className="login-btn"
           style={{ marginTop: -90, marginLeft: -255 }}
           onClick={() => navigate("/password-reset")}
@@ -51,6 +53,7 @@ function FormFooter({ secondaryActionText, onClick, mainActionText, formType, st
       >
         <div className="login-text">{secondaryActionText}</div>
         <button
+          type="button"
           className="login-btn"
           onClick={onClick}
         >
