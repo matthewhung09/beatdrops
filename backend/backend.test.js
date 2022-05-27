@@ -237,7 +237,7 @@ test("send email -- fail", async () => {
   nodemailer.createTransport.mockReturnValue(undefined);
   const res = await backendServices.sendEmail(
     "r@gmail.com",
-    "https://beatdrops.herokuapp/password-reset/asdf",
+    "https://beatdrops-frontend.herokuapp/password-reset/asdf",
     "randomtoken"
   );
   expect(res).toBe(false);
@@ -248,7 +248,7 @@ test("send email -- success", async () => {
   nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
   const res = await backendServices.sendEmail(
     "r@gmail.com",
-    "https://beatdrops.herokuapp/password-reset/asdf",
+    "https://beatdrops-frontend.herokuapp/password-reset/asdf",
     "randomtoken"
   );
   expect(sendMailMock).toHaveBeenCalled();

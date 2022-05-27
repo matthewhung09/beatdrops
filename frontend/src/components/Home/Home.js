@@ -156,6 +156,7 @@ function Home() {
     await axios
       .post(`${process.env.REACT_APP_URL}/playlists`, { accessToken })
       .then((res) => {
+        console.log(res);
         if (res) {
           setPlaylists(res.data.playlists);
         }
