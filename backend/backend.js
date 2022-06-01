@@ -44,7 +44,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://beatdrops-frontend.herokuapp.com"],
+    origin: ["http://localhost:3000", "https://beatdrops.herokuapp.com"],
   })
 );
 
