@@ -66,8 +66,11 @@ async function findDuplicates(post) {
   return await postModel.find({
     title: post.title,
     artist: post.artist,
-    "location.lat": { $lte: post.location.lat + 0.0145, $gte: post.location.lat - 0.0145 },
-    "location.long": { $lte: post.location.long + 0.0183, $gte: post.location.long - 0.0183 },
+    "location.lat": { $lte: post.location.lat + 5 * 0.0145, $gte: post.location.lat - 5 * 0.0145 },
+    "location.long": {
+      $lte: post.location.long + 5 * 0.0183,
+      $gte: post.location.long - 5 * 0.0183,
+    },
   });
 }
 
