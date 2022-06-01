@@ -1,4 +1,5 @@
-# beatdrops
+# Beatdrops
+![CD](https://github.com/matthewhung09/beatdrops/actions/workflows/node.js.yml/badge.svg)
 
 An web-based application where you can anonymously share music!
 
@@ -6,7 +7,8 @@ by Matthew Hung, Adelle Vo, Griffin Scotti, Naomi Donato
 
 ## Environment Setup
 
-### Frontend
+### Frontend (https://beatdrops.herokuapp.com)
+
 Create a `.env` file with the following variables.
 ```
 REACT_APP_CLIENT_ID='YOUR_CLIENT_ID'
@@ -19,7 +21,8 @@ npm install
 npm run dev
 ```
 
-### Backend
+### Backend (https://beatdrops-api.herokuapp.com)
+
 Create a `.env` file with the following variables.
 ```
 CLIENT_ID='YOUR_CLIENT_ID'
