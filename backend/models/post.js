@@ -13,7 +13,6 @@ const PostSchema = new mongoose.Schema(
       trim: true,
     },
     likes: { type: Number },
-    reposts: { type: Number },
     lastPosted: {
       type: Date,
       default: new Date(),
