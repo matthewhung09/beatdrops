@@ -15,7 +15,7 @@ REACT_APP_CLIENT_ID='YOUR_CLIENT_ID'
 REACT_APP_URL=http://localhost:5000
 REACT_APP_REDIRECT=http://localhost:3000
 ```
-Run these commands in both the frontend folder to install dependencies and start the server
+Run these commands in the frontend folder to install dependencies and start the server
 ```
 npm install
 npm run dev
@@ -38,7 +38,7 @@ GOOGLE_CLIENT_SECRET='YOUR_CLIENT_SECRET'
 GOOGLE_REDIRECT_URL='YOUR_REDIRECT_URL'
 GOOGLE_REFRESH_TOKEN='YOUR_REFRESH_TOKEN'
 ```
-Run these commands in both the frontend folder to install dependencies and start the server
+Run these commands in the backend folder to install dependencies and start the server
 ```
 npm install
 npm run dev
